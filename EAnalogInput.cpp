@@ -31,12 +31,13 @@ void EAnalogInput::getName(char* result)
 	
 int EAnalogInput::getData()
 {
-   currentData=analogRead(this->port); 
+   currentData=analogRead(this->port);
+	return 1;	
 };
 
 int EAnalogInput::handleEvent(Event& tmpEvent)
 {
-   EObject::handleEvent(tmpEvent);
+   return EObject::handleEvent(tmpEvent);
 };
    
 

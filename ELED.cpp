@@ -27,13 +27,13 @@ int ELED::handleEvent(Event& tmpEvent)
 {
 //   EOutputDevice::handleEvent(tmpEvent);
    switch ( tmpEvent.eventType) {
-   case evLEDOn :
+   case evTurnOn :
       if (eventForMe(tmpEvent)) {
          on();
          return true;
       };
       break;
-   case evLEDOff :
+   case evTurnOff :
       if (eventForMe(tmpEvent)) {
          off();
          return true;

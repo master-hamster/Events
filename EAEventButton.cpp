@@ -14,7 +14,10 @@ uint8_t EAEventButton::addLevel(int newLevel,uint16_t eventType, uint16_t eventD
       this->levels[++this->levelCount]=newLevel;
       this->events[this->levelCount]=eventType;
       this->destinations[this->levelCount]=eventDest;
-   }      
+		return 0;
+   } else {
+	  return 1;
+	}
 };     
 
 

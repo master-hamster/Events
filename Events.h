@@ -99,9 +99,9 @@
 //обнаружено движение, в данных - условный ID датчика движения
 #define evMotionDetected      17
 // командна на гашение света, в данных - условынй ID источника света
-#define evLEDOff              21
+//#define evLEDOff              21
 // команда на включение света, в данных - условный ID источника света
-#define evLEDOn               22
+//#define evLEDOn               22
 #define evCandleOn            23
 #define evCandleOff           24
 #define evFlicker             25
