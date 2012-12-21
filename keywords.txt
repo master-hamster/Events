@@ -1,0 +1,65 @@
+#######################################
+# Syntax Coloring Map For Ethernet
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+InputMode	KEYWORD1
+CandleState	KEYWORD1
+oid_t	KEYWORD1
+event_t	KEYWORD1
+Event	KEYWORD1
+EventStack	KEYWORD1
+Timer	KEYWORD1
+EObject	KEYWORD1
+
+EDevice	KEYWORD1
+EInputDevice	KEYWORD1
+EOutputDevice	KEYWORD1
+EApplication	KEYWORD1
+
+
+
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+pushEvent	KEYWORD2
+push	KEYWORD2
+pop	KEYWORD2
+clear	KEYWORD2
+print	KEYWORD2
+setInterval	KEYWORD2
+setStartTime	KEYWORD2
+elapsedTime	KEYWORD2
+expired	KEYWORD2
+start	KEYWORD2
+getStartTime	KEYWORD2
+getInterval	KEYWORD2
+handleEvent	KEYWORD2
+idle	KEYWORD2
+eventForMe	KEYWORD2
+getName	KEYWORD2
+getID	KEYWORD2
+isDisabled	KEYWORD2
+initReverse	KEYWORD2
+printNames	KEYWORD2
+printEvent	KEYWORD2
+getEvent	KEYWORD2
+pushEvent	KEYWORD2
+eventForMe	KEYWORD2
+eventForMe	KEYWORD2
+eventForMe	KEYWORD2
+eventForMe	KEYWORD2
+eventForMe	KEYWORD2
+eventForMe	KEYWORD2
+eventForMe	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
