@@ -61,31 +61,31 @@ int ECandle::handleEvent(Event& tmpEvent)
 #endif
       switch (this->currentState) {
       case csOff:  //свет полностью включен
-         if (tmpEvent.eventType==evCandleOn) {
+         if (tmpEvent.eventType==evTurnOn) {
             setState(csFadeIn);
          };   
          break;   
       
       case csFadeIn:
-         if (tmpEvent.eventType==evCandleOff) {
+         if (tmpEvent.eventType==evTurnOff) {
             setState(csFadeOut);
          };   
-         if (tmpEvent.eventType==evCandleOn) {
+         if (tmpEvent.eventType==evTurnOn) {
             setState(csOn);
          };   
          break;
 
       case csOn:
-         if (tmpEvent.eventType==evCandleOff) {
+         if (tmpEvent.eventType==evTurnOff) {
             setState(csFadeOut);
          };   
          break;      
          
       case csFadeOut:
-         if (tmpEvent.eventType==evCandleOn) {
+         if (tmpEvent.eventType==evTurnOn) {
             setState(csFadeIn);
          }; 
-         if (tmpEvent.eventType==evCandleOff) {
+         if (tmpEvent.eventType==evTurnOff) {
             setState(csOff);
          }; 
          break;

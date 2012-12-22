@@ -102,8 +102,8 @@
 //#define evLEDOff              21
 // команда на включение света, в данных - условный ID источника света
 //#define evLEDOn               22
-#define evCandleOn            23
-#define evCandleOff           24
+//#define evCandleOn            23
+//#define evCandleOff           24
 #define evFlicker             25
 
 //команды на включение и выключение устройства - заменены на TurnOn TurnOff
