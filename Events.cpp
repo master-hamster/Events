@@ -631,7 +631,7 @@ DebounceButton::~DebounceButton()
   buttonId--;
 };
    
-*/
+
 void DebounceButton::ftest()
 {
   this->id = buttonId++;
@@ -639,7 +639,7 @@ void DebounceButton::ftest()
   buttons[this->id] = this;
 };   
 
-
+*/
 /*
  * 2010-01-06 vs: started
  * 2010-01-15 6h vs: added EInput
@@ -695,6 +695,8 @@ void DebounceButton::ftest()
       Event.print не работает, если какие-либо из данных 8-битные, пришлось вернуть 
       типы данных oid_t и event_t обратно на uint16_t 
       Возможно, следует делать это только в случае отладки, но сейчас лениво   
+	*2012-12022 1h
+		почищен мусор, удален класс DebounceButton
  */
 
 

@@ -13,8 +13,10 @@
    1. Реализовать цифровое устройство ввода с учетом режимов - ОК
    2. Реализовать цифровое устройство ввода с дребезгом - ОК
    3. Реализовать аналоговое устройство ввода - OK 070210
-   4. Реализовать аналоговое устройство ввода с выдачей событий по уровням. 
-   5. реализовать в таймере паузу и обработку переполнения millis()
+ 
+ 4. Реализовать аналоговое устройство ввода с выдачей событий по уровням. 
+
+ 5. реализовать в таймере паузу и обработку переполнения millis()
    6. Сделать возможность вешать на устройство ввода определенное событие взамен штатного
    7. Реализовать клавишу с событиями: kbPressed, kbDoublePressed, kbLongPressed  OK 070210
    8. Перевести EInputDevice на использование таймера вместо обращения к millis() ОК
@@ -23,9 +25,7 @@
    11. Сделать объект типа Candle  ОК
    12. Сделать протоколирование событий включения
    13. Сделать отправление событий при переключении исполнительных устройств
-   14. Сделать запрос-ответ состояния различных устройств
-	15. Изменить по модулям обработку TurnOn TurnOff
-	16. Изменить по модулям обработку TellMe
+ 	16. Изменить по модулям обработку TellMe
  */
 
 
@@ -222,11 +222,11 @@ public:
  //   static uint8_t nextID; //счетчик идентификаторов для класса
    EObject();
    oid_t init();
-   virtual int handleEvent(Event& tmpEvent);
+   virtual int handleEvent(Event& tmpEvent); // 1 if event handled, 0 if not
    virtual void idle(){};
 //		virtual void setEvent(uint8_t evtype, uint16_t dest, int16_t data);   //заложить событие
    int eventForMe(Event& tmpEvent);
-   virtual void getName(char* result);
+   virtual void getName(char* result);// print name of the object
    oid_t getID() {return this->ID;};
 private:
    oid_t ID;       //идентификатор объекта
@@ -290,7 +290,7 @@ public:
          oid_t destinationID=0,   //идентификатор получателя, если есть
          oid_t sourceID=0,        //идентификатор создателя
          int16_t eventData=0);       //дополнительные данные события
-   virtual int parseEvent(){return 1;};   //анализ события, необходимые действия
+   virtual int parseEvent(){return 0;};   //анализ события, необходимые действия 1 - событие обработано, 0 - нет
    int handleEvent();            //передать подчиненным на обработку
    void idle();                  //стандартный цикл
    int addObject(EObject* newObject); //добавление нового объекта, возвращает успех добавления TRUE/FALSE
@@ -304,7 +304,7 @@ private:
 
 
 
-
+/*
 class DebounceButton {
   public:
  //   DebounceButton();
@@ -316,43 +316,12 @@ private:
     static byte buttonId;
     byte id;
 };
-
+*/
 
 
 
 #endif
 
-//    Button(byte type);
-//    void assign(byte pin);
-//    byte check();
-//    byte check(byte mode_v);
-	// Setters
-//    void setMode(byte type_v);
-//    void setTimer(unsigned int t);
-//    void setRefresh(unsigned int r);
-//      virtual int getEvent(Event tmpEvent);
-//      virtual void idle();
-//   private:
-//    byte mode;  //режим работы кнопки
-//    unsigned long hold_timer;
-//    unsigned long refresh_timer;
-//    unsigned int hold_level;
-//    unsigned int hold_refresh;
-//    bool previous;
-
-
-//======================= EButton
-//#define OneShot 0
-//#define Memory 1
-//#define Timer 2
-//#define OneShotTimer 3
-//#define MemoryTimer 4
-
-//#define ON 1
-//#define OFF 0
-//#define Pressed 2
-//#define Released 3
-//#define Hold 4
 
 
 
