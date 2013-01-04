@@ -1,4 +1,4 @@
-﻿#ifndef EThermo_h
+#ifndef EThermo_h
 #define EThermo_h
 
 #include "Events.h"

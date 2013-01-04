@@ -1,4 +1,4 @@
-﻿#include "EThermo.h"
+#include "EThermo.h"
 
 oid_t EThermo::init(uint16_t timeout)
 {
