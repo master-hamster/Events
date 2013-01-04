@@ -1,9 +1,9 @@
-#include "EThermo.h"
+п»ї#include "EThermo.h"
 
 oid_t EThermo::init(uint16_t timeout)
 {
    oid_t tmp = EObject::init();
-   //Инициализация термометра с заданным интервалом и автозапуском
+   //РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С‚РµСЂРјРѕРјРµС‚СЂР° СЃ Р·Р°РґР°РЅРЅС‹Рј РёРЅС‚РµСЂРІР°Р»РѕРј Рё Р°РІС‚РѕР·Р°РїСѓСЃРєРѕРј
    if (timeout == 0) {
       active = 0;
       timer.init(ETHERMO_THERMOMEASUREDELAY,true);
@@ -27,8 +27,6 @@ float EThermo::getTemperature()
 
 
 int EThermo::handleEvent(Event& tmpEvent)
-//Получение температуры
-//Неоходимо получить температуру и зафиксировать ее во внутреннем поле
 {
    //handle information request - clear event and create new event with data
    if (eventForMe(tmpEvent)) {
@@ -53,12 +51,12 @@ int EThermo::handleEvent(Event& tmpEvent)
 
 void EThermo::idle()
 {
-   //если задержка истекла - получить и запомнить температуру
+   //timeout expired, let's measure temperature
    if (timer.expired()) {
       doMeasure();   
 #ifdef DEBUG_ETHERMO  
- //     Serial.print("T=");
- //     Serial.println(temperature);   
+      Serial.print("T=");
+      Serial.println(temperature);   
 #endif 
    } else {
 #ifdef DEBUG_ETHERMO  
@@ -89,7 +87,7 @@ oid_t EThermoDallas1820::init(DallasTemperature* dt, uint16_t timeout, uint8_t p
       Serial.println("Unable to find address for Device 0"); 
    } else {
 #ifdef DEBUG_ETHERMO      
-// установить точность!!!!!
+// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РѕС‡РЅРѕСЃС‚СЊ!!!!!
       dallas1820->setResolution(insideThermometer, precision);
       Serial.println("Dallas inited.");
 #endif      
@@ -98,7 +96,7 @@ oid_t EThermoDallas1820::init(DallasTemperature* dt, uint16_t timeout, uint8_t p
  };   
 
 void EThermoDallas1820::doMeasure()
-//Получить температуру
+//Get temperature from sensor to internal variable
 {
    dallas1820->requestTemperatures();
    temperature = dallas1820->getTempC(insideThermometer);

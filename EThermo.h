@@ -1,4 +1,4 @@
-#ifndef EThermo_h
+п»ї#ifndef EThermo_h
 #define EThermo_h
 
 #include "Events.h"
@@ -19,7 +19,7 @@ public:
 protected:
    void tellThemperature(); // rise event with temperature
    float temperature;
-   uint8_t active; //ждет события или генерирует его по таймеру
+   uint8_t active; //Р¶РґРµС‚ СЃРѕР±С‹С‚РёСЏ РёР»Рё РіРµРЅРµСЂРёСЂСѓРµС‚ РµРіРѕ РїРѕ С‚Р°Р№РјРµСЂСѓ
    Timer timer; 
 } ;
 
