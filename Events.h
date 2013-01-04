@@ -55,6 +55,8 @@
 //#define DEBUG_ELED
 //#define DEBUG_ECANDLE
 //#define DEBUG_ECANDLE1
+//#define DEBUG_ETHERMO
+
 
 //включение выдачи ошибочных сообщений на консоль, любое значение - идет выдача
 #define DEBUG_ERROR 
