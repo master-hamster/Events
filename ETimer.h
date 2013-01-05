@@ -2,30 +2,30 @@
 #define ETimer_h
 #include "Events.h"
 
-//таймер, работающий по событиям
-//основные действия:  
-//по evTimerStart сброситься и начать работать
-//по evTimerStop перестать работать
-//через заданное время, если работа разрешена, бросить вверх событие 
-//если таймер не перезапускается, то 
+//С‚Р°Р№РјРµСЂ, СЂР°Р±РѕС‚Р°СЋС‰РёР№ РїРѕ СЃРѕР±С‹С‚РёСЏРј
+//РѕСЃРЅРѕРІРЅС‹Рµ РґРµР№СЃС‚РІРёСЏ:  
+//РїРѕ evTimerStart СЃР±СЂРѕСЃРёС‚СЊСЃСЏ Рё РЅР°С‡Р°С‚СЊ СЂР°Р±РѕС‚Р°С‚СЊ
+//РїРѕ evTimerStop РїРµСЂРµСЃС‚Р°С‚СЊ СЂР°Р±РѕС‚Р°С‚СЊ
+//С‡РµСЂРµР· Р·Р°РґР°РЅРЅРѕРµ РІСЂРµРјСЏ, РµСЃР»Рё СЂР°Р±РѕС‚Р° СЂР°Р·СЂРµС€РµРЅР°, Р±СЂРѕСЃРёС‚СЊ РІРІРµСЂС… СЃРѕР±С‹С‚РёРµ 
+//РµСЃР»Рё С‚Р°Р№РјРµСЂ РЅРµ РїРµСЂРµР·Р°РїСѓСЃРєР°РµС‚СЃСЏ, С‚Рѕ 
 class ETimer : public EObject {
 public:
-   ETimer();                                          //инициализация
-      //аналогично с заданным интервалом и ID
-   ETimer(unsigned long interval);        
-      //задать интервал, автосброс, событие
-   oid_t init(unsigned long interval, event_t evType=evTimerExpired, 
-                        bool autorestart=false); 
-   virtual int handleEvent(Event& tmpEvent);
-   virtual void getName(char* result);
-   virtual void idle();
-   void start(); //запуск таймера
-   void stop(); //остановка таймера
+	ETimer();														//РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
+		//Р°РЅР°Р»РѕРіРёС‡РЅРѕ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРЅС‚РµСЂРІР°Р»РѕРј Рё ID
+	ETimer(unsigned long interval);		  
+		//Р·Р°РґР°С‚СЊ РёРЅС‚РµСЂРІР°Р», Р°РІС‚РѕСЃР±СЂРѕСЃ, СЃРѕР±С‹С‚РёРµ
+	oid_t init(unsigned long interval, event_t evType=evTimerExpired, 
+								bool autorestart=false); 
+	virtual int handleEvent(Event& tmpEvent);
+	virtual void getName(char* result);
+	virtual void idle();
+	void start(); //Р·Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР°
+	void stop(); //РѕСЃС‚Р°РЅРѕРІРєР° С‚Р°Р№РјРµСЂР°
 private:
-   Timer timer;
-   bool stoped;  //таймер остановлен
-   bool expired;  //таймер уже сработал
-   bool autorestart;
+	Timer timer;
+	bool stoped;  //С‚Р°Р№РјРµСЂ РѕСЃС‚Р°РЅРѕРІР»РµРЅ
+	bool expired;  //С‚Р°Р№РјРµСЂ СѓР¶Рµ СЃСЂР°Р±РѕС‚Р°Р»
+	bool autorestart;
 };
 
 

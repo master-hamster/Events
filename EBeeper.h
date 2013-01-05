@@ -3,25 +3,25 @@
 #include "Events.h"
 
 /*
-пищалка. предназначена для подключения пьезоэлектрической пищалки
+РїРёС‰Р°Р»РєР°. РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РїСЊРµР·РѕСЌР»РµРєС‚СЂРёС‡РµСЃРєРѕР№ РїРёС‰Р°Р»РєРё
 
 */
 class EBeeper : public EOutputDevice {
 public:
-   EBeeper();
-   oid_t init(port_t port, uint16_t time=EBEEPER_DEFAULT_BEEP_TIME,
-                bool reverse=false);//инициировать с портом и временем писка
-   oid_t initReverse(port_t port, uint16_t time=EBEEPER_DEFAULT_BEEP_TIME); //то же самое, но с реверсивным выходом
-   void setBeepTime(uint16_t time);                  //задать время писка
-   virtual int handleEvent(Event& tmpEvent);         //обработчик событий
-   virtual void idle();                              //стандатный цикл
-   void beep();                                      //бипнуть
-   virtual void getName(char* result);               //выдать имя объекта
+	EBeeper();
+	oid_t init(port_t port, uint16_t time=EBEEPER_DEFAULT_BEEP_TIME,
+					 bool reverse=false);//РёРЅРёС†РёРёСЂРѕРІР°С‚СЊ СЃ РїРѕСЂС‚РѕРј Рё РІСЂРµРјРµРЅРµРј РїРёСЃРєР°
+	oid_t initReverse(port_t port, uint16_t time=EBEEPER_DEFAULT_BEEP_TIME); //С‚Рѕ Р¶Рµ СЃР°РјРѕРµ, РЅРѕ СЃ СЂРµРІРµСЂСЃРёРІРЅС‹Рј РІС‹С…РѕРґРѕРј
+	void setBeepTime(uint16_t time);						//Р·Р°РґР°С‚СЊ РІСЂРµРјСЏ РїРёСЃРєР°
+	virtual int handleEvent(Event& tmpEvent);			//РѕР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёР№
+	virtual void idle();										//СЃС‚Р°РЅРґР°С‚РЅС‹Р№ С†РёРєР»
+	void beep();												  //Р±РёРїРЅСѓС‚СЊ
+	virtual void getName(char* result);					//РІС‹РґР°С‚СЊ РёРјСЏ РѕР±СЉРµРєС‚Р°
 protected:
-   void on();
-   void off();
+	void on();
+	void off();
 private:
-   Timer beepTimer;
+	Timer beepTimer;
 };
 
 #endif

@@ -4,74 +4,74 @@
 
 EBeeper::EBeeper() : EOutputDevice()
 {
-   beepTimer.init(EBEEPER_DEFAULT_BEEP_TIME,false);
+	beepTimer.init(EBEEPER_DEFAULT_BEEP_TIME,false);
 };
 
 oid_t EBeeper::init(port_t port, uint16_t time, bool reverse)
 {
-   oid_t result;
-   result = EOutputDevice::init(port);
-   beepTimer.init(time,false);
-   this->reverseOn = reverse;
-   return result;
+	oid_t result;
+	result = EOutputDevice::init(port);
+	beepTimer.init(time,false);
+	this->reverseOn = reverse;
+	return result;
 };
 
 oid_t EBeeper::initReverse(port_t port, uint16_t time)
 {
-   return EBeeper::init(port, time,true);
+	return EBeeper::init(port, time,true);
 };
 
 
 int EBeeper::handleEvent(Event& tmpEvent)
-//данная процедура должна поймать команду на включение
-//и отработать ее переходов в режим ON.
-//вторым этапом пойдет обработка события выключени&????????????????????????????????
+//РґР°РЅРЅР°СЏ РїСЂРѕС†РµРґСѓСЂР° РґРѕР»Р¶РЅР° РїРѕР№РјР°С‚СЊ РєРѕРјР°РЅРґСѓ РЅР° РІРєР»СЋС‡РµРЅРёРµ
+//Рё РѕС‚СЂР°Р±РѕС‚Р°С‚СЊ РµРµ РїРµСЂРµС…РѕРґРѕРІ РІ СЂРµР¶РёРј ON.
+//РІС‚РѕСЂС‹Рј СЌС‚Р°РїРѕРј РїРѕР№РґРµС‚ РѕР±СЂР°Р±РѕС‚РєР° СЃРѕР±С‹С‚РёСЏ РІС‹РєР»СЋС‡РµРЅРё&????????????????????????????????
 {
-   EOutputDevice::handleEvent(tmpEvent);
-   //-----????????????????????????????????????????????????????????????????????????
+	EOutputDevice::handleEvent(tmpEvent);
+	//-----????????????????????????????????????????????????????????????????????????
 #ifdef DEBUG_EBEEPER
-   Serial.print("MyBeeper::handleEvent eventType=");
-   Serial.println(tmpEvent.eventType);
+	Serial.print("MyBeeper::handleEvent eventType=");
+	Serial.println(tmpEvent.eventType);
 #endif
 };
 
 void EBeeper::idle()
-//по умолчанию отслеживаются только таймаут на выключение
+//РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РѕС‚СЃР»РµР¶РёРІР°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ С‚Р°Р№РјР°СѓС‚ РЅР° РІС‹РєР»СЋС‡РµРЅРёРµ
 {
-   if ( beepTimer.expired()) {
-         off();
-      }
+	if ( beepTimer.expired()) {
+			off();
+		}
 };
 
 void EBeeper::getName(char* result)
 {
-   sprintf(result,"EBeeper: ID=%d port=%d beepTime:%d",getID(),this->port,this->beepTimer.getInterval());
+	sprintf(result,"EBeeper: ID=%d port=%d beepTime:%d",getID(),this->port,this->beepTimer.getInterval());
 };
 
 void EBeeper::setBeepTime(uint16_t time)
 {
-   this->beepTimer.setInterval(time);
+	this->beepTimer.setInterval(time);
 };
 
 void EBeeper::beep()
 {
 #ifdef DEBUG_EBEEPER
-   Serial.println("MyBeeper::beep BEEP!");
+	Serial.println("MyBeeper::beep BEEP!");
 #endif
-   on();
+	on();
 }
 
 void EBeeper::on()
-//включение устройства с сохранением соответствующих полей
+//РІРєР»СЋС‡РµРЅРёРµ СѓСЃС‚СЂРѕР№СЃС‚РІР° СЃ СЃРѕС…СЂР°РЅРµРЅРёРµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… РїРѕР»РµР№
 {
-   beepTimer.start();
-   EOutputDevice::on();
+	beepTimer.start();
+	EOutputDevice::on();
 };
 
 void EBeeper::off()
-//выключение устройства с сохранением соответствующих полей
+//РІС‹РєР»СЋС‡РµРЅРёРµ СѓСЃС‚СЂРѕР№СЃС‚РІР° СЃ СЃРѕС…СЂР°РЅРµРЅРёРµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… РїРѕР»РµР№
 {
-   EOutputDevice::off();
+	EOutputDevice::off();
 };
 
 

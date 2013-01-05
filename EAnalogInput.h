@@ -2,28 +2,28 @@
 #define EAnalogInput_h
 #include "Events.h"
 /*
-Аналоговый ввод. Через заданное при инициализации время генерируется
-событие AIData в поле DATA которого запихнуто текущее значение,
-считанное из порта. Дребезг не обрабатывается
+РђРЅР°Р»РѕРіРѕРІС‹Р№ РІРІРѕРґ. Р§РµСЂРµР· Р·Р°РґР°РЅРЅРѕРµ РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РІСЂРµРјСЏ РіРµРЅРµСЂРёСЂСѓРµС‚СЃСЏ
+СЃРѕР±С‹С‚РёРµ AIData РІ РїРѕР»Рµ DATA РєРѕС‚РѕСЂРѕРіРѕ Р·Р°РїРёС…РЅСѓС‚Рѕ С‚РµРєСѓС‰РµРµ Р·РЅР°С‡РµРЅРёРµ,
+СЃС‡РёС‚Р°РЅРЅРѕРµ РёР· РїРѕСЂС‚Р°. Р”СЂРµР±РµР·Рі РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ
 */
 class EAnalogInput : public EDevice {
-   public:
-      //      инициация с ID объекта и временем передачи в mS
-      oid_t init(port_t port, uint16_t refreshTime=5000);
-      virtual void idle();
-      virtual int handleEvent(Event& tmpEvent);
-      virtual void getName(char* result);
-		virtual int getData();
-   protected:
-      int currentData; //последние считанные данные
-      Timer refreshTimer;//таймер для отправления информации
-//      InputMode inputMode; //в каком режиме работает устройство
-//      bool reverseOn; //работает с инвертированием ввода
-//      bool debouncingStarted; //запущена обработка дребезга
-//      int16_t currentState; //текущее состояние
-//      int16_t lastState; //последнее состояние
-//      unsigned long lastTime; //время последнего изменения состояни
-};   
+public:
+	//		РёРЅРёС†РёР°С†РёСЏ СЃ ID РѕР±СЉРµРєС‚Р° Рё РІСЂРµРјРµРЅРµРј РїРµСЂРµРґР°С‡Рё РІ mS
+	oid_t init(port_t port, uint16_t refreshTime=5000);
+	virtual void idle();
+	virtual int handleEvent(Event& tmpEvent);
+	virtual void getName(char* result);
+	virtual int getData();
+protected:
+	int currentData; //РїРѕСЃР»РµРґРЅРёРµ СЃС‡РёС‚Р°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ
+	Timer refreshTimer;//С‚Р°Р№РјРµСЂ РґР»СЏ РѕС‚РїСЂР°РІР»РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё
+//	InputMode inputMode; //РІ РєР°РєРѕРј СЂРµР¶РёРјРµ СЂР°Р±РѕС‚Р°РµС‚ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ
+//	bool reverseOn; //СЂР°Р±РѕС‚Р°РµС‚ СЃ РёРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёРµРј РІРІРѕРґР°
+//	bool debouncingStarted; //Р·Р°РїСѓС‰РµРЅР° РѕР±СЂР°Р±РѕС‚РєР° РґСЂРµР±РµР·РіР°
+//	int16_t currentState; //С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+//	int16_t lastState; //РїРѕСЃР»РµРґРЅРµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+//	unsigned long lastTime; //РІСЂРµРјСЏ РїРѕСЃР»РµРґРЅРµРіРѕ РёР·РјРµРЅРµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРё
+};
 
 
 #endif

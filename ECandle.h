@@ -2,52 +2,52 @@
 #ifndef ECandle_h
 #include "Events.h"
 
-//светодиод с возможностью изменения яркости
-//и эффектом свечи
+//СЃРІРµС‚РѕРґРёРѕРґ СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ РёР·РјРµРЅРµРЅРёСЏ СЏСЂРєРѕСЃС‚Рё
+//Рё СЌС„С„РµРєС‚РѕРј СЃРІРµС‡Рё
 class ECandle : public EOutputDevice {
-public:  
+public:
  //  LEDCandle(int value);
-   oid_t init(port_t ledPort,     //порт
-         uint16_t fadeinTimeout=5,  //таймаут разгорания
-         uint16_t fadeoutTimeout=15, //таймаут затухания   
-         uint8_t maxLevel=CANDLEMAXIMALLIGHTLEVEL, //минимальный уровень
-         uint8_t minLevel=CANDLEMINIMALLIGHTLEVEL);//максимальный уровень
-   virtual void getName(char* result);
+	oid_t init(port_t ledPort,	  //РїРѕСЂС‚
+	uint16_t fadeinTimeout=5,  //С‚Р°Р№РјР°СѓС‚ СЂР°Р·РіРѕСЂР°РЅРёСЏ
+	uint16_t fadeoutTimeout=15, //С‚Р°Р№РјР°СѓС‚ Р·Р°С‚СѓС…Р°РЅРёСЏ
+	uint8_t maxLevel=CANDLEMAXIMALLIGHTLEVEL, //РјРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ
+	uint8_t minLevel=CANDLEMINIMALLIGHTLEVEL);//РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ
+	virtual void getName(char* result);
 //  void gracefullyOn(){};
 //  void gracefullyOff(){};
-   virtual int handleEvent(Event& tmpEvent);
-   void idle();  
+	virtual int handleEvent(Event& tmpEvent);
+	void idle();
 //  void liteFire(){};
 //  void setDelta(int value){};
-   static float fscale( float originalMin, float originalMax,  //расчет уровня сигнала
-                     float newBegin, float newEnd, 
-                     float inputValue, float curve);
-   static int calcLightLevel(long startTime,long timeOut, //
-                     int minLevel, int maxLevel);
+	static float fscale( float originalMin, float originalMax,  //СЂР°СЃС‡РµС‚ СѓСЂРѕРІРЅСЏ СЃРёРіРЅР°Р»Р°
+	float newBegin, float newEnd,
+	float inputValue, float curve);
+	static int calcLightLevel(long startTime,long timeOut, //
+	int minLevel, int maxLevel);
 private:
-   void setLevel(int value);
-   void on();
-   void off();   
-   void fadeIn();   
-   void fadeOut();   
-   void startFlickering();   
-   void setState(CandleState newState);
+	void setLevel(int value);
+	void on();
+	void off();
+	void fadeIn();
+	void fadeOut();
+	void startFlickering();
+	void setState(CandleState newState);
 
-   void setMaxLevel(int value);
-   void setMinLevel(int value);
+	void setMaxLevel(int value);
+	void setMinLevel(int value);
 //  int getMaxLevel(){};
 //  int getMinLevel(){};
 //  int getCurrentLevel(){};
 
-   uint8_t currentLevel;     // 0 - candle is off
-   CandleState currentState;     // текущее состояние
-   uint8_t currentMaxLevel;  //максимальный уровень свечи, 255 по умолчанию
-   uint8_t currentMinLevel;  //минимальный уровень свечи, 4 по умолчанию
-   Timer fadeinTimer;  //таймер разгорания
-   Timer fadeoutTimer;  //таймер разгорания
-   unsigned long fadeinTimeout; // время потухания/загорания 
-   unsigned long fadeoutTimeout; // время потухания/загорания 
-   unsigned long timeOfLastEvent;    //время последнего включения/выключения
+	uint8_t currentLevel;				// 0 - candle is off
+	CandleState currentState;			// С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+	uint8_t currentMaxLevel;			//РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ СЃРІРµС‡Рё, 255 РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+	uint8_t currentMinLevel;			//РјРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ СЃРІРµС‡Рё, 4 РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+	Timer fadeinTimer;					//С‚Р°Р№РјРµСЂ СЂР°Р·РіРѕСЂР°РЅРёСЏ
+	Timer fadeoutTimer;					//С‚Р°Р№РјРµСЂ СЂР°Р·РіРѕСЂР°РЅРёСЏ
+	unsigned long fadeinTimeout;		// РІСЂРµРјСЏ РїРѕС‚СѓС…Р°РЅРёСЏ
+	unsigned long fadeoutTimeout;		// РІСЂРµРјСЏ Р·Р°РіРѕСЂР°РЅРёСЏ
+	unsigned long timeOfLastEvent;	 //РІСЂРµРјСЏ РїРѕСЃР»РµРґРЅРµРіРѕ РІРєР»СЋС‡РµРЅРёСЏ/РІС‹РєР»СЋС‡РµРЅРёСЏ
 };
 
 

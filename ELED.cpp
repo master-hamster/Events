@@ -2,17 +2,17 @@
 
 
 //==================================== class ELED =========================
-//конструктор
+//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 ELED::ELED() : EOutputDevice()
 {
 };
 
 oid_t ELED::init(port_t ledPort)
 {
-   //сохраняем правильные состояни
+   //СЃРѕС…СЂР°РЅСЏРµРј РїСЂР°РІРёР»СЊРЅС‹Рµ СЃРѕСЃС‚РѕСЏРЅРё
    this->isOn=false;
    this->port=ledPort;
-   //инициируем порт в выключенном режиме
+   //РёРЅРёС†РёРёСЂСѓРµРј РїРѕСЂС‚ РІ РІС‹РєР»СЋС‡РµРЅРЅРѕРј СЂРµР¶РёРјРµ
    pinMode(this->port,OUTPUT);
    digitalWrite(this->port,LOW);
    return getID();
@@ -42,7 +42,7 @@ int ELED::handleEvent(Event& tmpEvent)
    }
 };
 
-//включаем свет
+//РІРєР»СЋС‡Р°РµРј СЃРІРµС‚
 void ELED::on(void){
 #ifdef DEBUG_ELED
    Serial.print("ELED::on():ON ID=");
@@ -53,13 +53,13 @@ void ELED::on(void){
    digitalWrite(this->port,HIGH);
 };
 
-//выключаем свет
+//РІС‹РєР»СЋС‡Р°РµРј СЃРІРµС‚
 void ELED::off(void){
    this->isOn=false;
    digitalWrite(this->port,LOW);
 };
 
-//переключаем свет в зависимости от состояни
+//РїРµСЂРµРєР»СЋС‡Р°РµРј СЃРІРµС‚ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЃРѕСЃС‚РѕСЏРЅРё
 void ELED::toggle(void){
    isOn ? off() : on();
 };

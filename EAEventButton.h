@@ -4,19 +4,19 @@
 #include "EAButton.h"
 
 
-//объект аналогичен EAButton, за исключением того, что генерируются 
-//заранее заданные события
-class EAEventButton : public EAButton { //!!!???не работает пока
-   public:
-      oid_t init(port_t port);
-      uint8_t addLevel(int newLevel,uint16_t eventType, uint16_t eventDest=0);
-      virtual void idle();
-      virtual void getName(char* result);
-//		virtual int getData();
-   private:
-      int events[ABUTTONMAXLEVELS];
-      int destinations[ABUTTONMAXLEVELS];
-};   
+//РѕР±СЉРµРєС‚ Р°РЅР°Р»РѕРіРёС‡РµРЅ EAButton, Р·Р° РёСЃРєР»СЋС‡РµРЅРёРµРј С‚РѕРіРѕ, С‡С‚Рѕ РіРµРЅРµСЂРёСЂСѓСЋС‚СЃСЏ 
+//Р·Р°СЂР°РЅРµРµ Р·Р°РґР°РЅРЅС‹Рµ СЃРѕР±С‹С‚РёСЏ
+class EAEventButton : public EAButton { //!!!???РЅРµ СЂР°Р±РѕС‚Р°РµС‚ РїРѕРєР°
+public:
+	oid_t init(port_t port);
+	uint8_t addLevel(int newLevel,uint16_t eventType, uint16_t eventDest=0);
+	virtual void idle();
+	virtual void getName(char* result);
+//	virtual int getData();
+private:
+	int events[ABUTTONMAXLEVELS];
+	int destinations[ABUTTONMAXLEVELS];
+};
 
 
 #endif

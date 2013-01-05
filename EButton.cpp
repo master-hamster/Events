@@ -1,6 +1,6 @@
 //#include "Event.h"
 #include "EButton.h"
-//2010-02-25 âñå ïðîâåðåíî ÂÙ
+//2010-02-25 Ð²ÑÐµ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐµÐ½Ð¾ Ð’Ð©
 
 
 //================================== class EButton ===========================
@@ -9,109 +9,109 @@ EButton::EButton(): EInputDevice()
 };
 
 oid_t EButton::init(port_t port, bool reverseOn, bool pullUp)
-//Èíèöèàëèçàöèÿ c ó÷åòîì ôëàãà
+//Ð˜Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ c ÑƒÑ‡ÐµÑ‚Ð¾Ð¼ Ñ„Ð»Ð°Ð³Ð°
 {
-   oid_t result = EInputDevice::init(port, imUpOnly);
+	oid_t result = EInputDevice::init(port, imUpOnly);
 
 #ifdef DEBUG_EBUTTON
-   Serial.println("EButton::init_full()");
+	Serial.println("EButton::init_full()");
 #endif
-   debounceTimer.init(DEBOUNCEDELAY,false);
-   doublePressTimer.init(DOUBLEPRESSDELAY,false);
-   holdTimer.init(KEYHOLDDELAY,false);
-   this->reverseOn=reverseOn;        //çàäàäèì ðåæèì ðåâåðñà
-   pinMode(this->port,INPUT);       // ïîñëå ýòîãî çàïðîãðàììèðóåì ïîðò â ðåæèì ÷òåíèÿ
-   int tmp = this->port;
-   if (pullUp) {
-      digitalWrite(this->port, HIGH);
+	debounceTimer.init(DEBOUNCEDELAY,false);
+	doublePressTimer.init(DOUBLEPRESSDELAY,false);
+	holdTimer.init(KEYHOLDDELAY,false);
+	this->reverseOn=reverseOn;		  //Ð·Ð°Ð´Ð°Ð´Ð¸Ð¼ Ñ€ÐµÐ¶Ð¸Ð¼ Ñ€ÐµÐ²ÐµÑ€ÑÐ°
+	pinMode(this->port,INPUT);		 // Ð¿Ð¾ÑÐ»Ðµ ÑÑ‚Ð¾Ð³Ð¾ Ð·Ð°Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð¸Ñ€ÑƒÐµÐ¼ Ð¿Ð¾Ñ€Ñ‚ Ð² Ñ€ÐµÐ¶Ð¸Ð¼ Ñ‡Ñ‚ÐµÐ½Ð¸Ñ
+	int tmp = this->port;
+	if (pullUp) {
+		digitalWrite(this->port, HIGH);
 #ifdef DEBUG_EBUTTON
-      Serial.print("EButton::init PullUp port:");
-      Serial.println(tmp);
+		Serial.print("EButton::init PullUp port:");
+		Serial.println(tmp);
 #endif
-   }; 
-   getData();                           // ñ÷èòàåì äàííûå ñ ó÷åòîì ôëàãà ðåâåðñà
-   this->lastState=this->currentState;
-   return result;
+	}; 
+	getData();									// ÑÑ‡Ð¸Ñ‚Ð°ÐµÐ¼ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ñ ÑƒÑ‡ÐµÑ‚Ð¾Ð¼ Ñ„Ð»Ð°Ð³Ð° Ñ€ÐµÐ²ÐµÑ€ÑÐ°
+	this->lastState=this->currentState;
+	return result;
 };
 
 /*
 int EButton::handleEvent(Event& tmpEvent)
 {
-   EObject::handleEvent(tmpEvent);
+	EObject::handleEvent(tmpEvent);
 };
 */
 
 void EButton::getName(char* result)
 {
-   sprintf(result,"EButton: ID=%d port=%d ",getID(),this->port);
+	sprintf(result,"EButton: ID=%d port=%d ",getID(),this->port);
 };
 
 void EButton::idle()
- //ïðîöåäóðà ïðîâåðêè òåêóùåãî ñîñòîÿíèÿ.
+ //Ð¿Ñ€Ð¾Ñ†ÐµÐ´ÑƒÑ€Ð° Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ¸ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ.
  {
-   uint16_t eventType = evNone;
+	uint16_t eventType = evNone;
 
-   if ( debouncingStarted ) {
-      if (debounceTimer.expired()) {
-         //çàêîí÷èëàñü çàäåðæêà äðåáåçãà - âðåìÿ ñ÷èòàòü ïîêàçàíèÿ óñòðîéñòâà
-         this->debouncingStarted=false;
-         getData();
-         if ( this->currentState!=this->lastState) {
-            //äàííûå èçìåíèëèñü, òåïåðü ñëåäóåò ïîíÿòü, íå ïîñëàòü ëè ñîáûòèå?
+	if ( debouncingStarted ) {
+		if (debounceTimer.expired()) {
+			//Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð°ÑÑŒ Ð·Ð°Ð´ÐµÑ€Ð¶ÐºÐ° Ð´Ñ€ÐµÐ±ÐµÐ·Ð³Ð° - Ð²Ñ€ÐµÐ¼Ñ ÑÑ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ Ð¿Ð¾ÐºÐ°Ð·Ð°Ð½Ð¸Ñ ÑƒÑÑ‚Ñ€Ð¾Ð¹ÑÑ‚Ð²Ð°
+			this->debouncingStarted=false;
+			getData();
+			if ( this->currentState!=this->lastState) {
+				//Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ð»Ð¸ÑÑŒ, Ñ‚ÐµÐ¿ÐµÑ€ÑŒ ÑÐ»ÐµÐ´ÑƒÐµÑ‚ Ð¿Ð¾Ð½ÑÑ‚ÑŒ, Ð½Ðµ Ð¿Ð¾ÑÐ»Ð°Ñ‚ÑŒ Ð»Ð¸ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ?
 #ifdef DEBUG_EBUTTON
-            int tmpID = this->getID();
-            Serial.print("EButton::idle() ID=");
-            Serial.print(tmpID);
-            Serial.print(" Input changed!! currentState=");
-            Serial.print(this->currentState);
-            Serial.print("   lastState=");
-            Serial.print(this->lastState);
-            Serial.println("");
+				int tmpID = this->getID();
+				Serial.print("EButton::idle() ID=");
+				Serial.print(tmpID);
+				Serial.print(" Input changed!! currentState=");
+				Serial.print(this->currentState);
+				Serial.print("	lastState=");
+				Serial.print(this->lastState);
+				Serial.println("");
 #endif
-            if ( this->currentState==0) {
-               //äàííûå èìåþò íèçêèé óðîâåíü -> íóæíî ñôîðìèðîâàòü ñîáûòèå äëÿ íåêîòîðûõ óñëîâèé
-               if (doublePressTimer.expired()) {
-                  //òàéìåð äâîéíîãî íàæàòèÿ ïðîñðî÷åí, çàïóñòèì ñîáûòèå íàæàòèÿ
-                  //è çàîäíî ïåðåçàïóñòèì òàéìåð äâîéíîãî íàæàòèÿ
-                  if (holdTimer.expired()) {
-                     eventType=evKeyHold;
-               	  } else {
-                     eventType=evKeyPressed;
-                  }   
-                  doublePressTimer.start();
-               } else {
-                  eventType=evKeyDoublePressed;
-               }
-            } 
-            //òåïåðü åñëè çàäàí êàêîé-òî òèï ñîáûòèÿ - íàäî ïîäíèìàòü ñîáûòèå
-            if ( eventType!=evNone) {
+				if ( this->currentState==0) {
+					//Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð¼ÐµÑŽÑ‚ Ð½Ð¸Ð·ÐºÐ¸Ð¹ ÑƒÑ€Ð¾Ð²ÐµÐ½ÑŒ -> Ð½ÑƒÐ¶Ð½Ð¾ ÑÑ„Ð¾Ñ€Ð¼Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ Ð´Ð»Ñ Ð½ÐµÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ñ… ÑƒÑÐ»Ð¾Ð²Ð¸Ð¹
+					if (doublePressTimer.expired()) {
+						//Ñ‚Ð°Ð¹Ð¼ÐµÑ€ Ð´Ð²Ð¾Ð¹Ð½Ð¾Ð³Ð¾ Ð½Ð°Ð¶Ð°Ñ‚Ð¸Ñ Ð¿Ñ€Ð¾ÑÑ€Ð¾Ñ‡ÐµÐ½, Ð·Ð°Ð¿ÑƒÑÑ‚Ð¸Ð¼ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ Ð½Ð°Ð¶Ð°Ñ‚Ð¸Ñ
+						//Ð¸ Ð·Ð°Ð¾Ð´Ð½Ð¾ Ð¿ÐµÑ€ÐµÐ·Ð°Ð¿ÑƒÑÑ‚Ð¸Ð¼ Ñ‚Ð°Ð¹Ð¼ÐµÑ€ Ð´Ð²Ð¾Ð¹Ð½Ð¾Ð³Ð¾ Ð½Ð°Ð¶Ð°Ñ‚Ð¸Ñ
+						if (holdTimer.expired()) {
+							eventType=evKeyHold;
+						  } else {
+							eventType=evKeyPressed;
+						}	
+						doublePressTimer.start();
+					} else {
+						eventType=evKeyDoublePressed;
+					}
+				} 
+				//Ñ‚ÐµÐ¿ÐµÑ€ÑŒ ÐµÑÐ»Ð¸ Ð·Ð°Ð´Ð°Ð½ ÐºÐ°ÐºÐ¾Ð¹-Ñ‚Ð¾ Ñ‚Ð¸Ð¿ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ñ - Ð½Ð°Ð´Ð¾ Ð¿Ð¾Ð´Ð½Ð¸Ð¼Ð°Ñ‚ÑŒ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ
+				if ( eventType!=evNone) {
 #ifdef DEBUG_EBUTTON
-               Serial.print("EButton::idle: eventType=");
-               Serial.println(eventType);
+					Serial.print("EButton::idle: eventType=");
+					Serial.println(eventType);
 #endif
-               eventStack.pushEvent(eventType,this->getID(),0,this->currentState);
-            }
-            else {
-               holdTimer.start();
-            };
-            //òåïåðü ñîõðàíèì âðåìÿ è çíà÷åíèå ïîñëåäíåãî ñîñòîÿíè
-            this->lastState=this->currentState;
-         }
-      }
-   }
-   else {
-      //åñëè ìû çäåñü - òî îáðàáîòêà äðåáåçãà íå èäåò, íàäî ïîñìîòðåòü ñîñòîÿíèå
-      //ââîäà è äåéñòîâàòü ñîîòâåòñòâåííî
-      getData();
-      if ( this->currentState!=this->lastState) {
+					eventStack.pushEvent(eventType,this->getID(),0,this->currentState);
+				}
+				else {
+					holdTimer.start();
+				};
+				//Ñ‚ÐµÐ¿ÐµÑ€ÑŒ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ð¼ Ð²Ñ€ÐµÐ¼Ñ Ð¸ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÐµÐ³Ð¾ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸
+				this->lastState=this->currentState;
+			}
+		}
+	}
+	else {
+		//ÐµÑÐ»Ð¸ Ð¼Ñ‹ Ð·Ð´ÐµÑÑŒ - Ñ‚Ð¾ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð´Ñ€ÐµÐ±ÐµÐ·Ð³Ð° Ð½Ðµ Ð¸Ð´ÐµÑ‚, Ð½Ð°Ð´Ð¾ Ð¿Ð¾ÑÐ¼Ð¾Ñ‚Ñ€ÐµÑ‚ÑŒ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ
+		//Ð²Ð²Ð¾Ð´Ð° Ð¸ Ð´ÐµÐ¹ÑÑ‚Ð¾Ð²Ð°Ñ‚ÑŒ ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÐµÐ½Ð½Ð¾
+		getData();
+		if ( this->currentState!=this->lastState) {
 #ifdef DEBUG_EBUTTON
-         Serial.print("EButton::idle: start debouncing, newstate=");
-         Serial.println(this->currentState);
+			Serial.print("EButton::idle: start debouncing, newstate=");
+			Serial.println(this->currentState);
 #endif
-         //ñ÷èòàëè äàííûå è îíè íå ñîîòâåòñòâóþò òåì, ÷òî áûëè ðàíüøå
-         //íàäî çàïóñòèòü àíòèäðåáåçã
-         this->debouncingStarted=true;
-         debounceTimer.start();
-      }
-   }
+			//ÑÑ‡Ð¸Ñ‚Ð°Ð»Ð¸ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸ Ð¾Ð½Ð¸ Ð½Ðµ ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÑŽÑ‚ Ñ‚ÐµÐ¼, Ñ‡Ñ‚Ð¾ Ð±Ñ‹Ð»Ð¸ Ñ€Ð°Ð½ÑŒÑˆÐµ
+			//Ð½Ð°Ð´Ð¾ Ð·Ð°Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ Ð°Ð½Ñ‚Ð¸Ð´Ñ€ÐµÐ±ÐµÐ·Ð³
+			this->debouncingStarted=true;
+			debounceTimer.start();
+		}
+	}
 };
