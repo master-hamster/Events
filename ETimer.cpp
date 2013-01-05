@@ -1,6 +1,4 @@
-#include "etimer.h"
-
-
+#include "ETimer.h"
 
 //============================== class ETimer ============================================
 ETimer::ETimer() : 

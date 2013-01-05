@@ -13,13 +13,13 @@ public:
    oid_t init(uint16_t timeout = 0);
    virtual void getName(char* result);    
    virtual int handleEvent(Event& tmpEvent);
-   float  getTemperature();
-   virtual void doMeasure(){};
+   float  getTemperature(); // return current temperature
+   virtual void doMeasure(){}; // get data from sensor and store it in .temperature
    virtual void idle();
 protected:
    void tellThemperature(); // rise event with temperature
    float temperature;
-   uint8_t active; //ждет события или генерирует его по таймеру
+   uint8_t active; //0 - waiting for info request, 1 - create events after timeout
    Timer timer; 
 } ;
 

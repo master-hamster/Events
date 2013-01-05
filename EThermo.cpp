@@ -7,11 +7,17 @@ oid_t EThermo::init(uint16_t timeout)
    if (timeout == 0) {
       active = 0;
       timer.init(ETHERMO_THERMOMEASUREDELAY,true);
+#ifdef DEBUG_ETHERMO		
+		Serial.println ("EThermo.init passive timer init with delay");
+#endif		
    } else {   
       active = 1;
+#ifdef DEBUG_ETHERMO		
+		Serial.println ("EThermo.init active timer init with delay");
+#endif		
       timer.init(timeout,true);
    }
-   doMeasure();
+   doMeasure(); // make first measurement
    return tmp;
 };
 
@@ -25,11 +31,10 @@ float EThermo::getTemperature()
   return temperature;
 };
 
-
 int EThermo::handleEvent(Event& tmpEvent)
 {
    //handle information request - clear event and create new event with data
-   if (eventForMe(tmpEvent)) {
+   if (eventForMe(tmpEvent)) { //we got info request - let's cleare event and tell temperature
 #ifdef DEBUG_ETHERMO
       Serial.println("EThermo::handleEvent(): Its my event!");
 #endif
@@ -58,14 +63,14 @@ void EThermo::idle()
       Serial.print("T=");
       Serial.println(temperature);   
 #endif 
-   } else {
-#ifdef DEBUG_ETHERMO  
-      Serial.print(".");
-#endif 
+		if (active) {
+			tellThemperature();
+		} // if active 
+//   } else {
+//#ifdef DEBUG_ETHERMO  
+//      Serial.print(".");
+//#endif 
    }//if timer.expired
-   if (active) {
-      tellThemperature();
-   } // if active 
 }
 
 void EThermo::tellThemperature()

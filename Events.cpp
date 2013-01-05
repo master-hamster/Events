@@ -3,7 +3,7 @@
 
 //стек событий, в который объекты запихивают свои события по мере их появлени
 EventStack eventStack;
-
+static oid_t __next_EObject_ID__; //Идентификатор следующего номера объекта. Служит для присвоения объектам уникальных идентификаторов.
 #ifdef DEBUG_EVENTNAMES
 #define MAXEVENTNAMES 27 
 DOESNT WORK!!!
@@ -259,10 +259,10 @@ EObject::EObject()
 
 oid_t EObject::init()
 {
-   this->ID=__next_EObject_ID__++;
-   this->event.eventType=evNone;           //обнуляем значение готовящегося события.
+   this->ID=__next_EObject_ID__++;   //берем следующий идентификатор объекта
+   this->event.eventType=evNone;     //обнуляем значение готовящегося события.
    this->event.sourceID=this->ID;    //заранее записываем свой ID в данные
-	return this->ID;
+	return this->ID;                  //возвращаем его для внешних любознательных
 }; 
 
 int EObject::handleEvent(Event& tmpEvent)

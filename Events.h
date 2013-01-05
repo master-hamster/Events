@@ -72,11 +72,11 @@
 #define evTurnOff					32	//Выключить объект (если есть такое состояние)
 #define evTellMe              33 //Взбодрить объект (пусть ответит, есди обучен)
 
-//наступление таймаута
+//ETimer create evTimerExpired when it has expired 
 #define evTimerExpired        3
-//команда остановить таймер
+//ETimer stop working whet it got evTimerStop
 #define evTimerStop           4
-//команда запустить таймер
+//ETimer resume counting whet it has got evTimerStart
 #define evTimerStart          5
 
 //сенсор получил данные, в данных - условный ID кнопки
@@ -159,8 +159,6 @@ typedef uint16_t event_t;
 typedef uint16_t port_t;
 
 
-static oid_t __next_EObject_ID__; //!!!наверное, не нужен, надо разобраться
-
 //основной класс - событие
 class Event {
 public:
@@ -223,7 +221,7 @@ class  EObject {
 public:
  //   static uint8_t nextID; //счетчик идентификаторов для класса
    EObject();
-   oid_t init();
+   oid_t init(); //возвращает идентификатор объекта
    virtual int handleEvent(Event& tmpEvent);
    virtual void idle(){};
 //		virtual void setEvent(uint8_t evtype, uint16_t dest, int16_t data);   //заложить событие
