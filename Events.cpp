@@ -4,13 +4,17 @@
 //стек событий, в который объекты запихивают свои события по мере их появлени
 EventStack eventStack;
 static oid_t __next_EObject_ID__; //Идентификатор следующего номера объекта. Служит для присвоения объектам уникальных идентификаторов.
+
 #ifdef DEBUG_EVENTNAMES
 #define MAXEVENTNAMES 27 
-DOESNT WORK!!!
+//DOESNT WORK!!!
 const char* eventTypeNames[]={
 "evNone",
 "evEnable",
 "evDisable",
+"evTurnOn",
+"evTurnOff",
+"evTellMe",
 "evTimerExpired",
 "evTimerStop",
 "evTimerStart",
@@ -21,21 +25,18 @@ const char* eventTypeNames[]={
 "evKeyPressed",
 "evKeyDoublePressed",
 "evKeyHold",
-"",
-"",
 "evAIData",
 "evLevelChanged",
 "evMotionDetected",
-"",
-"",
-"",
-"evLEDOff",
-"evLEDOn",
-"evCandleOn",
-"evCandleOff",
 "evFlicker",
-"evOutputOn",
-"evOutputOff",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
 "UNKNOWN"
 };
 
