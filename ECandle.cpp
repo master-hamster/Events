@@ -19,7 +19,7 @@ oid_t ECandle::init(port_t ledPort, uint16_t fadeinTimeout, uint16_t fadeoutTime
 	return getID();
 };
 
-void ECandle::setLevel(int value)
+void ECandle::setLevel(const int value)
 {
 	currentLevel=constrain(value,0,255);
 	int i = this->currentLevel;
@@ -30,13 +30,13 @@ void ECandle::setLevel(int value)
 //#endif	 
 }; 
 
-void ECandle::setMinLevel(int value)
+void ECandle::setMinLevel(const int value)
 {
 	 currentMinLevel=constrain(value,CANDLEMINIMALLIGHTLEVEL+1,
 												CANDLEMAXIMALLIGHTLEVEL-1);
 };
 
-void ECandle::setMaxLevel(int value)
+void ECandle::setMaxLevel(const int value)
 {
 	 currentMaxLevel=constrain(value,CANDLEMINIMALLIGHTLEVEL+1,
 												CANDLEMAXIMALLIGHTLEVEL-1);
@@ -99,7 +99,7 @@ int ECandle::handleEvent(Event& tmpEvent)
 	else return 0;
 };
 
-void ECandle::setState(CandleState newState)
+void ECandle::setState(const CandleState newState)
 //переключение в новое состояние
 //начата 2010-02-14 ВЩ
 {

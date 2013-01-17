@@ -2,12 +2,13 @@
 
 //================================== class EAEventButton ======================
 
-oid_t EAEventButton::init(port_t port)
+oid_t EAEventButton::init(const port_t port)
 {
 	return EAButton::init(port);
 };
 
-uint8_t EAEventButton::addLevel(int newLevel,uint16_t eventType, uint16_t eventDest)
+uint8_t EAEventButton::addLevel(const int newLevel, const uint16_t eventType, 
+											const uint16_t eventDest)
 {
 	if (this->levelCount<ABUTTONMAXLEVELS) {
 		this->levels[++this->levelCount]=newLevel;

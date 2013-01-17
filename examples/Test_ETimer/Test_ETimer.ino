@@ -1,9 +1,3 @@
-
-#include <ETimer.h>
-#include <EBeeper.h>
-#include <EButton.h>
-#include <Event.h>
-
 /*
 MH 2010-02-10
 Тестирование таймера
@@ -16,6 +10,10 @@ MH 2010-02-10
 кнопка - на pin 4
 пищалка - на pin 13, встроенный диод подтверждает
 */
+#include <ETimer.h>
+#include <EBeeper.h>
+#include <EButton.h>
+#include <Event.h>
 
 
 #define evChangeMode    120
@@ -73,13 +71,13 @@ void loop()
 void MyApplication::init()
 {
   //привязка к пинам и инициализация соответствующих устройств 
-  buttonID=button.init(BUTTONPIN,true,true);
+  buttonID = button.init(BUTTONPIN,true,true);
   addObject(&button);
   
-  beeperID=beeper.init(BEEPERPIN);
+  beeperID = beeper.init(BEEPERPIN);
   addObject(&beeper);
 
-  timerID=timer.init(10000,evNoMotion,true);
+  timerID = timer.init(10000,evNoMotion,true);
   addObject(&timer);
   
 };
@@ -90,17 +88,17 @@ int MyApplication::parseEvent()
   // oldState = currentState;
 
 
-   if ((currentEvent.eventType==evKeyPressed && currentEvent.sourceID==buttonID))
+   if ((currentEvent.eventType == evKeyPressed && currentEvent.sourceID == buttonID))
    { //нажатие на кнопку
       pushEvent(evTimerStart,timerID);
    };
 
-   if (currentEvent.eventType==evKeyDoublePressed && currentEvent.sourceID==buttonID) {
+   if (currentEvent.eventType == evKeyDoublePressed && currentEvent.sourceID == buttonID) {
 	 //двойное нажатие на кнопку
       pushEvent(evTimerStop,timerID);
    }	
    
-   if (currentEvent.eventType==evKeyHold && currentEvent.sourceID==buttonID) {
+   if (currentEvent.eventType == evKeyHold && currentEvent.sourceID == buttonID) {
       pushEvent(evTimerStop,timerID);
    };
 //   if (currentEvent.eventType==evNoMotion && currentState == 1) {
@@ -111,7 +109,7 @@ int MyApplication::parseEvent()
 //===========================================================================
 int MyBeeper::handleEvent(Event& tmpEvent)
 {
-   if (tmpEvent.eventType!=evNone) {
+   if (tmpEvent.eventType != evNone) {
       EBeeper::handleEvent(tmpEvent);
       EBeeper::beep();
    };   

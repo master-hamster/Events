@@ -12,8 +12,8 @@
 
 class EAButton : public EDevice {
 public:
-	oid_t init(port_t port);
-	uint8_t addLevel(int newLevel); //возвращает количество уровней
+	oid_t init(const port_t port);
+	uint8_t addLevel(const int newLevel); //возвращает количество уровней
 	virtual int handleEvent(Event& tmpEvent);
 	virtual void idle();
 	virtual void getName(char* result);

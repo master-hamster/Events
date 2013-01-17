@@ -9,7 +9,7 @@
 class EAnalogInput : public EDevice {
 public:
 	//		инициация с ID объекта и временем передачи в mS
-	oid_t init(port_t port, uint16_t refreshTime=5000);
+	oid_t init(const port_t port, const uint16_t refreshTime = 5000);
 	virtual void idle();
 	virtual int handleEvent(Event& tmpEvent);
 	virtual void getName(char* result);

@@ -8,7 +8,9 @@ Two modes of EThermo use:
  Timer create evTellme every 5s, eThermo answers with data
  case 2. active: thermometer push event with temperature every 5s
  
-Program works only with first sensor on 1wire bus 
+Program works only with first sensor on 1wire bus
+
+https://github.com/master-hamster/Events
 */
 
 // define CASE1 if we test case 1, case2 otherwise
@@ -22,8 +24,8 @@ Program works only with first sensor on 1wire bus
 #include <EThermo.h>
 
 #define evTimeToGetTemperature 211
-// 1wire is plugged into port 2
-#define ONE_WIRE_BUS 2
+// 1wire is plugged into port 3
+#define ONE_WIRE_BUS 3
 // Measurement cycle delay, ms
 #define MEASURE_DELAY 5000
 
@@ -48,12 +50,12 @@ public:
 	oid_t thermometerID; 
 	EThermoDallas1820 thermometer;
 };
-
+        
 void MyApplication::init()
 {
 
 #ifdef CASE1
-  // case 1. passive thermometer, answer only when someone ask
+	// case 1. passive thermometer, answer only when someone ask
 	timerID = timer.init(MEASURE_DELAY,evTimeToGetTemperature,true);
 	thermometerID = thermometer.init(&sensor,0,11);	 
 
@@ -67,12 +69,12 @@ void MyApplication::init()
 
 int MyApplication::parseEvent()
 {
-#ifdef CASE1	
+#ifdef CASE1
 	if (currentEvent.eventType==evTimeToGetTemperature) {
 		//It's time to know the temperature - create info request
 		pushEvent(evTellMe,thermometerID);
 		return 1;
-	}	
+	}
 #endif
 
 	if (currentEvent.eventType==evTemperature) {
@@ -84,10 +86,11 @@ int MyApplication::parseEvent()
 		return 1;
 	}
   return 0;
-};
+};	 
 
 //====================================================END OF MyApp definition
 MyApplication mainApp;	
+
 
 void setup()
 {
@@ -137,8 +140,9 @@ void loop()
 	mainApp.idle();
 };
 
+    
 
 
 
-
+ 
 

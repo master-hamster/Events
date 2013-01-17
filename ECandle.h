@@ -8,10 +8,10 @@ class ECandle : public EOutputDevice {
 public:
  //  LEDCandle(int value);
 	oid_t init(port_t ledPort,	  //порт
-	uint16_t fadeinTimeout=5,  //таймаут разгорания
-	uint16_t fadeoutTimeout=15, //таймаут затухания
-	uint8_t maxLevel=CANDLEMAXIMALLIGHTLEVEL, //минимальный уровень
-	uint8_t minLevel=CANDLEMINIMALLIGHTLEVEL);//максимальный уровень
+	uint16_t fadeinTimeout = 5,  
+	uint16_t fadeoutTimeout = 15, 
+	uint8_t maxLevel = CANDLEMAXIMALLIGHTLEVEL, //минимальный уровень
+	uint8_t minLevel = CANDLEMINIMALLIGHTLEVEL);//максимальный уровень
 	virtual void getName(char* result);
 //  void gracefullyOn(){};
 //  void gracefullyOff(){};
@@ -25,16 +25,16 @@ public:
 	static int calcLightLevel(long startTime,long timeOut, //
 	int minLevel, int maxLevel);
 private:
-	void setLevel(int value);
+	void setLevel(const int value);
 	void on();
 	void off();
 	void fadeIn();
 	void fadeOut();
 	void startFlickering();
-	void setState(CandleState newState);
+	void setState(const CandleState newState);
 
-	void setMaxLevel(int value);
-	void setMinLevel(int value);
+	void setMaxLevel(const int value);
+	void setMinLevel(const int value);
 //  int getMaxLevel(){};
 //  int getMinLevel(){};
 //  int getCurrentLevel(){};

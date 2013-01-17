@@ -8,7 +8,7 @@ EButton::EButton(): EInputDevice()
 {
 };
 
-oid_t EButton::init(port_t port, bool reverseOn, bool pullUp)
+oid_t EButton::init(const port_t port, const bool reverseOn, const bool pullUp)
 //Инициализация c учетом флага
 {
 	oid_t result = EInputDevice::init(port, imUpOnly);

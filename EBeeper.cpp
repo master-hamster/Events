@@ -7,7 +7,7 @@ EBeeper::EBeeper() : EOutputDevice()
 	beepTimer.init(EBEEPER_DEFAULT_BEEP_TIME,false);
 };
 
-oid_t EBeeper::init(port_t port, uint16_t time, bool reverse)
+oid_t EBeeper::init(const port_t port, const uint16_t time, const bool reverse)
 {
 	oid_t result;
 	result = EOutputDevice::init(port);
@@ -16,7 +16,7 @@ oid_t EBeeper::init(port_t port, uint16_t time, bool reverse)
 	return result;
 };
 
-oid_t EBeeper::initReverse(port_t port, uint16_t time)
+oid_t EBeeper::initReverse(const port_t port, const uint16_t time)
 {
 	return EBeeper::init(port, time,true);
 };

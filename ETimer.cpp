@@ -5,18 +5,18 @@ ETimer::ETimer() :
 EObject(), timer(1000){
 };
 
-ETimer::ETimer(unsigned long interval) : 
+ETimer::ETimer(const unsigned long interval) : 
 EObject(), timer(interval){
 };
 
-oid_t ETimer::init(unsigned long interval, event_t evType, bool autorestart)
+oid_t ETimer::init(const unsigned long interval, const event_t evType, const bool autorestart)
 {
    timer.init(interval,autorestart);
    event.eventType = evType;
    event.sourceID = getID();
-   stoped=false;
-   expired=false;
-   this->autorestart=autorestart;
+   stoped = false;
+   expired = false;
+   this->autorestart = autorestart;
    return event.sourceID;
 };
 
@@ -52,7 +52,7 @@ void ETimer::idle()
             if (this->autorestart) {
                start();
             } else {
-               this->expired=true;
+               this->expired = true;
             }   
          }
       }   

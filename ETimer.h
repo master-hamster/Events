@@ -12,10 +12,10 @@ class ETimer : public EObject {
 public:
 	ETimer();														//инициализация
 		//аналогично с заданным интервалом и ID
-	ETimer(unsigned long interval);		  
+	ETimer(const unsigned long interval);		  
 		//задать интервал, автосброс, событие
-	oid_t init(unsigned long interval, event_t evType=evTimerExpired, 
-								bool autorestart=false); 
+	oid_t init(const unsigned long interval, const event_t evType = evTimerExpired, 
+								const bool autorestart = false); 
 	virtual int handleEvent(Event& tmpEvent);
 	virtual void getName(char* result);
 	virtual void idle();

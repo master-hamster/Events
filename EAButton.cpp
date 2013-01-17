@@ -1,7 +1,7 @@
 #include "EAButton.h"
 
 //================================== class EAButton ======================
-oid_t EAButton::init(port_t port)
+oid_t EAButton::init(const port_t port)
 {
 	oid_t result =  EDevice::init(port);
 //	currentLevel=0;
@@ -10,10 +10,10 @@ oid_t EAButton::init(port_t port)
 	return result;
 };
 
-uint8_t EAButton::addLevel(int newLevel)
+uint8_t EAButton::addLevel(const int newLevel)
 {
 	if (this->levelCount<ABUTTONMAXLEVELS) {
-		this->levels[++this->levelCount]=newLevel;
+		this->levels[++this->levelCount] = newLevel;
 	} 
 	return levelCount;
 };	
@@ -27,10 +27,10 @@ int EAButton::handleEvent(Event& tmpEvent)
 void EAButton::idle()
 {
 	uint8_t lastLevel = this->currentLevel;
-	if (false==this->isDisabled) {
+	if (false == this->isDisabled) {
 		getData();
-		if (lastLevel!=this->currentLevel ) { //уровень изменился, сгенерируем событие
-			eventStack.pushEvent(evLevelChanged,this->getID(),0,this->currentData);
+		if (lastLevel != this->currentLevel ) { //уровень изменился, сгенерируем событие
+			eventStack.pushEvent(evLevelChanged, this->getID(), 0, this->currentData);
 #ifdef DEBUG_EABUTTON
 			Serial.print("EAButton::idle: data=");
 			Serial.print(this->currentData);
@@ -51,7 +51,7 @@ int EAButton::getData()
 	currentData=analogRead(this->port);
 	//выбрать значение уровня, при котором текущее значение не превышает 
 	//порогового для данного уровня
-	for (currentLevel=0; currentLevel<this->levelCount; currentLevel++) {
+	for (currentLevel = 0; currentLevel < this->levelCount; currentLevel++) {
 		if (this->currentData < this->levels[currentLevel]) break;
 	} 
 	return currentLevel;
