@@ -10,22 +10,12 @@
 	начат 2010-01-07
   
 	Задачи:
-	1. Реализовать цифровое устройство ввода с учетом режимов - ОК
-	2. Реализовать цифровое устройство ввода с дребезгом - ОК
-	3. Реализовать аналоговое устройство ввода - OK 070210
 	4. Реализовать аналоговое устройство ввода с выдачей событий по уровням. 
 	5. реализовать в таймере паузу и обработку переполнения millis()
 	6. Сделать возможность вешать на устройство ввода определенное событие взамен штатного
-	7. Реализовать клавишу с событиями: kbPressed, kbDoublePressed, kbLongPressed  OK 070210
-	8. Перевести EInputDevice на использование таймера вместо обращения к millis() ОК
-	9. Перевести EBeeper на millis() ОК
-	10. Сделать объект типа AnalogLed  
-	11. Сделать объект типа Candle  ОК
 	12. Сделать протоколирование событий включения
 	13. Сделать отправление событий при переключении исполнительных устройств
 	14. Сделать запрос-ответ состояния различных устройств
-	15. Изменить по модулям обработку TurnOn TurnOff
-	16. Изменить по модулям обработку TellMe
  */
 
 
@@ -164,8 +154,8 @@ public:
 	oid_t sourceID;  //идентификатор создателя
 	oid_t destinationID; //идентификатор получателя, если есть
 	int16_t eventData;	//дополнительные данные события
-	void print();
-	void copy(Event& newEvent); //копировать данные в новое событие
+	const void print();
+	const void copy(Event& newEvent); //копировать данные в новое событие
 	Event& operator=(const Event& from);
 };
 
@@ -178,11 +168,11 @@ class EventStack {
 public:
 	int push(Event& newEvent);
 	int pushEvent(event_t evntType, //Push event to stack, first - Event Type
-	oid_t sourceID=0,               //Source Object ID
-	oid_t destinationID=0,          //Destination ID, 0 if no desination
-	int16_t eventData=0);           //16-bit optional data
+	oid_t sourceID = 0,               //Source Object ID
+	oid_t destinationID = 0,          //Destination ID, 0 if no desination
+	int16_t eventData = 0);           //16-bit optional data
 	int pop(Event& newEvent);      //вытащить событие из стека, 0 - нет, 1 - вытащено
-	void clear(){size=0;};         //Clear stack content
+	void clear(){size = 0;};         //Clear stack content
 	void print();                  //print all events from stack to Serial
 
 private:
@@ -286,9 +276,9 @@ public:
 	void printEvent();               //напечатать на консоли текущее событие
 	int getEvent();                  //просмотреть, нет ли событий, если есть - то получить
 	int pushEvent(const event_t evntType,  //тип события
-	const oid_t destinationID=0,           //идентификатор получателя, если есть
-	const oid_t sourceID=0,                //идентификатор создателя
-	const int16_t eventData=0);            //дополнительные данные события
+	const oid_t destinationID = 0,           //идентификатор получателя, если есть
+	const oid_t sourceID = 0,                //идентификатор создателя
+	const int16_t eventData = 0);            //дополнительные данные события
 	virtual int parseEvent(){return 1;};	//анализ события, необходимые действия
 	int handleEvent();				//передать подчиненным на обработку
 	void idle();						//стандартный цикл
@@ -301,55 +291,10 @@ private:
 };
 
 
-/*
-class DebounceButton {
-public:
- //	DebounceButton();
- //  ~DebounceButton();
-	void ftest();
-	static void updateAll(){}; 
-private: 
-	static DebounceButton *buttons[];
-	static byte buttonId;
-	byte id;
-};
-
-*/
-
-
 #endif
 
-//	 Button(byte type);
-//	 void assign(byte pin);
-//	 byte check();
-//	 byte check(byte mode_v);
-	// Setters
-//	 void setMode(byte type_v);
-//	 void setTimer(unsigned int t);
-//	 void setRefresh(unsigned int r);
-//		virtual int getEvent(Event tmpEvent);
-//		virtual void idle();
-//	private:
-//	 byte mode;  //режим работы кнопки
-//	 unsigned long hold_timer;
-//	 unsigned long refresh_timer;
-//	 unsigned int hold_level;
-//	 unsigned int hold_refresh;
-//	 bool previous;
 
 
-//======================= EButton
-//#define OneShot 0
-//#define Memory 1
-//#define Timer 2
-//#define OneShotTimer 3
-//#define MemoryTimer 4
-
-//#define ON 1
-//#define OFF 0
-//#define Pressed 2
-//#define Released 3
-//#define Hold 4
 
 
 

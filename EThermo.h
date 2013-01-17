@@ -10,7 +10,7 @@
 
 class EThermo : public EObject{
 public:	
-	oid_t init(uint16_t timeout = 0);
+	oid_t init(const uint16_t timeout = 0);
 	virtual void getName(char* result);	 
 	virtual int handleEvent(Event& tmpEvent);
 	float  getTemperature(); // return current temperature
@@ -25,7 +25,7 @@ protected:
 
 class EThermoDallas1820 : public EThermo{
 public:
-	oid_t init(DallasTemperature* dt, uint16_t timeout = 0, uint8_t precision = 9);
+	oid_t init(DallasTemperature* dt, const uint16_t timeout = 0, const uint8_t precision = 9);
 	DeviceAddress insideThermometer;
 	virtual void getName(char* result);	 
 	virtual void doMeasure();

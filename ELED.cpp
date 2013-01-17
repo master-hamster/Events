@@ -7,7 +7,7 @@ ELED::ELED() : EOutputDevice()
 {
 };
 
-oid_t ELED::init(port_t ledPort)
+oid_t ELED::init(const port_t ledPort)
 {
    //сохраняем правильные состояни
    this->isOn=false;

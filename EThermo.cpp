@@ -1,6 +1,6 @@
 #include "EThermo.h"
 
-oid_t EThermo::init(uint16_t timeout)
+oid_t EThermo::init(const uint16_t timeout)
 {
 	oid_t tmp = EObject::init();
 	//Инициализация термометра с заданным интервалом и автозапуском
@@ -85,7 +85,7 @@ void EThermo::tellThemperature()
 	eventStack.pushEvent(evTemperature, getID(), 0, tmpTemp); 
 }	
 
-oid_t EThermoDallas1820::init(DallasTemperature* dt, uint16_t timeout, uint8_t precision)
+oid_t EThermoDallas1820::init(DallasTemperature* dt, const uint16_t timeout, const uint8_t precision)
 {
 	dallas1820 = dt;
 	if (! (dallas1820->getAddress(insideThermometer, 0))) {

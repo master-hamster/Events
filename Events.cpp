@@ -58,7 +58,7 @@ const char *eventName(event_t evType)
 
 //=================================== class Event ==============
 //отладка, при вроведении отладки на консоль выдается содержимое события в серийный порт
-void Event::print()
+const void Event::print()
 {
    Serial.print("Event::print Typ=");
    Serial.print(this->eventType);
@@ -70,7 +70,7 @@ void Event::print()
    Serial.println(this->eventData);
 };
 
-void Event::copy(Event& newEvent)
+const void Event::copy(Event& newEvent)
 //копировать данные в новое событие
 {
    newEvent.eventType=this->eventType;
@@ -160,7 +160,7 @@ int EventStack::pop(Event& newEvent)
    else {
       //      items[size].copy(newEvent);
       size--;
-      newEvent=items[size];
+      newEvent = items[size];
 #ifdef DEBUG_EVENTSTACK
       Serial.print("EventStack::pop: EventType=");
       Serial.println(newEvent.eventType);
@@ -175,7 +175,7 @@ void EventStack::print()
 {
    Serial.print("EventStack:print size=");
    Serial.println(size);
-   for ( int i=0;i<size;i++ ) {
+   for ( int i = 0; i < size; i++ ) {
       items[i].print();
    }
 };
@@ -253,17 +253,17 @@ void Timer::start()
 //==================================== class EObject =======================================
 EObject::EObject()
 {
-   ID=__next_EObject_ID__++;
+   ID = __next_EObject_ID__++;
  //  this->ID = nextOId++;
-   this->event.eventType=evNone;           //обнуляем значение готовящегося события.
-   this->event.sourceID=this->ID;    //заранее записываем свой ID в данные
+   this->event.eventType = evNone;           //обнуляем значение готовящегося события.
+   this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
 };
 
 oid_t EObject::init()
 {
-   this->ID=__next_EObject_ID__++;   //берем следующий идентификатор объекта
-   this->event.eventType=evNone;     //обнуляем значение готовящегося события.
-   this->event.sourceID=this->ID;    //заранее записываем свой ID в данные
+   this->ID = __next_EObject_ID__++;   //берем следующий идентификатор объекта
+   this->event.eventType = evNone;     //обнуляем значение готовящегося события.
+   this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
 	return this->ID;                  //возвращаем его для внешних любознательных
 }; 
 
@@ -274,14 +274,14 @@ int EObject::handleEvent(Event& tmpEvent)
       // - это включение и выключение объекта
       switch (tmpEvent.eventType) {
          case evEnable:
-            this->isDisabled=false;
+            this->isDisabled = false;
 #ifdef DEBUG_EOBJECT            
             Serial.print("EObject::handleEvent Enabled ID=");
             Serial.println(this->getID());
 #endif
             break;
          case evDisable:
-            this->isDisabled=true;
+            this->isDisabled = true;
 #ifdef DEBUG_EOBJECT            
             Serial.print("EObject::handleEvent Disabled ID=");
             Serial.println(this->getID());
@@ -350,8 +350,8 @@ oid_t EInputDevice::init(const port_t port, const InputMode im, const bool rever
    Serial.println("EInputdevice::init_full()");
 #endif
    debounceTimer.init(DEBOUNCEDELAY,false);
-   this->inputMode=im;               //зададим режим создания событий устройства
-   this->reverseOn=reverseOn;        //зададим режим реверса
+   this->inputMode = im;               //зададим режим создания событий устройства
+   this->reverseOn = reverseOn;        //зададим режим реверса
    pinMode(this->port,INPUT);       // после этого запрограммируем порт в режим чтения, подтяжку порта не делаем
 #ifdef DEBUG_EINPUTDEVICE
    int tmp = this->port;
@@ -371,7 +371,7 @@ oid_t EInputDevice::init(const port_t port, const InputMode im, const bool rever
 #endif
    }
    getData();                           // считаем данные с учетом флага реверса
-   this->lastState=this->currentState;
+   this->lastState = this->currentState;
    return result;
 };
 
@@ -410,10 +410,10 @@ void EInputDevice::idle()
                switch ( this->inputMode) {
                case imUpDown :
                case imDownOnly :
-                  eventType=evInputDown;
+                  eventType = evInputDown;
                   break;
                case imToggle :
-                  eventType=evInputToggle;
+                  eventType = evInputToggle;
                   break;
                }
             } 
@@ -422,15 +422,15 @@ void EInputDevice::idle()
                switch ( this->inputMode) {
                case imUpDown :
                case imUpOnly :
-                  eventType=evInputUp;
+                  eventType = evInputUp;
                   break;
                case imToggle :
-                  eventType=evInputToggle;
+                  eventType = evInputToggle;
                   break;
                }
             } //конец ветки по высокому/низкому считанному уровню
             //теперь если задан какой-то тип события - надо поднимать событие
-            if ( eventType!=evNone) {
+            if ( eventType != evNone) {
 #ifdef DEBUG_EINPUTDEVICE
                Serial.print("EInputDevice::idle: eventType=");
                Serial.println(eventType);
@@ -438,7 +438,7 @@ void EInputDevice::idle()
                eventStack.pushEvent(eventType,this->getID(),0,this->currentState);
             }
             //теперь сохраним время и значение последнего состояни
-            this->lastState=this->currentState;
+            this->lastState = this->currentState;
          }
       }
    } 
@@ -446,14 +446,14 @@ void EInputDevice::idle()
       //если мы здесь - то обработка дребезга не идет, надо посмотреть состояние
       //ввода и дейстовать соответственно
       getData();
-      if ( this->currentState!=this->lastState) {
+      if ( this->currentState != this->lastState) {
 #ifdef DEBUG_EINPUTDEVICE
          Serial.print("EInputDevice::idle: start debouncing, newstate=");
          Serial.println(this->currentState);
 #endif
          //считали данные и они не соответствуют тем, что были раньше
          //надо запустить антидребезг
-         this->debouncingStarted=true;
+         this->debouncingStarted = true;
          debounceTimer.start();
       }
    }
@@ -468,7 +468,7 @@ int16_t EInputDevice::getData()
 
 void EInputDevice::getName(char* result)
 {
-   long interval=this->debounceTimer.getInterval();
+   long interval = this->debounceTimer.getInterval();
    sprintf(result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
             getID(),this->port,this->reverseOn, interval);
 };
@@ -482,18 +482,18 @@ EDevice(){
 oid_t EOutputDevice::init(const port_t port, const bool reverse)
 {
    oid_t result;
-   result=EDevice::init(port);
+   result = EDevice::init(port);
    pinMode(this->port,OUTPUT);
-   this->reverseOn=reverse;
+   this->reverseOn = reverse;
    return result;
 };
 
 oid_t EOutputDevice::initReverse(const uint16_t port)
 {
    oid_t result;
-   result=EDevice::init(port);
+   result = EDevice::init(port);
    pinMode(this->port,OUTPUT);
-   this->reverseOn=true;
+   this->reverseOn = true;
    return result;
 };
 
@@ -550,7 +550,7 @@ int EApplication::printNames()
 {
    char sTmp[64];
 	int printCount;
-   for ( printCount=0;printCount<this->objectsAdded;printCount++) {
+   for ( printCount = 0; printCount < this->objectsAdded; printCount++) {
       this->objects[printCount]->getName(sTmp);
       Serial.println(sTmp);
    }
@@ -614,34 +614,6 @@ int EApplication::handleEvent()
 
 
 
-/*
-
-DebounceButton::DebounceButton()
-{
-  this->id = buttonId++;
-//  DebounceButton::buttons[this->id] = this;
-  buttons[this->id] = this;
-};
-   
-
-
-DebounceButton::~DebounceButton()
-{
-  for(int i=this->id; i<buttonId; ++i) {
-    buttons[i] = buttons[i+1];
-  }
-  buttonId--;
-};
-   
-*/
-/*
-void DebounceButton::ftest()
-{
-  this->id = buttonId++;
-//  DebounceButton::buttons[this->id] = this;
-  buttons[this->id] = this;
-};   
-*/
 
 /*
  * 2010-01-06 vs: started
