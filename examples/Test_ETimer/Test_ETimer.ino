@@ -5,7 +5,7 @@
 #include <Event.h>
 
 /*
-ВЩ 2010-02-10
+MH 2010-02-10
 Тестирование таймера
 Логика теста:
 По умолчанию раз в 10 секунд таймер кидает событие, на которое бипер отзывается писком
@@ -62,7 +62,7 @@ void setup()
 
 void loop()
 {
-  if (mainApp.getEvent()) {  //получаем событие
+  if (mainApp.getEvent()) {
     mainApp.printEvent();
     mainApp.parseEvent();
     mainApp.handleEvent();

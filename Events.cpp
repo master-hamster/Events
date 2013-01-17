@@ -171,6 +171,7 @@ int EventStack::pop(Event& newEvent)
 
 
 void EventStack::print()
+// print all events from stack to Serial
 {
    Serial.print("EventStack:print size=");
    Serial.println(size);
@@ -187,13 +188,13 @@ Timer::Timer()
 };
 
 
-Timer::Timer(unsigned long interval)
+Timer::Timer(const unsigned long interval)
 {
    setInterval(interval);
    start();
 };
 
-void Timer::init(unsigned long interval, bool autorestart)
+void Timer::init(const unsigned long interval, const bool autorestart)
 {
    this->autorestart = autorestart;
    setInterval(interval);
@@ -204,7 +205,7 @@ void Timer::init(unsigned long interval, bool autorestart)
 #endif   
 };
 
-void Timer::setInterval(unsigned long interval)
+void Timer::setInterval(const unsigned long interval)
 {
    this->interval = interval;
 };
@@ -317,7 +318,7 @@ EDevice::EDevice() : EObject()
 {
 };
 
-oid_t EDevice::init(port_t port)
+oid_t EDevice::init(const port_t port)
 {
    this->port=port;
    return getID();
@@ -335,13 +336,13 @@ EDevice(){
    debounceTimer.init(DEBOUNCEDELAY,false);
 };
 
-oid_t EInputDevice::initReverse(port_t port, InputMode im)
+oid_t EInputDevice::initReverse(const port_t port, const InputMode im)
 {
    debounceTimer.init(DEBOUNCEDELAY,false);
    return EInputDevice::init(port,im,true, true);  //????!!! - порты подтягиваем, это не всегда правильно
 };
 
-oid_t EInputDevice::init(port_t port, InputMode im, bool reverseOn, bool pullUp)
+oid_t EInputDevice::init(const port_t port, const InputMode im, const bool reverseOn, bool pullUp)
 //Инициализация c учетом флага
 {
    oid_t result=EDevice::init(port);       //   сделаем инициацию устройства
@@ -478,7 +479,7 @@ EOutputDevice::EOutputDevice() :
 EDevice(){
 };
 
-oid_t EOutputDevice::init(port_t port, bool reverse)
+oid_t EOutputDevice::init(const port_t port, const bool reverse)
 {
    oid_t result;
    result=EDevice::init(port);
@@ -487,7 +488,7 @@ oid_t EOutputDevice::init(port_t port, bool reverse)
    return result;
 };
 
-oid_t EOutputDevice::initReverse(uint16_t port)
+oid_t EOutputDevice::initReverse(const uint16_t port)
 {
    oid_t result;
    result=EDevice::init(port);
@@ -535,7 +536,7 @@ EApplication::EApplication()
 int EApplication::addObject(EObject* newObject)
 {
    if ( this->objectsAdded<MAXAPPOBJECTS) {
-      this->objects[this->objectsAdded]=newObject;
+      objects[this->objectsAdded] = newObject;
       this->objectsAdded++;
       return true;
    } 
@@ -556,10 +557,10 @@ int EApplication::printNames()
 	return printCount;
 };
 
-int EApplication::pushEvent(uint16_t evntType,   //тип событи
-      oid_t destinationID,          //идентификатор получателя, если есть
-      oid_t sourceID,               //идентификатор создателя
-      int16_t eventData)              //дополнительные данные события
+int EApplication::pushEvent(const uint16_t evntType,   //тип событи
+      const oid_t destinationID,          //идентификатор получателя, если есть
+      const oid_t sourceID,               //идентификатор создателя
+      const int16_t eventData)              //дополнительные данные события
 {
    return eventStack.pushEvent(evntType,sourceID,destinationID,eventData);   
 };
@@ -606,7 +607,7 @@ int EApplication::handleEvent()
     	}
     */
    for ( int i=0; i < this->objectsAdded; i++) {
-      j+=this->objects[i]->handleEvent(currentEvent);
+      j+= objects[i]->handleEvent(currentEvent);
    }
    return j;
 };
@@ -633,13 +634,14 @@ DebounceButton::~DebounceButton()
 };
    
 */
+/*
 void DebounceButton::ftest()
 {
   this->id = buttonId++;
 //  DebounceButton::buttons[this->id] = this;
   buttons[this->id] = this;
 };   
-
+*/
 
 /*
  * 2010-01-06 vs: started

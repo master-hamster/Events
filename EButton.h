@@ -6,7 +6,7 @@
 class EButton : public EInputDevice {
 public:
 	EButton();
-	oid_t init(port_t port, bool reverseOn=false, bool pullUp=true);
+	oid_t init(port_t port, const bool reverseOn=false, const bool pullUp=true);
 //	virtual int handleEvent(Event& tmpEvent);
 	virtual void getName(char* result);
 	virtual void idle();

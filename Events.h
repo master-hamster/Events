@@ -126,21 +126,21 @@ enum CandleState {
 	csFadeOut,		//выключается
 	csOn,				//полностью включено
 	csFlickering	//мелькает
-};	
+};
 
 //задержка по времени в мс для устранения дребезка
-#define DEBOUNCEDELAY		50
-#define DOUBLEPRESSDELAY	500
+#define DEBOUNCEDELAY       50
+#define DOUBLEPRESSDELAY   500
 //задержка по времени для определения события Hold
-#define KEYHOLDDELAY		 1000
+#define KEYHOLDDELAY      1000
 //длительность писка бипера по умолчанию
-#define EBEEPER_DEFAULT_BEEP_TIME	25
+#define EBEEPER_DEFAULT_BEEP_TIME   25
 
 //#define HOLDREPEATDELAY 3000
 //максимальное количество событий в стеке событий
-#define EVENTSTACKSIZE					10
+#define EVENTSTACKSIZE        10
 //максимальное количество событий в мультиуровневой аналоговой кнопке
-#define ABUTTONMAXLEVELS				5
+#define ABUTTONMAXLEVELS       5
 
 
 #define CANDLEMINIMALLIGHTLEVEL		5
@@ -177,13 +177,14 @@ public:
 class EventStack {
 public:
 	int push(Event& newEvent);
-	int pushEvent(event_t evntType, //тип события
-	oid_t sourceID=0,			  //идентификатор создателя
-	oid_t destinationID=0,		//идентификатор получателя, если есть
-	int16_t eventData=0);			 //дополнительные данные события
-	 int pop(Event& newEvent);		  //вытащить событие из стека, 0 - нет, 1 - вытащено
-	 void clear(){size=0;};			  //очистить содержимое стека событий
-	 void print();
+	int pushEvent(event_t evntType, //Push event to stack, first - Event Type
+	oid_t sourceID=0,               //Source Object ID
+	oid_t destinationID=0,          //Destination ID, 0 if no desination
+	int16_t eventData=0);           //16-bit optional data
+	int pop(Event& newEvent);      //вытащить событие из стека, 0 - нет, 1 - вытащено
+	void clear(){size=0;};         //Clear stack content
+	void print();                  //print all events from stack to Serial
+
 private:
 	int size; //количество объектов в стеке
 	Event items[EVENTSTACKSIZE];  //буффер с событиями
@@ -198,10 +199,10 @@ extern EventStack eventStack;
 class Timer {
 public:
 	Timer();
-	Timer(unsigned long interval);
-	void init(unsigned long interval, bool autorestart=false);
-	void setInterval(unsigned long interval);
-	void setStartTime(unsigned long newTime){this->startTime=newTime;};
+	Timer(const unsigned long interval);
+	void init(const unsigned long interval, const bool autorestart=false);
+	void setInterval(const unsigned long interval);
+	void setStartTime(const unsigned long newTime){this->startTime=newTime;};
 	unsigned long int elapsedTime();
 	bool expired();
 	void start();
@@ -217,7 +218,7 @@ private:
 //другой основной класс - объект, работающий с событиями
 class  EObject {
 public:
- //	static uint8_t nextID; //счетчик идентификаторов для класса
+//	static uint8_t nextID; //счетчик идентификаторов для класса
 	EObject();
 	oid_t init(); //возвращает идентификатор объекта
 	virtual int handleEvent(Event& tmpEvent);
@@ -238,7 +239,7 @@ protected:
 class EDevice : public EObject {
 public:
 	EDevice();
-	oid_t init(port_t port);
+	oid_t init(const port_t port);
 	virtual void getName(char* result);
 protected:
 	port_t port;
@@ -247,8 +248,8 @@ protected:
 class EInputDevice : public EDevice {
 public:
 	EInputDevice(); //инициация по умолчанию
-	oid_t initReverse(port_t port, InputMode im=imUpDown );
-	oid_t init(port_t port, InputMode im=imUpDown, 
+	oid_t initReverse(const port_t port, const InputMode im=imUpDown );
+	oid_t init(const port_t port, const InputMode im=imUpDown, 
 	bool reverseOn=false, bool pullUp=false);
 	virtual void idle();
 	virtual void getName(char* result);
@@ -266,14 +267,14 @@ protected:
 class EOutputDevice : public EDevice {
 public:
 	EOutputDevice();
-	oid_t init(port_t port, bool reverse=false);
-	oid_t initReverse(port_t port);
+	oid_t init(const port_t port, const bool reverse=false);
+	oid_t initReverse(const port_t port);
 	virtual void getName(char* result);
 protected:
-	bool reverseOn; //работает с инвертированием вывода
-	bool isOn; 		 //включен или нет
-	void on();		//включить выход
-	void off();	  //выключить выход
+	bool reverseOn;  //работает с инвертированием вывода
+	bool isOn;       //включен или нет
+	void on();       //включить выход
+	void off();      //выключить выход
 };
 
 
@@ -281,13 +282,13 @@ protected:
 class EApplication {
 public:
 	EApplication();
-	int printNames();				 // вывести на консоль список данных по объектам
-	void printEvent();				//напечатать на консоли текущее событие
-	int getEvent();					//просмотреть, нет ли событий, если есть - то получить
-	int pushEvent(event_t evntType,  //тип события
-	oid_t destinationID=0,	//идентификатор получателя, если есть
-	oid_t sourceID=0,		  //идентификатор создателя
-	int16_t eventData=0);		 //дополнительные данные события
+	int printNames();                // вывести на консоль список данных по объектам
+	void printEvent();               //напечатать на консоли текущее событие
+	int getEvent();                  //просмотреть, нет ли событий, если есть - то получить
+	int pushEvent(const event_t evntType,  //тип события
+	const oid_t destinationID=0,           //идентификатор получателя, если есть
+	const oid_t sourceID=0,                //идентификатор создателя
+	const int16_t eventData=0);            //дополнительные данные события
 	virtual int parseEvent(){return 1;};	//анализ события, необходимые действия
 	int handleEvent();				//передать подчиненным на обработку
 	void idle();						//стандартный цикл
@@ -300,22 +301,20 @@ private:
 };
 
 
-
-
-
+/*
 class DebounceButton {
- ublic:
+public:
  //	DebounceButton();
  //  ~DebounceButton();
 	void ftest();
-	 static void updateAll(){}; 
+	static void updateAll(){}; 
 private: 
 	static DebounceButton *buttons[];
 	static byte buttonId;
 	byte id;
 };
 
-
+*/
 
 
 #endif
