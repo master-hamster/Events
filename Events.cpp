@@ -531,15 +531,15 @@ EApplication::EApplication()
    currentEvent.eventType=evNone;
 };
 
-int EApplication::addObject(EObject* newObject)
+oid_t EApplication::addObject(EObject* newObject)
 {
-   if ( this->objectsAdded<MAXAPPOBJECTS) {
-      objects[this->objectsAdded] = newObject;
-      this->objectsAdded++;
-      return true;
+   if ( objectsAdded < MAXAPPOBJECTS) {
+      objects[objectsAdded] = newObject;
+      objectsAdded++;
+      return newObject->getID();
    } 
    else {
-      return false;
+      return 0;
    }
 };
 
@@ -548,8 +548,8 @@ const int EApplication::printNames()
 {
    char sTmp[64];
 	int printCount;
-   for ( printCount = 0; printCount < this->objectsAdded; printCount++) {
-      this->objects[printCount]->getName(sTmp);
+   for ( printCount = 0; printCount < objectsAdded; printCount++) {
+      objects[printCount]->getName(sTmp);
       Serial.println(sTmp);
    }
 	return printCount;
@@ -587,8 +587,8 @@ const void EApplication::printEvent()
 
 void EApplication::idle()
 {
-   for ( int i=0;i<this->objectsAdded;i++) {
-      this->objects[i]->idle();
+   for ( int i=0; i<this->objectsAdded; i++ ) {
+      objects[i]->idle();
    }
 };
 
@@ -605,7 +605,7 @@ int EApplication::handleEvent()
     	}
     */
    for ( int i=0; i < this->objectsAdded; i++) {
-      j+= objects[i]->handleEvent(currentEvent);
+      j += objects[i]->handleEvent(currentEvent);
    }
    return j;
 };
@@ -667,7 +667,9 @@ int EApplication::handleEvent()
       Некоторые сложные объекты вынесены в отдельные модули.
       Event.print не работает, если какие-либо из данных 8-битные, пришлось вернуть 
       типы данных oid_t и event_t обратно на uint16_t 
-      Возможно, следует делать это только в случае отладки, но сейчас лениво   
+      Возможно, следует делать это только в случае отладки, но сейчас лениво
+  *2012-01-19 6h Куча правок по вычистке текста, исправлена пара мелких ошибок,
+		изменен тип application.addObject()
  */
 
 

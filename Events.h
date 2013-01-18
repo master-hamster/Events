@@ -281,7 +281,7 @@ public:
 	virtual int parseEvent(){return 1;};	//анализ события, необходимые действия
 	int handleEvent();				//передать подчиненным на обработку
 	void idle();						//стандартный цикл
-	int addObject(EObject* newObject); //добавление нового объекта, возвращает успех добавления TRUE/FALSE
+	oid_t addObject(EObject* newObject); //добавление нового объекта, возвращает OID или 0 при неудаче
 //protected:
 	Event currentEvent;			  //текущее событие
 private:
