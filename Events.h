@@ -224,7 +224,7 @@ protected:
 };
 
 
-//Generic Inpu/output device
+//Generic Input/output device
 class EDevice : public EObject {
 public:
 	EDevice();
@@ -271,8 +271,8 @@ protected:
 class EApplication {
 public:
 	EApplication();
-	int printNames();                // вывести на консоль список данных по объектам
-	void printEvent();               //напечатать на консоли текущее событие
+	const int printNames();                // вывести на консоль список данных по объектам
+	const void printEvent();               //напечатать на консоли текущее событие
 	int getEvent();                  //просмотреть, нет ли событий, если есть - то получить
 	int pushEvent(const event_t evntType,  //тип события
 		const oid_t destinationID = 0,      //идентификатор получателя, если есть

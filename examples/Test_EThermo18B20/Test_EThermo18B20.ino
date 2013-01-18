@@ -23,7 +23,7 @@ https://github.com/master-hamster/Events
 #include <EThermo.h>
 
 #define evTimeToGetTemperature 211
-// 1wire is plugged into port 3
+// 1wire is plugged into port 7
 #define ONE_WIRE_BUS 7
 // Measurement cycle delay, ms
 #define MEASURE_DELAY 5000

@@ -543,7 +543,7 @@ int EApplication::addObject(EObject* newObject)
    }
 };
 
-int EApplication::printNames()
+const int EApplication::printNames()
 //печатает на консоль имена всех подобъектов, только для отладки!!
 {
    char sTmp[64];
@@ -580,7 +580,7 @@ int EApplication::getEvent()
    };
 };
 
-void EApplication::printEvent()
+const void EApplication::printEvent()
 {
    this->currentEvent.print();
 };
