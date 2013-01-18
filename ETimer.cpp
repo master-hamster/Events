@@ -20,7 +20,6 @@ oid_t ETimer::init(const unsigned long interval, const event_t evType, const boo
    return event.sourceID;
 };
 
-
 int ETimer::handleEvent(Event& tmpEvent)
 {  
 	if ( eventForMe( tmpEvent ) ) {
@@ -31,7 +30,7 @@ int ETimer::handleEvent(Event& tmpEvent)
 			case evTimerStop :
 				stop();
 				break;   
-			default :
+			default:
 				EObject::handleEvent(tmpEvent);
 		};
    };   
@@ -60,7 +59,6 @@ void ETimer::idle()
       }   
    } 
 };
-
 
 void ETimer::start()
 {
