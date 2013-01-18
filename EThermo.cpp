@@ -1,9 +1,9 @@
 #include "EThermo.h"
 
 oid_t EThermo::init(const uint16_t timeout)
+//Инициализация термометра с заданным интервалом и автозапуском
 {
 	oid_t tmp = EObject::init();
-	//Инициализация термометра с заданным интервалом и автозапуском
 	if (timeout == 0) {
 		active = 0;
 		timer.init(ETHERMO_THERMOMEASUREDELAY,true);
@@ -32,8 +32,8 @@ float EThermo::getTemperature()
 };
 
 int EThermo::handleEvent(Event& tmpEvent)
+//handle information request - clear event and create new event with data
 {
-	//handle information request - clear event and create new event with data
 	if (eventForMe(tmpEvent)) { //we got info request - let's cleare event and tell temperature
 #ifdef DEBUG_ETHERMO
 		Serial.println("EThermo::handleEvent(): Its my event!");
@@ -65,12 +65,8 @@ void EThermo::idle()
 #endif 
 		if (active) {
 			tellThemperature();
-		} // if active 
-//	} else {
-//#ifdef DEBUG_ETHERMO  
-//		Serial.print(".");
-//#endif 
-	}//if timer.expired
+		}
+	} //if timer.expired
 }
 
 void EThermo::tellThemperature()
@@ -91,9 +87,9 @@ oid_t EThermoDallas1820::init(DallasTemperature* dt, const uint16_t timeout, con
 	if (! (dallas1820->getAddress(insideThermometer, 0))) {
 		Serial.println("Unable to find address for Device 0"); 
 	} else {
+		dallas1820->setResolution(insideThermometer, precision);
 #ifdef DEBUG_ETHERMO		
 // установить точность!!!!!
-		dallas1820->setResolution(insideThermometer, precision);
 		Serial.println("Dallas inited.");
 #endif		
 	};	
