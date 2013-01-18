@@ -155,8 +155,8 @@ public:
 	oid_t destinationID; //идентификатор получателя, если есть
 	int16_t eventData;	//дополнительные данные события
 	const void print();
-	const void copy(Event& newEvent); //копировать данные в новое событие
-	Event& operator=(const Event& from);
+//	const void copy(Event& newEvent); //копировать данные в новое событие
+	Event& operator =(const Event& from);
 };
 
 
@@ -213,19 +213,18 @@ public:
 	oid_t init(); //возвращает идентификатор объекта
 	virtual int handleEvent(Event& tmpEvent);
 	virtual void idle(){};
-//	virtual void setEvent(uint8_t evtype, uint16_t dest, int16_t data);	//заложить событие
-	int eventForMe(Event& tmpEvent);
+	const int eventForMe(const Event& tmpEvent); // return 1 if yes, 0 if no
 	virtual void getName(char* result);
 	oid_t getID() {return this->ID;};
 private:
 	oid_t ID;          //идентификатор объекта
 protected:
-	Event event;       //событие - буфер
-	bool isDisabled;   //разрешена ли работа устройству?	
+	Event event;       //Event buffer
+	bool isDisabled;   //Can handle events
 };
 
 
-//устройство ввода/вывода
+//Generic Inpu/output device
 class EDevice : public EObject {
 public:
 	EDevice();
@@ -276,9 +275,9 @@ public:
 	void printEvent();               //напечатать на консоли текущее событие
 	int getEvent();                  //просмотреть, нет ли событий, если есть - то получить
 	int pushEvent(const event_t evntType,  //тип события
-	const oid_t destinationID = 0,           //идентификатор получателя, если есть
-	const oid_t sourceID = 0,                //идентификатор создателя
-	const int16_t eventData = 0);            //дополнительные данные события
+		const oid_t destinationID = 0,      //идентификатор получателя, если есть
+		const oid_t sourceID = 0,           //идентификатор создателя
+		const int16_t eventData = 0);       //дополнительные данные события
 	virtual int parseEvent(){return 1;};	//анализ события, необходимые действия
 	int handleEvent();				//передать подчиненным на обработку
 	void idle();						//стандартный цикл

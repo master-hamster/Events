@@ -16,7 +16,6 @@ https://github.com/master-hamster/Events
 // define CASE1 if we test case 1, case2 otherwise
 #define CASE1
 
-//#include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ETimer.h>
@@ -25,7 +24,7 @@ https://github.com/master-hamster/Events
 
 #define evTimeToGetTemperature 211
 // 1wire is plugged into port 3
-#define ONE_WIRE_BUS 3
+#define ONE_WIRE_BUS 7
 // Measurement cycle delay, ms
 #define MEASURE_DELAY 5000
 
@@ -70,14 +69,14 @@ void MyApplication::init()
 int MyApplication::parseEvent()
 {
 #ifdef CASE1
-	if (currentEvent.eventType==evTimeToGetTemperature) {
+	if (currentEvent.eventType == evTimeToGetTemperature) {
 		//It's time to know the temperature - create info request
-		pushEvent(evTellMe,thermometerID);
+		pushEvent(evTellMe, thermometerID);
 		return 1;
 	}
 #endif
 
-	if (currentEvent.eventType==evTemperature) {
+	if (currentEvent.eventType == evTemperature) {
 		//We've got temperature event - let's print data
 		Serial.print("RESULT Temp:");
 		Serial.print(currentEvent.eventData);
@@ -106,7 +105,7 @@ void setup()
 	Serial.print(deviceCount, DEC);
 	Serial.println(" devices.");
 	// Print all devices on 1wire bus
-	for (uint8_t n = 0; n<deviceCount; n++) {
+	for (uint8_t n = 0; n < deviceCount; n++) {
 		if (!sensor.getAddress(deviceAddress, n)) {
 			Serial.print("Unable to find address for Device");
 			Serial.println(n);	

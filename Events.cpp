@@ -9,51 +9,43 @@ static oid_t __next_EObject_ID__; //Идентификатор следующе�
 #define MAXEVENTNAMES 27 
 //DOESNT WORK!!!
 const char* eventTypeNames[]={
-"evNone",
-"evEnable",
-"evDisable",
-"evTurnOn",
-"evTurnOff",
-"evTellMe",
-"evTimerExpired",
-"evTimerStop",
-"evTimerStart",
-"evInputUp",
-"evInputDown",
-"evInputToggle",
-"evInputHold",
-"evKeyPressed",
-"evKeyDoublePressed",
-"evKeyHold",
-"evAIData",
-"evLevelChanged",
-"evMotionDetected",
-"evFlicker",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"UNKNOWN"
+	"evNone",
+	"evEnable",
+	"evDisable",
+	"evTurnOn",
+	"evTurnOff",
+	"evTellMe",
+	"evTimerExpired",
+	"evTimerStop",
+	"evTimerStart",
+	"evInputUp",
+	"evInputDown",
+	"evInputToggle",
+	"evInputHold",
+	"evKeyPressed",
+	"evKeyDoublePressed",
+	"evKeyHold",
+	"evAIData",
+	"evLevelChanged",
+	"evMotionDetected",
+	"evFlicker",
+	"",
+	"",
+	"",
+	"",	
+	"",
+	"",
+	"",
+	"",
+	"UNKNOWN"
 };
-
 
 const char *eventName(event_t evType)
 {
-  // char* result;
    return (evType>MAXEVENTNAMES) ? eventTypeNames[MAXEVENTNAMES] : eventTypeNames[evType];
- // if (evType>MAXEVENTNAMES) {
-  //    result = eventTypeNames[evType];
-//   } else {
-  //    result=eventTypeNames[MAXEVENTNAMES];
-   //}
 }   
 
 #endif
-
 
 
 //=================================== class Event ==============
@@ -69,7 +61,7 @@ const void Event::print()
    Serial.print(" Data=");
    Serial.println(this->eventData);
 };
-
+/*
 const void Event::copy(Event& newEvent)
 //копировать данные в новое событие
 {
@@ -78,14 +70,15 @@ const void Event::copy(Event& newEvent)
    newEvent.sourceID=this->sourceID;
    newEvent.destinationID=this->destinationID;
 };
+*/
 
-Event& Event::operator=(const Event& from)
+Event& Event::operator =(const Event& from)
 {
-   eventType=from.eventType;
-   eventData=from.eventData;
-   sourceID=from.sourceID;
-   destinationID=from.destinationID;
-	//return this;
+   eventType     = from.eventType;
+   eventData     = from.eventData;
+   sourceID      = from.sourceID;
+   destinationID = from.destinationID;
+	return *this;
 };
 
 //====================== EventStack =================================
@@ -107,7 +100,8 @@ int EventStack::push(Event& newEvent)
       Serial.println(", size++");
 #endif
       //      size++;
-      newEvent.copy(items[size++]);
+      //newEvent.copy(items[size++]);
+      items[size++] = newEvent;
       //      items[size]=newEvent;
       return size;
    };
@@ -213,14 +207,14 @@ void Timer::setInterval(const unsigned long interval)
 //вернем сколько времени прошло с начала старта таймера
 unsigned long Timer::elapsedTime()
 {
-   return millis()-this->startTime;
+   return millis() - startTime;
 };
 
 
 bool Timer::expired()
 // возвращает true если интервал ненулевой и уже прошел
 {
-   if ((this->interval!=0) && (millis() - this->startTime >= this->interval)) {
+   if (( interval !=0 ) && ( millis() - startTime >= interval) ) {
       //??????????код ниже нужно осмыслить или выкинуть или переделать
       // As suggested by benjamin.soelberg@gmail.com, the following line
       // this->previous_millis = millis();
@@ -235,9 +229,9 @@ bool Timer::expired()
       //} else {
       //	this->previous_millis += this->interval_millis;
       //}
-      if ( this->autorestart) { //если есть флаг автосброса - сбросим время и продолжим работу
+      if ( autorestart ) { //если есть флаг автосброса - сбросим время и продолжим работу
 //         this->startTime=millis();
-         this->startTime+=this->interval;
+         startTime += interval;
       }
       return true;
    }
@@ -295,7 +289,7 @@ int EObject::handleEvent(Event& tmpEvent)
 };   
 
 //возвращает TRUE, если событие предназначено этому объекту и FALSE в противном случае
-int EObject::eventForMe(Event& tmpEvent)
+const int EObject::eventForMe(const Event& tmpEvent)
 {
    if (tmpEvent.destinationID == this->ID ) {
       return true;
@@ -408,25 +402,29 @@ void EInputDevice::idle()
             if ( this->currentState==0) {
                //данные имеют низкий уровень -> нужно сформировать событие для некоторых условий
                switch ( this->inputMode) {
-               case imUpDown :
-               case imDownOnly :
+               case imUpDown:
+               case imDownOnly:
                   eventType = evInputDown;
                   break;
-               case imToggle :
+               case imToggle:
                   eventType = evInputToggle;
                   break;
+					default:
+						break;
                }
             } 
             else {
                //если мы здесь ->уровень вырос
                switch ( this->inputMode) {
-               case imUpDown :
-               case imUpOnly :
+               case imUpDown:
+               case imUpOnly:
                   eventType = evInputUp;
                   break;
-               case imToggle :
+               case imToggle:
                   eventType = evInputToggle;
                   break;
+					default:
+						break;
                }
             } //конец ветки по высокому/низкому считанному уровню
             //теперь если задан какой-то тип события - надо поднимать событие
@@ -435,7 +433,7 @@ void EInputDevice::idle()
                Serial.print("EInputDevice::idle: eventType=");
                Serial.println(eventType);
 #endif
-               eventStack.pushEvent(eventType,this->getID(),0,this->currentState);
+               eventStack.pushEvent(eventType, this->getID(), 0, this->currentState);
             }
             //теперь сохраним время и значение последнего состояни
             this->lastState = this->currentState;

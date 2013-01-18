@@ -22,17 +22,19 @@ oid_t ETimer::init(const unsigned long interval, const event_t evType, const boo
 
 
 int ETimer::handleEvent(Event& tmpEvent)
-{   
-   switch (tmpEvent.eventType) {
-      case evTimerStart :
-         start();
-         break;
-      case evTimerStop :
-         stop();
-         break;   
-      default :
-         EObject::handleEvent(tmpEvent);
-   }   
+{  
+	if ( eventForMe( tmpEvent ) ) {
+		switch (tmpEvent.eventType) {
+			case evTimerStart :
+				start();
+				break;
+			case evTimerStop :
+				stop();
+				break;   
+			default :
+				EObject::handleEvent(tmpEvent);
+		};
+   };   
 };
 
 void ETimer::idle()
@@ -74,5 +76,5 @@ void ETimer::stop()
 
 void ETimer::getName(char* result)
 {
-   sprintf(result,"ETimer ID=%d Started=%d ", getID(), timer.getStartTime());
+   sprintf(result,"ETimer ID=%d Started=%ld ", getID(), timer.getStartTime());
 };
