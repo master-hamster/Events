@@ -30,7 +30,7 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 		Serial.println( tmp );
 #endif
 	}; 
-	getData();									// считаем данные с учетом флага реверса
+	getData();
 	this->lastState = this->currentState;
 	return result;
 };
@@ -47,11 +47,11 @@ void EButton::idle()
 
 	if ( debouncingStarted ) {
 		if (debounceTimer.expired()) {
-			//закончилась задержка дребезга - время считать показания устройства
+			//we passed debounce delay, lets get current state
 			this->debouncingStarted = false;
 			getData();
 			if ( this->currentState != this->lastState) {
-				//данные изменились, теперь следует понять, не послать ли событие?
+				//State changed. let's think have we to rise event?
 #ifdef DEBUG_EBUTTON
 				int tmpID = this->getID();
 				Serial.print( "EButton::idle() ID=" );
@@ -102,8 +102,8 @@ void EButton::idle()
 			Serial.print( "EButton::idle: start debouncing, newstate=" );
 			Serial.println( this->currentState );
 #endif
-			//считали данные и они не соответствуют тем, что были раньше
-			//надо запустить антидребезг
+			//current data differ from last read
+			//let's start debouncing timer
 			this->debouncingStarted = true;
 			debounceTimer.start();
 		}

@@ -26,14 +26,17 @@ int ETimer::handleEvent(Event& tmpEvent)
 		switch (tmpEvent.eventType) {
 			case evTimerStart :
 				start();
+				return 1;
 				break;
 			case evTimerStop :
 				stop();
+				return 1;
 				break;   
 			default:
-				EObject::handleEvent(tmpEvent);
+				return EObject::handleEvent(tmpEvent);
 		};
    };   
+	return 0;
 };
 
 void ETimer::idle()
