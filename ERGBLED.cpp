@@ -36,7 +36,7 @@ void ERGBLED::getName(char* result)
 
 int ERGBLED::handleEvent(Event& tmpEvent)
 {
-//   EOutputDevice::handleEvent(tmpEvent);
+   EOutputDevice::handleEvent(tmpEvent);
    switch ( tmpEvent.eventType) {
    case evTurnOn :
       if (eventForMe(tmpEvent)) {

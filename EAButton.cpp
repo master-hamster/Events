@@ -27,7 +27,7 @@ int EAButton::handleEvent(Event& tmpEvent)
 void EAButton::idle()
 {
 	uint8_t lastLevel = this->currentLevel;
-	if (false == this->isDisabled) {
+	if ( this->isEnabled) {
 		getData();
 		if (lastLevel != this->currentLevel ) { //уровень изменился, сгенерируем событие
 			eventStack.pushEvent(evLevelChanged, this->getID(), 0, this->currentData);

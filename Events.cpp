@@ -262,49 +262,59 @@ oid_t EObject::init()
 }; 
 
 int EObject::handleEvent(Event& tmpEvent)
+/*
+Процедура обработки событий
+Принимает событие
+Проверяет, является ли оно персональным
+В базовом объекте обратабываются только следующие события:
+  evEnable
+  evDIsable
+Возвращает: 
+	0 если событие не было обработано
+	ID объекта, если событие было обработано
+*/
 {
-   if (eventForMe(tmpEvent)) {
-      //основные команды, которые обрабоатывает любой объект
-      // - это включение и выключение объекта
-      switch (tmpEvent.eventType) {
-         case evEnable:
-            this->isDisabled = false;
+	if (eventForMe(tmpEvent)) {
+		//основные команды, которые обрабоатывает любой объект
+		// - это включение и выключение объекта
+		if ( this->isEnabled ) {
+			switch (tmpEvent.eventType) {
+			case evEnable:
+				this->isEnabled = true;
 #ifdef DEBUG_EOBJECT            
-            Serial.print("EObject::handleEvent Enabled ID=");
-            Serial.println(this->getID());
+				Serial.print("EObject::handleEvent Enabled ID=");
+				Serial.println(this->getID());
 #endif
-            break;
-         case evDisable:
-            this->isDisabled = true;
+				return this->ID;          
+				break;
+			case evDisable:
+				this->isEnabled = false;
 #ifdef DEBUG_EOBJECT            
-            Serial.print("EObject::handleEvent Disabled ID=");
-            Serial.println(this->getID());
+				Serial.print("EObject::handleEvent Disabled ID=");
+				Serial.println(this->getID());
 #endif
-            break;
-      }
-     return getID();          
-   } else {
-      return 0;
-   }
+				return this->ID;          
+				break;
+			}
+		} else {
+			if ( tmpEvent.eventType == evEnable ) {
+				this->isEnabled == true;
+			}
+			return this->ID;          
+		}
+	} 
+    return 0;
 };   
 
-//возвращает TRUE, если событие предназначено этому объекту и FALSE в противном случае
-const int EObject::eventForMe(const Event& tmpEvent)
+const bool EObject::eventForMe(const Event& tmpEvent)
 {
-   if (tmpEvent.destinationID == this->ID ) {
-      return true;
-   }   
-   else {
-      return false;
-   }
+   return (tmpEvent.destinationID == this->ID );
 };
-
 
 void EObject::getName(char* result)
 {
    sprintf(result,"EObject ID=%d", this->ID);
 };
-
 
 
 //============================== EDevice ==================================================
@@ -337,9 +347,8 @@ oid_t EInputDevice::initReverse(const port_t port, const InputMode im)
 };
 
 oid_t EInputDevice::init(const port_t port, const InputMode im, const bool reverseOn, bool pullUp)
-//Инициализация c учетом флага
 {
-   oid_t result=EDevice::init(port);       //   сделаем инициацию устройства
+   oid_t result=EDevice::init(port);       
 #ifdef DEBUG_EINPUTDEVICE
    Serial.println("EInputdevice::init_full()");
 #endif
@@ -481,8 +490,13 @@ oid_t EOutputDevice::init(const port_t port, const bool reverse)
 {
    oid_t result;
    result = EDevice::init(port);
-   pinMode(this->port,OUTPUT);
-   this->reverseOn = reverse;
+   pinMode( this->port, OUTPUT );
+   reverseOn = reverse;
+   if ( reverseOn ) {
+      digitalWrite(this->port,HIGH);
+   } else {
+      digitalWrite(this->port,LOW);
+   }
    return result;
 };
 
@@ -503,6 +517,7 @@ void EOutputDevice::getName(char* result)
 void EOutputDevice::on()
 //включение устройства с сохранением соответствующих полей
 {
+
    isOn = true;
    if ( this->reverseOn) {
       digitalWrite(this->port,LOW);

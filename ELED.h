@@ -14,12 +14,12 @@ public:
    virtual void getName( char* result );
    bool getState(){return isOn;};
    void toggle();
+   virtual void on();
+   virtual void off();
 //        void blink(unsigned int time, byte times=1);
    virtual int handleEvent( Event& tmpEvent );
 //   virtual void idle();
 protected:
-   void on();
-   void off();
    bool isOn; //включен или нет
 };
 

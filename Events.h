@@ -1,14 +1,12 @@
-/* This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 2.1 of the License, or (at your option) any later version.
-*/
-
 /*
   
-	модуль основных объектов для архитектуры управляемой событиями
-	начат 2010-01-07
-  
+	Arduino Event Library
+	Started 2010-01-07 by MH
+	http://github.com/master-hamster/Events
+	Main library
+*/	
+
+/*	
 	Задачи:
 	4. Реализовать аналоговое устройство ввода с выдачей событий по уровням. 
 	5. реализовать в таймере паузу и обработку переполнения millis()
@@ -27,26 +25,26 @@
 #else
 #include "Arduino.h"
 #endif
-//#include "WProgram.h"
-//включение отладки событий
+
+//Uncomment next line for turn on debugging
 //#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
-//#define PRINTNAMES OBJECT NAME PRINTING
+//#define PRINTNAMES
 //#define DEBUG_EOBJECT
 //#define DEBUG_EVENTNAMES
-//#define DEBUG_EVENTSTACK 
-//#define DEBUG_EINPUTDEVICE  
-//#define DEBUG_APPLICATION 
-//#define DEBUG_EBEEPER 
-//#define DEBUG_ETIMER 
+//#define DEBUG_EVENTSTACK
+//#define DEBUG_EINPUTDEVICE
+//#define DEBUG_APPLICATION
+//#define DEBUG_EBEEPER
+//#define DEBUG_ETIMER
 //#define DEBUG_EANALOGINPUT
-//#define DEBUG_EBUTTON 
+//#define DEBUG_EBUTTON
 //#define DEBUG_ELED
 //#define DEBUG_ECANDLE
 //#define DEBUG_ECANDLE1
 //#define DEBUG_ETHERMO
-//включение выдачи ошибочных сообщений на консоль, любое значение - идет выдача
+//
 #define DEBUG_ERROR 
 #endif
 
@@ -54,47 +52,44 @@
 //никакого события нет
 #define evNone						0
 //команды на включение и выключение устройства
-#define evEnable					1	//разрешить объекту обработку событий
-#define evDisable					2	//запретить объекту обработку событий
-#define evTurnOn					3 	//Включить объект (если есть такое состояние)
-#define evTurnOff					4	//Выключить объект (если есть такое состояние)
-#define evTellMe					5	//Взбодрить объект (пусть ответит, есди обучен)
+#define evEnable                    1   //enable event handling
+#define evDisable                   2   //disable event handling
+#define evTurnOn                    3   //Включить объект (если есть такое состояние)
+#define evTurnOff                   4   //Выключить объект (если есть такое состояние)
+#define evTellMe                    5   //Взбодрить объект (пусть ответит, есди обучен)
 
 //ETimer create evTimerExpired when it has expired 
-#define evTimerExpired			6
+#define evTimerExpired               6
 //ETimer stop working whet it got evTimerStop
-#define evTimerStop				7
+#define evTimerStop                  7
 //ETimer resume counting whet it has got evTimerStart
-#define evTimerStart				8
+#define evTimerStart                 8
 
-//сенсор получил данные, в данных - условный ID кнопки
-//#define evInputEvent			7
-
-//основные события абстрактного датчика
-#define evInputUp					9
-#define evInputDown				10
-#define evInputToggle			11
-#define evInputHold				12
+//Abstract Input Events
+#define evInputUp                    9
+#define evInputDown                 10
+#define evInputToggle               11
+#define evInputHold                 12
 // button's events - created by EButton
-#define evKeyPressed				13
-#define evKeyDoublePressed		14
-#define evKeyHold					15
+#define evKeyPressed                13
+#define evKeyDoublePressed          14
+#define evKeyHold                   15
 
 
 //событие от устройства аналогового ввода
-#define evAIData					16
+#define evAIData                    16
 //событие изменения уровня аналогового ввода/кнопки
-#define evLevelChanged			17
+#define evLevelChanged              17
 
 //обнаружено движение, в данных - условный ID датчика движения
-#define evMotionDetected		18
+#define evMotionDetected            18
 // командна на гашение света, в данных - условынй ID источника света
-//#define evLEDOff				21
+//#define evLEDOff                    21
 // команда на включение света, в данных - условный ID источника света
-//#define evLEDOn					22
-//#define evCandleOn				23
-//#define evCandleOff			24
-#define evFlicker					19
+//#define evLEDOn                     22
+//#define evCandleOn                  23
+//#define evCandleOff                 24
+#define evFlicker                   19
 
 //команды на включение и выключение устройства - заменены на TurnOn TurnOff
 //#define evOutputOn				26
@@ -140,14 +135,12 @@ enum CandleState {
 //максимальное количество объектов в приложении
 #define MAXAPPOBJECTS					20
 
-//!!!!!!перевести в статические члены класса EObject
-//???счетчик для выдачи номеров новым объектам EObject, пока не задействован
 typedef uint16_t oid_t;
 typedef uint16_t event_t;
 typedef uint16_t port_t;
 
 
-//основной класс - событие
+//Main class definition 
 class Event {
 public:
 	event_t eventType;  //тип события
@@ -213,14 +206,14 @@ public:
 	oid_t init(); //возвращает идентификатор объекта
 	virtual int handleEvent(Event& tmpEvent);
 	virtual void idle(){};
-	const int eventForMe(const Event& tmpEvent); // return 1 if yes, 0 if no
+	const bool eventForMe(const Event& tmpEvent);
 	virtual void getName(char* result);
 	oid_t getID() {return this->ID;};
 private:
 	oid_t ID;          //идентификатор объекта
 protected:
 	Event event;       //Event buffer
-	bool isDisabled;   //Can handle events
+	bool isEnabled;   //Can handle events
 };
 
 
@@ -259,11 +252,11 @@ public:
 	oid_t init(const port_t port, const bool reverse=false);
 	oid_t initReverse(const port_t port);
 	virtual void getName(char* result);
+	virtual void on();       //Turn Output ON
+	virtual void off();      //Turn Output OFF
 protected:
 	bool reverseOn;  //работает с инвертированием вывода
 	bool isOn;       //включен или нет
-	void on();       //включить выход
-	void off();      //выключить выход
 };
 
 

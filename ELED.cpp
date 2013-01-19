@@ -2,7 +2,6 @@
 
 
 //==================================== class ELED =========================
-//конструктор
 ELED::ELED() : EOutputDevice()
 {
 };
@@ -25,7 +24,7 @@ void ELED::getName(char* result)
 
 int ELED::handleEvent(Event& tmpEvent)
 {
-//   EOutputDevice::handleEvent(tmpEvent);
+   EOutputDevice::handleEvent(tmpEvent);
    switch ( tmpEvent.eventType) {
    case evTurnOn :
       if (eventForMe(tmpEvent)) {
@@ -42,25 +41,30 @@ int ELED::handleEvent(Event& tmpEvent)
    }
 };
 
-//включаем свет
-void ELED::on(void){
+void ELED::on( void ) {
 #ifdef DEBUG_ELED
    Serial.print("ELED::on():ON ID=");
    int port = getID();
    Serial.println(port);
 #endif   
-   this->isOn=true;
-   digitalWrite(this->port,HIGH);
+	EOutputDevice::on();
+	//this->isOn=true;
+	//digitalWrite(this->port,HIGH);
 };
 
-//выключаем свет
-void ELED::off(void){
-   this->isOn=false;
-   digitalWrite(this->port,LOW);
+void ELED::off( void ) {
+#ifdef DEBUG_ELED
+   Serial.print("ELED::off():OFF ID=");
+   int port = getID();
+   Serial.println(port);
+#endif   
+	EOutputDevice::off();
+
+//   this->isOn=false;
+//   digitalWrite(this->port,LOW);
 };
 
-//переключаем свет в зависимости от состояни
-void ELED::toggle(void){
+void ELED::toggle( void ){
    isOn ? off() : on();
 };
 

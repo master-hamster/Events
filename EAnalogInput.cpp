@@ -11,7 +11,7 @@ oid_t EAnalogInput::init(port_t port, uint16_t refreshTime)
    
 void EAnalogInput::idle()
 {
-   if ( false == this->isDisabled ) {
+   if ( this->isEnabled ) {
       if ( refreshTimer.expired() ) {
          refreshTimer.start();
          getData();
