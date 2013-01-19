@@ -19,6 +19,8 @@ EDevice	KEYWORD1
 EInputDevice	KEYWORD1
 EOutputDevice	KEYWORD1
 EApplication	KEYWORD1
+ELED          KEYWORD1
+
 
 
 
@@ -51,8 +53,8 @@ printNames	KEYWORD2
 printEvent	KEYWORD2
 getEvent	KEYWORD2
 pushEvent	KEYWORD2
-eventForMe	KEYWORD2
-eventForMe	KEYWORD2
+parseEvent	KEYWORD2
+addObject	KEYWORD2
 eventForMe	KEYWORD2
 eventForMe	KEYWORD2
 eventForMe	KEYWORD2
