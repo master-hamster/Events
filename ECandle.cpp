@@ -12,18 +12,18 @@ oid_t ECandle::init(port_t ledPort, uint16_t fadeinTimeout, uint16_t fadeoutTime
 	this->setLevel(0);
 	this->currentMaxLevel = maxLevel;
 	this->currentMinLevel = minLevel;
-	this->fadeinTimeout = fadeinTimeout*1000;
-	this->fadeoutTimeout = fadeoutTimeout*1000;
-	fadeinTimer.init(this->fadeinTimeout);
-	fadeoutTimer.init(this->fadeoutTimeout);
+	this->fadeinTimeout = fadeinTimeout * 1000;
+	this->fadeoutTimeout = fadeoutTimeout * 1000;
+	fadeinTimer.init( this->fadeinTimeout );
+	fadeoutTimer.init( this->fadeoutTimeout );
 	return getID();
 };
 
-void ECandle::setLevel(const int value)
+void ECandle::setLevel( const int value )
 {
-	currentLevel=constrain(value,0,255);
+	currentLevel = constrain( value, 0, 255 );
 //	int i = this->currentLevel;
-	analogWrite(this->port,this->currentLevel);
+	analogWrite( this->port, this->currentLevel );
 //#ifdef DEBUG_ECANDLE
 //	Serial.print("ECandle::setCurrentLevel level=");
 //	Serial.println(i);
@@ -32,8 +32,8 @@ void ECandle::setLevel(const int value)
 
 void ECandle::setMinLevel(const int value)
 {
-	 currentMinLevel=constrain(value,CANDLEMINIMALLIGHTLEVEL+1,
-												CANDLEMAXIMALLIGHTLEVEL-1);
+	 currentMinLevel=constrain( value, CANDLEMINIMALLIGHTLEVEL+1,
+										CANDLEMAXIMALLIGHTLEVEL-1);
 };
 
 void ECandle::setMaxLevel(const int value)
@@ -44,13 +44,13 @@ void ECandle::setMaxLevel(const int value)
 
 void ECandle::getName(char* result)
 {
-	sprintf(result,"ECandle: ID=%d port=%d reverseOn=%d",getID(),this->port,this->reverseOn);
-};	
-
+	sprintf( result,"ECandle: ID=%d port=%d reverseOn=%d", getID(),
+				this->port, this->reverseOn );
+};
 
 int ECandle::handleEvent( Event& tmpEvent )
 {	
-	if ( eventForMe( tmpEvent )  {
+	if ( eventForMe( tmpEvent ) )  {
 		if ( this->isEnabled ) {
 #ifdef DEBUG_ECANDLE
 			Serial.println("ECandle::handleEvent(): Its my event!");
@@ -72,17 +72,17 @@ int ECandle::handleEvent( Event& tmpEvent )
 				return getID();
 				break;
 			case csOn:
-				if (tmpEvent.eventType==evTurnOff) {
-					setState(csFadeOut);
+				if ( tmpEvent.eventType == evTurnOff ) {
+					setState( csFadeOut );
 				};
 				return getID();
 				break;
 			case csFadeOut:
-				if (tmpEvent.eventType==evTurnOn) {
-					setState(csFadeIn);
+				if ( tmpEvent.eventType == evTurnOn ) {
+					setState( csFadeIn );
 				}; 
-				if (tmpEvent.eventType==evTurnOff) {
-					setState(csOff);
+				if ( tmpEvent.eventType == evTurnOff ) {
+					setState( csOff );
 				}; 
 				return getID();
 				break;
@@ -92,29 +92,28 @@ int ECandle::handleEvent( Event& tmpEvent )
 				break;
 			}
 		}
-		return EOutputDevice::handleEvent(tmpEvent); //прокинем вниз на унаследованный обработчик
+		return EOutputDevice::handleEvent( tmpEvent );
 	}
 	return 0;
 };
 
 void ECandle::setState(const CandleState newState)
 //переключение в новое состояние
-//начата 2010-02-14 ВЩ
 {
 #ifdef DEBUG_ECANDLE
 	Serial.print("ECandle::setState() ID=");
 	int tmp = getID();
-	Serial.print(tmp);
+	Serial.print( tmp );
 	Serial.print(" new State=");
 	Serial.println(newState);
 #endif	
-	switch (newState) {
+	switch ( newState ) {
 		case csOn:
-			this->currentState=csOn;
+			this->currentState = csOn;
 			on();
 			break;
 		case csOff:
-			this->currentState=csOff;
+			this->currentState = csOff;
 			off();
 			break;
 		case csFadeIn: //?????
@@ -122,11 +121,11 @@ void ECandle::setState(const CandleState newState)
 			fadeIn();
 			break;
 		case csFadeOut:  //?????
-			this->currentState=csFadeOut;
+			this->currentState = csFadeOut;
 			fadeOut();
 			break;		
 		case csFlickering: //??????
-			this->currentState=csFlickering;
+			this->currentState = csFlickering;
 			startFlickering();
 			break;		
 	} //switch newState		
@@ -140,14 +139,15 @@ void ECandle::idle()
 // !!!!!!!!!!сделать обработку isEnabled
 {
 	int newLevel;
-	switch (this->currentState) {
+	switch ( this->currentState ) {
 		case csFadeIn:
-			if (fadeinTimer.expired()) {
-				setState(csOn); //таймер истек, переходим в полное включение
+			if ( fadeinTimer.expired() ) {
+				setState( csOn ); //таймер истек, переходим в полное включение
 			} else {
 			  //расчитаем уровень света и зададим его!
 //				newLevel=calcLightLevel(timeOfLastEvent,FadeInDelay,1,255);
-				newLevel=calcLightLevel(fadeinTimer.getStartTime(),this->fadeinTimeout,1,255);
+				newLevel=calcLightLevel( fadeinTimer.getStartTime(), 
+											this->fadeinTimeout, 1, 255 );
 #ifdef DEBUG_ECANDLE
 				Serial.print("ECandle::idle() newLevel=");				
 				Serial.println(newLevel);
@@ -156,21 +156,25 @@ void ECandle::idle()
 			};
 			break; 
 		case csFadeOut:
-			if (fadeoutTimer.expired()) {
-				setState(csOff); //таймер истек, переходим в полное включение
+			if ( fadeoutTimer.expired() ) {
+				setState( csOff ); //таймер истек, переходим в полное включение
 			} else {
 			  //расчитаем уровень света и зададим его!
 //				newLevel=calcLightLevel(timeOfLastEvent,FadeInDelay,1,255);
-				newLevel=calcLightLevel(fadeoutTimer.getStartTime(),this->fadeoutTimeout,255,1);
+				newLevel=calcLightLevel( fadeoutTimer.getStartTime(), 
+											this->fadeoutTimeout, 255, 1 );
 #ifdef DEBUG_ECANDLE
 				Serial.print("ECandle::idle() newLevel=");				
-				Serial.println(newLevel);
+				Serial.println( newLevel );
 #endif
-				this->setLevel(newLevel);
+				this->setLevel( newLevel );
 			};	  
-			break; 
-	};
-};
+			break;
+		case default:
+			break;
+		}
+	}
+}
 
 int ECandle::calcLightLevel(long startTime,long timeOut, int minLevel, int maxLevel)
 /*
@@ -191,22 +195,23 @@ int ECandle::calcLightLevel(long startTime,long timeOut, int minLevel, int maxLe
 #endif	
 	int tmp, res;
 	int scale = 4;
-	if (minLevel<maxLevel) { scale = -1 * scale;}; 
-	tmp=map(millis(),startTime,startTime+timeOut,minLevel,maxLevel);
+	if ( minLevel < maxLevel ) { scale = -1 * scale;}; 
+	tmp=map( millis(), startTime, startTime + timeOut, minLevel, maxLevel );
 	if (minLevel<maxLevel) {
-		tmp = constrain(tmp,minLevel,maxLevel);
+		tmp = constrain( tmp, minLevel, maxLevel );
 	} else {
-		tmp = constrain(tmp,maxLevel,minLevel);
+		tmp = constrain( tmp, maxLevel, minLevel );
 	}
   //пересчитаем по плавающей логарифмической шкале
  //res = fscale(minLevel,maxLevel,minLevel,maxLevel,tmp,scale);
 //	res=tmp;		
-	res = fscale(startTime,startTime+timeOut,minLevel,maxLevel,millis(),scale); 
+	res = fscale( startTime, startTime + timeOut, minLevel, maxLevel,
+							millis(), scale ); 
 //  Serial.println(res);
 
 #ifdef DEBUG_ECANDLE1
 	Serial.print(", res=");
-	Serial.println(res);
+	Serial.println( res );
 #endif
 	return res;
 };
@@ -214,20 +219,20 @@ int ECandle::calcLightLevel(long startTime,long timeOut, int minLevel, int maxLe
 
 void ECandle::on()
 {
-	setLevel(CANDLEMAXIMALLIGHTLEVEL);
+	setLevel( CANDLEMAXIMALLIGHTLEVEL );
 #ifdef DEBUG_ECANDLE
 	Serial.print("ECandle::on() ID=");
 	int tmp = getID();
-	Serial.println(tmp);
+	Serial.println( tmp );
 #endif	
 };
 
 void ECandle::fadeIn()
 {
 	unsigned long timeOfLastEvent;
-	unsigned long now=millis();
+	unsigned long now = millis();
 	this->fadeinTimer.start();
-	if (this->currentLevel>0) { //!!!???надо бы отладить получше, т.к. не согласуются уровни
+	if ( this->currentLevel > 0 ) { //!!!???надо бы отладить получше, т.к. не согласуются уровни
   //уже горел свет, значит переход не из состояния Off, сдвинем дату последнего события
   // в прошлое, чтобы скомпенсировать долю времени, обсуловленную тем, что свет уже горит.
   //посчитаем условное время предыдущего события
@@ -295,7 +300,7 @@ void ECandle::startFlickering()
 #ifdef DEBUG_ECANDLE
 	Serial.print("ECandle::fadeOff() ID=");
 	int tmp = getID();
-	Serial.println(tmp);
+	Serial.println( tmp );
 #endif	
 	this->setLevel(0);
 }; 
