@@ -140,39 +140,38 @@ void ECandle::idle()
 {
 	int newLevel;
 	switch ( this->currentState ) {
-		case csFadeIn:
-			if ( fadeinTimer.expired() ) {
-				setState( csOn ); //таймер истек, переходим в полное включение
-			} else {
-			  //расчитаем уровень света и зададим его!
-//				newLevel=calcLightLevel(timeOfLastEvent,FadeInDelay,1,255);
-				newLevel=calcLightLevel( fadeinTimer.getStartTime(), 
-											this->fadeinTimeout, 1, 255 );
+	case csFadeIn:
+		if ( fadeinTimer.expired() ) {
+			setState( csOn ); //таймер истек, переходим в полное включение
+		} else {
+		  //расчитаем уровень света и зададим его!
+//			newLevel=calcLightLevel(timeOfLastEvent,FadeInDelay,1,255);
+			newLevel=calcLightLevel( fadeinTimer.getStartTime(), 
+										this->fadeinTimeout, 1, 255 );
 #ifdef DEBUG_ECANDLE
-				Serial.print("ECandle::idle() newLevel=");				
-				Serial.println(newLevel);
+			Serial.print("ECandle::idle() newLevel=");				
+			Serial.println(newLevel);
 #endif
-				this->setLevel(newLevel);
-			};
-			break; 
-		case csFadeOut:
-			if ( fadeoutTimer.expired() ) {
-				setState( csOff ); //таймер истек, переходим в полное включение
-			} else {
-			  //расчитаем уровень света и зададим его!
-//				newLevel=calcLightLevel(timeOfLastEvent,FadeInDelay,1,255);
-				newLevel=calcLightLevel( fadeoutTimer.getStartTime(), 
-											this->fadeoutTimeout, 255, 1 );
+			this->setLevel(newLevel);
+		};
+		break; 
+	case csFadeOut:
+		if ( fadeoutTimer.expired() ) {
+			setState( csOff ); //таймер истек, переходим в полное включение
+		} else {
+		  //расчитаем уровень света и зададим его!
+//			newLevel=calcLightLevel(timeOfLastEvent,FadeInDelay,1,255);
+			newLevel=calcLightLevel( fadeoutTimer.getStartTime(), 
+										this->fadeoutTimeout, 255, 1 );
 #ifdef DEBUG_ECANDLE
-				Serial.print("ECandle::idle() newLevel=");				
-				Serial.println( newLevel );
+			Serial.print("ECandle::idle() newLevel=");				
+			Serial.println( newLevel );
 #endif
-				this->setLevel( newLevel );
-			};	  
-			break;
-		case default:
-			break;
-		}
+			this->setLevel( newLevel );
+		};	  
+		break;
+	default:
+		break;
 	}
 }
 
