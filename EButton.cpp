@@ -1,7 +1,7 @@
-//#include "Event.h"
 #include "EButton.h"
 //2010-02-25 all checked MH
-//2013-01-16 clear code, add 'const' 
+//2013-01-16 clear code, add 'const'
+//2013-01-20 add programmable events 
 
 
 //================================== class EButton ===========================
@@ -10,7 +10,6 @@ EButton::EButton(): EInputDevice()
 };
 
 oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp )
-//Инициализация c учетом флага
 {
 	oid_t result = EInputDevice::init( port, imUpOnly );
 	eventKeyPressed        = evKeyPressed;
@@ -23,9 +22,9 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 	debounceTimer.init( DEBOUNCEDELAY, false );
 	doublePressTimer.init( DOUBLEPRESSDELAY, false );
 	holdTimer.init( KEYHOLDDELAY, false );
-	this->reverseOn = reverseOn;		  
-	pinMode( this->port, INPUT );		 // set this port to INPUT mode
-	if (pullUp) {
+	this->reverseOn = reverseOn;  
+	pinMode( this->port, INPUT );       // set this port to INPUT mode
+	if ( pullUp ) {
 		digitalWrite( this->port, HIGH );
 #ifdef DEBUG_EBUTTON
 		int tmp = this->port;
@@ -44,7 +43,8 @@ void EButton::getName( char* result )
 };
 
 void EButton::idle()
- //процедура проверки текущего состояния.
+ //check current input,
+ //rise event if input changed
  {
 	uint16_t eventType = evNone;
 
@@ -80,8 +80,8 @@ void EButton::idle()
 						eventType = eventKeyDoublePressed;
 					}
 				} 
-				//теперь если задан какой-то тип события - надо поднимать событие
-				if ( eventType != evNone) {
+				//if event type was set, and button is enabled, rise event
+				if ( ( eventType != evNone) && ( this->isEnabled ) ) {
 #ifdef DEBUG_EBUTTON
 					Serial.print("EButton::idle: eventType=");
 					Serial.println( eventType );
@@ -91,7 +91,7 @@ void EButton::idle()
 				else {
 					holdTimer.start();
 				};
-				//теперь сохраним время и значение последнего состояни
+				//save current input state for future use
 				this->lastState = this->currentState;
 			}
 		}
