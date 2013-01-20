@@ -10,10 +10,13 @@ MH 2010-02-10
 кнопка - на pin 4
 пищалка - на pin 13, встроенный диод подтверждает
 */
+#include <Event.h>
 #include <ETimer.h>
 #include <EBeeper.h>
 #include <EButton.h>
-#include <Event.h>
+
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 
 #define evChangeMode    120
@@ -31,7 +34,7 @@ class MyBeeper : public EBeeper {
 class MyApplication : public EApplication {
 public:
    void init();
-   int parseEvent();
+   void parseEvent();
    int buttonID;   //тестовая кнопка для разного
       
    int timerID;
@@ -82,7 +85,7 @@ void MyApplication::init()
   
 };
 
-int MyApplication::parseEvent()
+void MyApplication::parseEvent()
 {
    int oldState;
   // oldState = currentState;

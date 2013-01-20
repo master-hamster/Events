@@ -38,7 +38,7 @@ DallasTemperature sensor(&oneWire);
 class MyApplication : public EApplication {
 public:
 	void init();
-	int parseEvent();
+	void parseEvent();
 
 #ifdef CASE1
 	// wakeup timer
@@ -66,13 +66,12 @@ void MyApplication::init()
 	addObject(&thermometer);
 };
 
-int MyApplication::parseEvent()
+void MyApplication::parseEvent()
 {
 #ifdef CASE1
 	if (currentEvent.eventType == evTimeToGetTemperature) {
 		//It's time to know the temperature - create info request
 		pushEvent(evTellMe, thermometerID);
-		return 1;
 	}
 #endif
 
@@ -82,9 +81,7 @@ int MyApplication::parseEvent()
 		Serial.print(currentEvent.eventData);
 		Serial.print(" and again:");
 		Serial.println(float(currentEvent.eventData) / 100);
-		return 1;
 	}
-  return 0;
 };	 
 
 //====================================================END OF MyApp definition

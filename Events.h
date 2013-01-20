@@ -4,6 +4,7 @@
 	Started 2010-01-07 by MH
 	http://github.com/master-hamster/Events
 	Main library
+	General Objects
 */	
 
 /*	
@@ -147,6 +148,7 @@ public:
 	oid_t sourceID;  //идентификатор создателя
 	oid_t destinationID; //идентификатор получателя, если есть
 	int16_t eventData;	//дополнительные данные события
+	int16_t nodeID;     // optional data: sensor group/node
 	const void print();
 //	const void copy(Event& newEvent); //копировать данные в новое событие
 	Event& operator =(const Event& from);
@@ -272,7 +274,7 @@ public:
 		const oid_t destinationID = 0,      //идентификатор получателя, если есть
 		const oid_t sourceID = 0,           //идентификатор создателя
 		const int16_t eventData = 0);       //дополнительные данные события
-	virtual int parseEvent(){return 1;};	//анализ события, необходимые действия
+	virtual void parseEvent(){};	//анализ события, необходимые действия
 	int handleEvent();				//передать подчиненным на обработку
 	void idle();						//стандартный цикл
 	oid_t addObject(EObject* newObject); //добавление нового объекта, возвращает OID или 0 при неудаче

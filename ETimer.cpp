@@ -2,7 +2,7 @@
 
 //============================== class ETimer ============================================
 ETimer::ETimer() : 
-EObject(), timer(1000){
+EObject(), timer(ETIMER_DEFAULT_DELAY){
 };
 
 ETimer::ETimer(const unsigned long interval) : 
@@ -23,19 +23,17 @@ oid_t ETimer::init(const unsigned long interval, const event_t evType, const boo
 int ETimer::handleEvent(Event& tmpEvent)
 {  
 	if ( eventForMe( tmpEvent ) ) {
-		switch (tmpEvent.eventType) {
-			case evTimerStart :
+		if ( this->isEnabled ) {
+			if ( tmpEvent.eventType == evTimerStart ) {
 				start();
-				return 1;
-				break;
-			case evTimerStop :
+				return getID();
+			} else if ( tmpEvent.eventType == evTimerStop ) {
 				stop();
-				return 1;
-				break;   
-			default:
-				return EObject::handleEvent(tmpEvent);
-		};
-   };   
+				return getID();
+			}
+		} 
+		return EObject::handleEvent(tmpEvent);
+	}
 	return 0;
 };
 
@@ -50,9 +48,15 @@ void ETimer::idle()
             Serial.print(tmpID);
             Serial.print(" Timer expired!! currentEvent=");
             Serial.print(this->event.eventType);
-            Serial.println("");
+			if ( this->isEnabled ) { 
+				Serial.println(" but Event is disabled!");
+			} else {
+				Serial.println("");
+			}
 #endif
-            eventStack.push(event);
+            if ( this->isEnabled ) {
+				eventStack.push(event);
+			};
             if (this->autorestart) {
                start();
             } else {

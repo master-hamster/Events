@@ -1,3 +1,13 @@
+/*
+  
+	Arduino Event Library
+	Started 2010-01-07 by MH
+	http://github.com/master-hamster/Events
+	General Objects
+	
+	
+*/	
+
 #include "Events.h"
 
 
@@ -60,7 +70,10 @@ const void Event::print()
    Serial.print(this->destinationID);
    Serial.print(" Data=");
    Serial.println(this->eventData);
+   Serial.print(" Node=");
+   Serial.println(this->nodeID);
 };
+
 /*
 const void Event::copy(Event& newEvent)
 //копировать данные в новое событие
@@ -69,15 +82,17 @@ const void Event::copy(Event& newEvent)
    newEvent.eventData=this->eventData;
    newEvent.sourceID=this->sourceID;
    newEvent.destinationID=this->destinationID;
+   newEvent.nodeID = this->nodeID;
 };
 */
 
 Event& Event::operator =(const Event& from)
 {
-   eventType     = from.eventType;
-   eventData     = from.eventData;
-   sourceID      = from.sourceID;
-   destinationID = from.destinationID;
+	eventType     = from.eventType;
+	eventData     = from.eventData;
+	sourceID      = from.sourceID;
+	destinationID = from.destinationID;
+	nodeID        = from.nodeID;
 	return *this;
 };
 
@@ -513,10 +528,7 @@ oid_t EOutputDevice::initReverse(const uint16_t port)
 int EOutputDevice::handleEvent( Event& tmpEvent )
 {
 	if ( eventForMe( tmpEvent ) ) {
-		int result;
-		if ( (result = EDevice::handleEvent( tmpEvent ) ) ) {
-			return result;
-		} else {
+		if ( this->isEnabled ) {
 			switch ( tmpEvent.eventType ) {
 			case evTurnOn:
 				on();
@@ -526,26 +538,29 @@ int EOutputDevice::handleEvent( Event& tmpEvent )
 				off();
 				return this->getID();
 				break;
+			default:
+				break;
 			}
-		}	
+		} 
+		return EDevice::handleEvent( tmpEvent );
 	}
 	return 0;
 };
 
-void EOutputDevice::getName(char* result)
+void EOutputDevice::getName( char* result )
 {
-   sprintf(result,"EOutputDevice: ID=%d port=%d reverseOn=%d",getID(),this->port,this->reverseOn);
+   sprintf( result, "EOutputDevice: ID=%d port=%d reverseOn=%d", getID(), this->port, this->reverseOn );
 };
 
 void EOutputDevice::on()
 //включение устройства с сохранением соответствующих полей
 {
    isOn = true;
-   if ( this->reverseOn) {
-      digitalWrite(this->port,LOW);
+   if ( this->reverseOn ) {
+      digitalWrite( this->port, LOW );
    } 
    else {
-      digitalWrite(this->port,HIGH);
+      digitalWrite( this->port, HIGH );
    }
 };
 
@@ -553,11 +568,11 @@ void EOutputDevice::off()
 //выключение устройства с сохранением соответствующих полей
 {
    isOn = false;
-   if ( this->reverseOn) {
-      digitalWrite(this->port,HIGH);
+   if ( this->reverseOn ) {
+      digitalWrite( this->port, HIGH );
    } 
    else {
-      digitalWrite(this->port,LOW);
+      digitalWrite( this->port, LOW );
    };
 };
 
@@ -586,16 +601,16 @@ const int EApplication::printNames()
    char sTmp[64];
 	int printCount;
    for ( printCount = 0; printCount < objectsAdded; printCount++) {
-      objects[printCount]->getName(sTmp);
-      Serial.println(sTmp);
+      objects[printCount]->getName( sTmp );
+      Serial.println( sTmp );
    }
 	return printCount;
 };
 
-int EApplication::pushEvent(const uint16_t evntType,   //тип событи
-      const oid_t destinationID,          //идентификатор получателя, если есть
-      const oid_t sourceID,               //идентификатор создателя
-      const int16_t eventData)              //дополнительные данные события
+int EApplication::pushEvent( const uint16_t evntType,   //тип событи
+		const oid_t destinationID,          //идентификатор получателя, если есть
+		const oid_t sourceID,               //идентификатор создателя
+		const int16_t eventData )           //дополнительные данные события
 {
    return eventStack.pushEvent(evntType,sourceID,destinationID,eventData);   
 };

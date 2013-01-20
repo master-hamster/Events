@@ -7,11 +7,14 @@
 //по evTimerStart сброситься и начать работать
 //по evTimerStop перестать работать
 //через заданное время, если работа разрешена, бросить вверх событие 
-//если таймер не перезапускается, то 
+//если таймер не перезапускается, то ???
+
+// default ETimer delay in ms
+#define ETIMER_DEFAULT_DELAY 1000
+
 class ETimer : public EObject {
 public:
-	ETimer();														//инициализация
-		//аналогично с заданным интервалом и ID
+	ETimer();
 	ETimer(const unsigned long interval);		  
 		//задать интервал, автосброс, событие
 	oid_t init(const unsigned long interval, const event_t evType = evTimerExpired, 

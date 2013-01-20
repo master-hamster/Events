@@ -22,7 +22,7 @@ oid_t ECandle::init(port_t ledPort, uint16_t fadeinTimeout, uint16_t fadeoutTime
 void ECandle::setLevel(const int value)
 {
 	currentLevel=constrain(value,0,255);
-	int i = this->currentLevel;
+//	int i = this->currentLevel;
 	analogWrite(this->port,this->currentLevel);
 //#ifdef DEBUG_ECANDLE
 //	Serial.print("ECandle::setCurrentLevel level=");
@@ -50,12 +50,7 @@ void ECandle::getName(char* result)
 
 int ECandle::handleEvent(Event& tmpEvent)
 {	
-	
- //  Serial.println("!11");
-	EOutputDevice::handleEvent(tmpEvent); //прокинем вниз на унаследованный обработчик
-//	Serial.println("!22");
-	if (eventForMe(tmpEvent)) {
-//	if (1) {	
+	if ( eventForMe( tmpEvent )  && this->isEnabled ) {
 #ifdef DEBUG_ECANDLE
 		Serial.println("ECandle::handleEvent(): Its my event!");
 #endif
@@ -64,8 +59,8 @@ int ECandle::handleEvent(Event& tmpEvent)
 			if (tmpEvent.eventType==evTurnOn) {
 				setState(csFadeIn);
 			};
+			return getID();
 			break;
-		
 		case csFadeIn:
 			if (tmpEvent.eventType==evTurnOff) {
 				setState(csFadeOut);
@@ -73,14 +68,14 @@ int ECandle::handleEvent(Event& tmpEvent)
 			if (tmpEvent.eventType==evTurnOn) {
 				setState(csOn);
 			};
+			return getID();
 			break;
-
 		case csOn:
 			if (tmpEvent.eventType==evTurnOff) {
 				setState(csFadeOut);
 			};
+			return getID();
 			break;
-
 		case csFadeOut:
 			if (tmpEvent.eventType==evTurnOn) {
 				setState(csFadeIn);
@@ -88,15 +83,15 @@ int ECandle::handleEvent(Event& tmpEvent)
 			if (tmpEvent.eventType==evTurnOff) {
 				setState(csOff);
 			}; 
+			return getID();
 			break;
-
-		case csFlickering:
+//		case csFlickering:
+//  ???????????????????
+		default:
 			break;
-
 		};
-		return 1;
-	} // это было наше событие!
-	else return 0;
+	};
+	return EOutputDevice::handleEvent(tmpEvent); //прокинем вниз на унаследованный обработчик
 };
 
 void ECandle::setState(const CandleState newState)
@@ -139,6 +134,7 @@ void ECandle::idle()
 //процедура очередного такта
 //пробег по состояниям, для затухания, разгорания и свечки
 //нужно расчитать новое значение яркости
+// !!!!!!!!!!сделать обработку isEnabled
 {
 	int newLevel;
 	switch (this->currentState) {
@@ -152,9 +148,9 @@ void ECandle::idle()
 #ifdef DEBUG_ECANDLE
 				Serial.print("ECandle::idle() newLevel=");				
 				Serial.println(newLevel);
-#endif				
+#endif
 				this->setLevel(newLevel);
-			};	  
+			};
 			break; 
 		case csFadeOut:
 			if (fadeoutTimer.expired()) {
@@ -166,7 +162,7 @@ void ECandle::idle()
 #ifdef DEBUG_ECANDLE
 				Serial.print("ECandle::idle() newLevel=");				
 				Serial.println(newLevel);
-#endif				
+#endif
 				this->setLevel(newLevel);
 			};	  
 			break; 
