@@ -48,50 +48,53 @@ void ECandle::getName(char* result)
 };	
 
 
-int ECandle::handleEvent(Event& tmpEvent)
+int ECandle::handleEvent( Event& tmpEvent )
 {	
-	if ( eventForMe( tmpEvent )  && this->isEnabled ) {
+	if ( eventForMe( tmpEvent )  {
+		if ( this->isEnabled ) {
 #ifdef DEBUG_ECANDLE
-		Serial.println("ECandle::handleEvent(): Its my event!");
+			Serial.println("ECandle::handleEvent(): Its my event!");
 #endif
-		switch (this->currentState) {
-		case csOff:  //свет полностью включен
-			if (tmpEvent.eventType==evTurnOn) {
-				setState(csFadeIn);
-			};
-			return getID();
-			break;
-		case csFadeIn:
-			if (tmpEvent.eventType==evTurnOff) {
-				setState(csFadeOut);
-			};
-			if (tmpEvent.eventType==evTurnOn) {
-				setState(csOn);
-			};
-			return getID();
-			break;
-		case csOn:
-			if (tmpEvent.eventType==evTurnOff) {
-				setState(csFadeOut);
-			};
-			return getID();
-			break;
-		case csFadeOut:
-			if (tmpEvent.eventType==evTurnOn) {
-				setState(csFadeIn);
-			}; 
-			if (tmpEvent.eventType==evTurnOff) {
-				setState(csOff);
-			}; 
-			return getID();
-			break;
+			switch ( this->currentState ) {
+			case csOff:  //свет полностью включен
+				if ( tmpEvent.eventType == evTurnOn ) {
+					setState(csFadeIn);
+				};
+				return getID();
+				break;
+			case csFadeIn:
+				if ( tmpEvent.eventType == evTurnOff ) {
+					setState( csFadeOut );
+				};
+				if ( tmpEvent.eventType == evTurnOn ) {
+					setState( csOn );
+				};
+				return getID();
+				break;
+			case csOn:
+				if (tmpEvent.eventType==evTurnOff) {
+					setState(csFadeOut);
+				};
+				return getID();
+				break;
+			case csFadeOut:
+				if (tmpEvent.eventType==evTurnOn) {
+					setState(csFadeIn);
+				}; 
+				if (tmpEvent.eventType==evTurnOff) {
+					setState(csOff);
+				}; 
+				return getID();
+				break;
 //		case csFlickering:
 //  ???????????????????
-		default:
-			break;
-		};
-	};
-	return EOutputDevice::handleEvent(tmpEvent); //прокинем вниз на унаследованный обработчик
+			default:
+				break;
+			}
+		}
+		return EOutputDevice::handleEvent(tmpEvent); //прокинем вниз на унаследованный обработчик
+	}
+	return 0;
 };
 
 void ECandle::setState(const CandleState newState)

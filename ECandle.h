@@ -12,29 +12,28 @@ public:
 	uint16_t fadeoutTimeout = 15, 
 	uint8_t maxLevel = CANDLEMAXIMALLIGHTLEVEL, //минимальный уровень
 	uint8_t minLevel = CANDLEMINIMALLIGHTLEVEL);//максимальный уровень
-	virtual void getName(char* result);
+	virtual void getName( char* result );
 //  void gracefullyOn(){};
 //  void gracefullyOff(){};
-	virtual int handleEvent(Event& tmpEvent);
+	virtual int handleEvent( Event& tmpEvent );
 	void idle();
 //  void liteFire(){};
 //  void setDelta(int value){};
 	static float fscale( float originalMin, float originalMax,  //расчет уровня сигнала
 	float newBegin, float newEnd,
-	float inputValue, float curve);
-	static int calcLightLevel(long startTime,long timeOut, //
-	int minLevel, int maxLevel);
+	float inputValue, float curve );
+	static int calcLightLevel( long startTime,long timeOut, //
+	int minLevel, int maxLevel );
 private:
-	void setLevel(const int value);
+	void setLevel( const int value );
 	void on();
 	void off();
 	void fadeIn();
 	void fadeOut();
 	void startFlickering();
-	void setState(const CandleState newState);
-
-	void setMaxLevel(const int value);
-	void setMinLevel(const int value);
+	void setState( const CandleState newState );
+	void setMaxLevel( const int value );
+	void setMinLevel( const int value );
 //  int getMaxLevel(){};
 //  int getMinLevel(){};
 //  int getCurrentLevel(){};
@@ -51,6 +50,5 @@ private:
 };
 
 
-
 #endif
-//2010-02-26
+
