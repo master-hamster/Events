@@ -29,11 +29,24 @@ void EAnalogInput::getName( char* result )
    sprintf(result, "EAnalogInput: ID=%d port=%d ", getID(), this->port);
 };   
 	
+int EAnalogInput::doMeasure()
+{
+	return ( currentData = analogRead( this->port ) );
+};
+
+int EAnalogInput::getValue()
+{
+	if ( this->isEnabled ) {
+		doMeasure();
+	}
+	return currentData;	
+};
+
 int EAnalogInput::getData()
 {
-   currentData = analogRead( this->port );
-	return 1;	
+	return currentData;
 };
+
 
 int EAnalogInput::handleEvent( Event& tmpEvent )
 {

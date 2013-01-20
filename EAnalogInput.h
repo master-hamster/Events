@@ -13,8 +13,10 @@ public:
 	virtual void idle();
 	virtual int handleEvent(Event& tmpEvent);
 	virtual void getName(char* result);
-	virtual int getData();
+	int getData();  // get current data, does not measuring
+	int getValue(); // do measuring and return value
 protected:
+	virtual int doMeasure(); //do measuring, if object is enabled
 	int currentData; //последние считанные данные
 	Timer refreshTimer;//таймер для отправления информации
 //	InputMode inputMode; //в каком режиме работает устройство

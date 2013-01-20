@@ -251,13 +251,14 @@ EObject::EObject()
  //  this->ID = nextOId++;
    this->event.eventType = evNone;           //обнуляем значение готовящегося события.
    this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
+   this->isEnabled = true;
 };
 
 oid_t EObject::init()
 {
-   this->ID = __next_EObject_ID__++;   //берем следующий идентификатор объекта
-   this->event.eventType = evNone;     //обнуляем значение готовящегося события.
-   this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
+	this->ID = __next_EObject_ID__++;   //берем следующий идентификатор объекта
+	this->event.eventType = evNone;     //обнуляем значение готовящегося события.
+	this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
 	return this->ID;                  //возвращаем его для внешних любознательных
 }; 
 
