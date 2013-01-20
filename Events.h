@@ -151,7 +151,7 @@ public:
 	int16_t nodeID;     // optional data: sensor group/node
 	const void print();
 //	const void copy(Event& newEvent); //копировать данные в новое событие
-	Event& operator =(const Event& from);
+	Event& operator =( const Event& from );
 };
 
 
@@ -161,13 +161,13 @@ public:
 
 class EventStack {
 public:
-	int push(Event& newEvent);
-	int pushEvent(event_t evntType, //Push event to stack, first - Event Type
-	oid_t sourceID = 0,               //Source Object ID
-	oid_t destinationID = 0,          //Destination ID, 0 if no desination
-	int16_t eventData = 0);           //16-bit optional data
-	int pop(Event& newEvent);      //вытащить событие из стека, 0 - нет, 1 - вытащено
-	void clear(){size = 0;};         //Clear stack content
+	int push( Event& newEvent );
+	int pushEvent( event_t evntType, //Push event to stack, first - Event Type
+		oid_t sourceID = 0,        //Source Object ID
+		oid_t destinationID = 0,   //Destination ID, 0 if no desination
+		int16_t eventData = 0 );   //16-bit optional data
+	int pop( Event& newEvent );    //вытащить событие из стека, 0 - нет, 1 - вытащено
+	void clear(){size = 0;};       //Clear stack content
 	void print();                  //print all events from stack to Serial
 
 private:
@@ -184,10 +184,10 @@ extern EventStack eventStack;
 class Timer {
 public:
 	Timer();
-	Timer(const unsigned long interval);
-	void init(const unsigned long interval, const bool autorestart=false);
-	void setInterval(const unsigned long interval);
-	void setStartTime(const unsigned long newTime){this->startTime=newTime;};
+	Timer( const unsigned long interval );
+	void init( const unsigned long interval, const bool autorestart=false );
+	void setInterval( const unsigned long interval );
+	void setStartTime( const unsigned long newTime ){this->startTime=newTime;};
 	unsigned long int elapsedTime();
 	bool expired();
 	void start();
@@ -206,11 +206,11 @@ public:
 //	static uint8_t nextID; //счетчик идентификаторов для класса
 	EObject();
 	oid_t init(); //возвращает идентификатор объекта
-	virtual int handleEvent(Event& tmpEvent);
+	virtual int handleEvent( Event& tmpEvent );
 	virtual void idle(){};
-	const bool eventForMe(const Event& tmpEvent);
-	virtual void getName(char* result);
-	oid_t getID() {return this->ID;};
+	const bool eventForMe( const Event& tmpEvent );
+	virtual void getName( char* result );
+	oid_t getID() { return this->ID; };
 private:
 	oid_t ID;          //идентификатор объекта
 protected:
@@ -223,8 +223,8 @@ protected:
 class EDevice : public EObject {
 public:
 	EDevice();
-	oid_t init(const port_t port);
-	virtual void getName(char* result);
+	oid_t init( const port_t port );
+	virtual void getName( char* result );
 protected:
 	port_t port;
 };
@@ -232,11 +232,11 @@ protected:
 class EInputDevice : public EDevice {
 public:
 	EInputDevice(); //инициация по умолчанию
-	oid_t initReverse(const port_t port, const InputMode im=imUpDown );
-	oid_t init(const port_t port, const InputMode im=imUpDown, 
-	bool reverseOn=false, bool pullUp=false);
+	oid_t initReverse( const port_t port, const InputMode im=imUpDown );
+	oid_t init( const port_t port, const InputMode im=imUpDown, 
+	bool reverseOn=false, bool pullUp=false );
 	virtual void idle();
-	virtual void getName(char* result);
+	virtual void getName( char* result );
 	virtual int16_t getData();
 protected:
 	InputMode inputMode;	 //в каком режиме работает устройство
@@ -251,10 +251,10 @@ protected:
 class EOutputDevice : public EDevice {
 public:
 	EOutputDevice();
-	oid_t init(const port_t port, const bool reverse=false);
-	oid_t initReverse(const port_t port);
-	virtual int handleEvent(Event& tmpEvent);
-	virtual void getName(char* result);
+	oid_t init( const port_t port, const bool reverse=false );
+	oid_t initReverse( const port_t port );
+	virtual int handleEvent( Event& tmpEvent );
+	virtual void getName( char* result );
 	virtual void on();       //Turn Output ON
 	virtual void off();      //Turn Output OFF
 protected:
@@ -270,14 +270,14 @@ public:
 	const int printNames();                // вывести на консоль список данных по объектам
 	const void printEvent();               //напечатать на консоли текущее событие
 	int getEvent();                  //просмотреть, нет ли событий, если есть - то получить
-	int pushEvent(const event_t evntType,  //тип события
+	int pushEvent( const event_t evntType,  //тип события
 		const oid_t destinationID = 0,      //идентификатор получателя, если есть
 		const oid_t sourceID = 0,           //идентификатор создателя
 		const int16_t eventData = 0);       //дополнительные данные события
 	virtual void parseEvent(){};	//анализ события, необходимые действия
 	int handleEvent();				//передать подчиненным на обработку
 	void idle();						//стандартный цикл
-	oid_t addObject(EObject* newObject); //добавление нового объекта, возвращает OID или 0 при неудаче
+	oid_t addObject( EObject* newObject ); //добавление нового объекта, возвращает OID или 0 при неудаче
 //protected:
 	Event currentEvent;			  //текущее событие
 private:

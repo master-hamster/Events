@@ -69,9 +69,9 @@ const void Event::print()
    Serial.print(" Dst=");
    Serial.print(this->destinationID);
    Serial.print(" Data=");
-   Serial.println(this->eventData);
-   Serial.print(" Node=");
-   Serial.println(this->nodeID);
+   Serial.print( this->eventData );
+   Serial.print( " Node=" );
+   Serial.println( this->nodeID );
 };
 
 /*
