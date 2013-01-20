@@ -55,8 +55,8 @@ getEvent	KEYWORD2
 pushEvent	KEYWORD2
 parseEvent	KEYWORD2
 addObject	KEYWORD2
-eventForMe	KEYWORD2
-eventForMe	KEYWORD2
+on()	KEYWORD2
+off()	KEYWORD2
 eventForMe	KEYWORD2
 eventForMe	KEYWORD2
 eventForMe	KEYWORD2
