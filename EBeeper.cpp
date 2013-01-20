@@ -18,22 +18,19 @@ oid_t EBeeper::init(const port_t port, const uint16_t time, const bool reverse)
 
 oid_t EBeeper::initReverse(const port_t port, const uint16_t time)
 {
-	return EBeeper::init(port, time,true);
+	return EBeeper::init(port, time, true);
 };
 
 
 int EBeeper::handleEvent(Event& tmpEvent)
-//данная процедура должна поймать команду на включение
-//и отработать ее переходов в режим ON.
-//вторым этапом пойдет обработка события выключени&????????????????????????????????
 {
-	EOutputDevice::handleEvent(tmpEvent);
-	//-----????????????????????????????????????????????????????????????????????????
 #ifdef DEBUG_EBEEPER
 	Serial.print("MyBeeper::handleEvent eventType=");
 	Serial.println(tmpEvent.eventType);
 #endif
+	return EOutputDevice::handleEvent(tmpEvent);
 };
+
 
 void EBeeper::idle()
 //по умолчанию отслеживаются только таймаут на выключение
@@ -45,7 +42,8 @@ void EBeeper::idle()
 
 void EBeeper::getName(char* result)
 {
-	sprintf(result,"EBeeper: ID=%d port=%d beepTime:%d",getID(),this->port,this->beepTimer.getInterval());
+	sprintf( result, "EBeeper: ID=%d port=%d beepTime:%ld", getID(),
+				this->port, this->beepTimer.getInterval() );
 };
 
 void EBeeper::setBeepTime(uint16_t time)
@@ -62,14 +60,14 @@ void EBeeper::beep()
 }
 
 void EBeeper::on()
-//включение устройства с сохранением соответствующих полей
+//BEEP!
 {
 	beepTimer.start();
 	EOutputDevice::on();
 };
 
 void EBeeper::off()
-//выключение устройства с сохранением соответствующих полей
+//Silence, please!
 {
 	EOutputDevice::off();
 };

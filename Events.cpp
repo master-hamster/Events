@@ -298,7 +298,7 @@ int EObject::handleEvent(Event& tmpEvent)
 			}
 		} else {
 			if ( tmpEvent.eventType == evEnable ) {
-				this->isEnabled == true;
+				this->isEnabled = true;
 			}
 			return this->ID;          
 		}
@@ -509,6 +509,28 @@ oid_t EOutputDevice::initReverse(const uint16_t port)
    return result;
 };
 
+int EOutputDevice::handleEvent( Event& tmpEvent )
+{
+	if ( eventForMe( tmpEvent ) ) {
+		int result;
+		if ( (result = EDevice::handleEvent( tmpEvent ) ) ) {
+			return result;
+		} else {
+			switch ( tmpEvent.eventType ) {
+			case evTurnOn:
+				on();
+				return this->getID();
+				break;
+			case evTurnOff:
+				off();
+				return this->getID();
+				break;
+			}
+		}	
+	}
+	return 0;
+};
+
 void EOutputDevice::getName(char* result)
 {
    sprintf(result,"EOutputDevice: ID=%d port=%d reverseOn=%d",getID(),this->port,this->reverseOn);
@@ -517,7 +539,6 @@ void EOutputDevice::getName(char* result)
 void EOutputDevice::on()
 //включение устройства с сохранением соответствующих полей
 {
-
    isOn = true;
    if ( this->reverseOn) {
       digitalWrite(this->port,LOW);

@@ -13,6 +13,9 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 //Инициализация c учетом флага
 {
 	oid_t result = EInputDevice::init( port, imUpOnly );
+	eventKeyPressed        = evKeyPressed;
+	eventKeyDoublePressed  = evKeyDoublePressed;
+	eventKeyHold           = evKeyHold;
 
 #ifdef DEBUG_EBUTTON
 	Serial.println( "EButton::init_full()" );
@@ -68,13 +71,13 @@ void EButton::idle()
 						//таймер двойного нажатия просрочен, запустим событие нажатия
 						//и заодно перезапустим таймер двойного нажатия
 						if ( holdTimer.expired() ) {
-							eventType = evKeyHold;
+							eventType = eventKeyHold;
 						  } else {
-							eventType = evKeyPressed;
+							eventType = eventKeyPressed;
 						}	
 						doublePressTimer.start();
 					} else {
-						eventType = evKeyDoublePressed;
+						eventType = eventKeyDoublePressed;
 					}
 				} 
 				//теперь если задан какой-то тип события - надо поднимать событие
@@ -109,3 +112,11 @@ void EButton::idle()
 		}
 	}
 };
+
+void EButton::setEvents( const event_t eKeyPressed, 
+				const event_t eKeyDoublePressed, const event_t eKeyHold )
+{
+	eventKeyPressed        = eKeyPressed;
+	eventKeyDoublePressed  = eKeyDoublePressed;
+	eventKeyHold           = eKeyHold;
+}

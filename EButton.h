@@ -21,9 +21,16 @@ public:
 //	virtual int handleEvent(Event& tmpEvent);
 	virtual void getName(char* result);
 	virtual void idle();
+	void setEvents( const event_t eKeyPressed, 
+				const event_t eKeyDoublePressed = evKeyDoublePressed,
+				const event_t eKeyHold = evKeyHold );
 protected:
 	Timer doublePressTimer;
 	Timer holdTimer;
+private:
+	event_t eventKeyPressed;
+	event_t eventKeyDoublePressed;
+	event_t eventKeyHold;
 };
 
 

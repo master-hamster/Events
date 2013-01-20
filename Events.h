@@ -251,6 +251,7 @@ public:
 	EOutputDevice();
 	oid_t init(const port_t port, const bool reverse=false);
 	oid_t initReverse(const port_t port);
+	virtual int handleEvent(Event& tmpEvent);
 	virtual void getName(char* result);
 	virtual void on();       //Turn Output ON
 	virtual void off();      //Turn Output OFF
