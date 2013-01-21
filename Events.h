@@ -42,6 +42,7 @@
 //#define DEBUG_EANALOGINPUT
 //#define DEBUG_EBUTTON
 //#define DEBUG_ELED
+//#define DEBUG_ERGBLED
 //#define DEBUG_ECANDLE
 //#define DEBUG_ECANDLE1
 //#define DEBUG_ETHERMO
@@ -134,7 +135,7 @@ enum CandleState {
 #define CANDLEMAXIMALLIGHTLEVEL		255
 #define CANDLELIGHTDELTA				2 
 
-//максимальное количество объектов в приложении
+//Maximum objects that can be registered, change it according to free memory
 #define MAXAPPOBJECTS					20
 
 typedef uint16_t oid_t;
@@ -149,7 +150,7 @@ public:
 	oid_t sourceID;  //идентификатор создателя
 	oid_t destinationID; //идентификатор получателя, если есть
 	int16_t eventData;	//дополнительные данные события
-	int16_t nodeID;     // optional data: sensor group/node
+	int16_t sourceGroupID;     // optional data: source sensor group/node
 	const void print();
 //	const void copy(Event& newEvent); //копировать данные в новое событие
 	Event& operator =( const Event& from );
@@ -200,20 +201,20 @@ private:
 	unsigned long  startTime;  //дата начала интервала
 };
 
-//==================================  Объекты, работающие с событиями ==============
+//==================================  Objects =====================
 //другой основной класс - объект, работающий с событиями
 class  EObject {
 public:
 //	static uint8_t nextID; //счетчик идентификаторов для класса
 	EObject();
-	oid_t init(); //возвращает идентификатор объекта
+	oid_t init(); // get own ID, return it
 	virtual int handleEvent( Event& tmpEvent );
 	virtual void idle(){};
 	const bool eventForMe( const Event& tmpEvent );
 	virtual void getName( char* result );
 	oid_t getID() { return this->ID; };
 private:
-	oid_t ID;          //идентификатор объекта
+	oid_t ID;          //This Object ID
 protected:
 	Event event;       //Event buffer
 	bool isEnabled;   //Can handle events
@@ -263,28 +264,6 @@ protected:
 	bool isOn;       //включен или нет
 };
 
-
-//================  прообраз главного приложения ====================================
-class EApplication {
-public:
-	EApplication();
-	const int printNames();                // вывести на консоль список данных по объектам
-	const void printEvent();               //напечатать на консоли текущее событие
-	int getEvent();                  //просмотреть, нет ли событий, если есть - то получить
-	int pushEvent( const event_t evntType,  //тип события
-		const oid_t destinationID = 0,      //идентификатор получателя, если есть
-		const oid_t sourceID = 0,           //идентификатор создателя
-		const int16_t eventData = 0);       //дополнительные данные события
-	virtual void parseEvent(){};	//анализ события, необходимые действия
-	int handleEvent();           //передать подчиненным на обработку
-	void idle();                 //Idle Cycle - call .idle() for all objects
-	oid_t addObject( EObject* newObject ); //добавление нового объекта, возвращает OID или 0 при неудаче
-//protected:
-	Event currentEvent;			  //текущее событие
-private:
-	int objectsAdded;				 //количество уже добавленных объектов
-	EObject* objects[MAXAPPOBJECTS]; //массив объектов, с которыми работает приложение
-};
 
 
 #endif

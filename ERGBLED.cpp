@@ -36,21 +36,30 @@ void ERGBLED::getName(char* result)
 
 int ERGBLED::handleEvent(Event& tmpEvent)
 {
-   EOutputDevice::handleEvent(tmpEvent);
-   switch ( tmpEvent.eventType) {
-   case evTurnOn :
-      if (eventForMe(tmpEvent)) {
-         on();
-         return true;
-      };
-      break;
-   case evTurnOff :
-      if (eventForMe(tmpEvent)) {
-         off();
-         return true;
-      };
-      break;
-   }
+	if ( eventForMe( tmpEvent ) ) {
+#ifdef DEBUG_ERGBLED
+		Serial.print("ERGBLED::handleEvent() ID:");
+		Serial.print(getID());
+		Serial.print(" got eventType=");
+		Serial.println(tmpEvent.eventType);
+#endif
+		if ( this->isEnabled ) {
+			switch ( tmpEvent.eventType) {
+			case evTurnOn :
+				this->on();
+				return getID();
+				break;
+			case evTurnOff :
+				this->off();
+				return getID();
+				break;
+			default:
+				break;
+			}
+		}
+	    return EOutputDevice::handleEvent( tmpEvent );
+	} 
+	return 0;
 };
 
 //Turn the light On according to his mode
