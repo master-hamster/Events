@@ -17,8 +17,10 @@ public:
 	ETimer();
 	ETimer(const unsigned long interval);		  
 		//задать интервал, автосброс, событие
-	oid_t init(const unsigned long interval, const event_t evType = evTimerExpired, 
-						const bool autorestart = false); 
+	oid_t init( const unsigned long interval, 
+				const event_t evType = evTimerExpired, 
+				const bool autorestart = false, 
+				const bool autostart = true ); 
 	virtual int handleEvent(Event& tmpEvent);
 	virtual void getName(char* result);
 	virtual void idle();

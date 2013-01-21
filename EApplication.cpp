@@ -20,7 +20,7 @@ oid_t EApplication::addObject(EObject* newObject)
 };
 
 const int EApplication::printNames()
-//печатает на консоль имена всех подобъектов, только для отладки!!
+//Print on Serial All Objects' Names, for debug only!
 {
    char sTmp[64];
 	int printCount;
@@ -31,12 +31,51 @@ const int EApplication::printNames()
 	return printCount;
 };
 
+void EApplication::sendTestEvent( const event_t e1Type, const event_t e2Type,
+				const int e1Delay, const int e2Delay )
+/*  
+  Test all registered objects
+  Send them Event1, delay delay1, send Event2, delay Delay2
+  Second event sended when eventType <> evNone
+*/  
+{
+#ifdef DEBUG_EAPPLICATION
+	Serial.println( "App::sendTestEvent() started!" );
+	Serial.print( " This->objectsAdded=" );
+	Serial.println( this->objectsAdded);
+	Serial.println ( e1Type );
+	Serial.println ( e2Type );
+	Serial.println ( e1Delay );
+	Serial.println ( e2Delay );
+#endif
+
+	oid_t result = 0;
+	currentEvent.sourceID = EAPPLICATION_SOURCE_ID;
+	for ( int i = 0; i < this->objectsAdded; i++ ) {
+		currentEvent.eventType = e1Type;
+		currentEvent.destinationID = objects[i]->getID();
+#ifdef DEBUG_EAPPLICATION
+		Serial.print( " App::sendTestEvent() ObjectID=" );
+		Serial.println( i );
+		currentEvent.print();
+#endif
+		result += objects[i]->handleEvent( currentEvent );
+		delay( e1Delay );
+		if ( e2Type != evNone ) {
+			currentEvent.eventType = e2Type;
+			objects[i]->handleEvent( currentEvent );
+			delay( e2Delay );
+		}
+	}
+};
+
+
 int EApplication::pushEvent( const uint16_t evntType, // Event Type
 		const oid_t destinationID,          //who have to handle this Event
 		const oid_t sourceID,               //who send this Event
 		const int16_t eventData )           //Optional data
 {
-   return eventStack.pushEvent(evntType,sourceID,destinationID,eventData);   
+   return eventStack.pushEvent( evntType, sourceID, destinationID, eventData);   
 };
 
 
@@ -68,7 +107,7 @@ void EApplication::idle()
    }
 };
 
-int EApplication::handleEvent()
+int EApplication::handleEvent( const bool directSend )
 /*
 функция обработки события, пускает событие по всем своим объектам, 
 возвращает ненулевое значение в том случае, если какой-то объект 
@@ -76,11 +115,23 @@ int EApplication::handleEvent()
 если один объект обработал событие, то вернется его OID, если несколько - то хрень
 */
 {
-	int j=0;
-	//цикл идет пока не кончатся объекты или пока один из них не сбросит тип событи
-
-	for ( int i=0; ( ( i < this->objectsAdded ) && ( currentEvent.eventType != evNone ) ); i++) {
-		j += objects[i]->handleEvent(currentEvent);
+	oid_t j=0;
+	if ( directSend ) {
+		if ( currentEvent.destinationID < objectsAdded ) {
+			j = objects[currentEvent.destinationID]->handleEvent( currentEvent );
+		}
+	} else {
+	//Run cycle for each of registered objects
+		for ( int i = 0; 
+			( ( i < this->objectsAdded ) && ( currentEvent.eventType != evNone ) );
+			i++ ) {
+#ifdef DEBUG_EAPPLICATION
+			Serial.print( " App.handleEvent() ObjectID=" );
+			Serial.println( i );
+			currentEvent.print();
+#endif
+			j += objects[i]->handleEvent( currentEvent );
+		}
 	}
 	return j;
 };

@@ -23,11 +23,18 @@ void ELED::getName( char* result )
 
 int ELED::handleEvent( Event& tmpEvent )
 {
+#ifdef DEBUG_ELED
+	Serial.print("ELED::handleEvent() ID:");
+	Serial.print(getID());
+	Serial.print(" got eventType=");
+	Serial.println(tmpEvent.eventType);
+#endif
+
 	if ( eventForMe( tmpEvent ) ) {
 #ifdef DEBUG_ELED
 		Serial.print("ELED::handleEvent() ID:");
 		Serial.print(getID());
-		Serial.print(" got eventType=");
+		Serial.print(" got for me eventType=");
 		Serial.println(tmpEvent.eventType);
 #endif
 		if ( this->isEnabled ) {

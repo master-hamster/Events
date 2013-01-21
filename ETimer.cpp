@@ -9,10 +9,10 @@ ETimer::ETimer(const unsigned long interval) :
 EObject(), timer(interval){
 };
 
-oid_t ETimer::init(const unsigned long interval, const event_t evType, 
-					const bool autorestart)
+oid_t ETimer::init( const unsigned long interval, const event_t evType, 
+					const bool autorestart, const bool autostart )
 {
-   timer.init(interval,autorestart);
+   timer.init( interval, autorestart, autostart );
    event.eventType   = evType;
    event.sourceID    = getID();
    stoped            = false;
@@ -77,7 +77,7 @@ void ETimer::start()
 
 void ETimer::stop()
 {
-   stoped=true;
+   stoped = true;
 };        
 
 void ETimer::getName(char* result)

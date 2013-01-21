@@ -36,12 +36,12 @@
 //#define DEBUG_EVENTNAMES
 //#define DEBUG_EVENTSTACK
 //#define DEBUG_EINPUTDEVICE
-//#define DEBUG_APPLICATION
+#define DEBUG_EAPPLICATION
 //#define DEBUG_EBEEPER
 //#define DEBUG_ETIMER
 //#define DEBUG_EANALOGINPUT
 //#define DEBUG_EBUTTON
-//#define DEBUG_ELED
+#define DEBUG_ELED
 //#define DEBUG_ERGBLED
 //#define DEBUG_ECANDLE
 //#define DEBUG_ECANDLE1
@@ -187,9 +187,11 @@ class Timer {
 public:
 	Timer();
 	Timer( const unsigned long interval );
-	void init( const unsigned long interval, const bool autorestart=false );
+	void init( const unsigned long interval, 
+				const bool autorestart = false, 
+				const bool autostart = true );
 	void setInterval( const unsigned long interval );
-	void setStartTime( const unsigned long newTime ){this->startTime=newTime;};
+	void setStartTime( const unsigned long newTime ){ this->startTime = newTime; };
 	unsigned long int elapsedTime();
 	bool expired();
 	void start();
@@ -197,6 +199,7 @@ public:
 	unsigned long getInterval(){return this->interval;};	//какой интервал
 private:
 	bool autorestart;          //флажок авторестарта
+	bool stoped;               // if stoped then expired() always return false
 	unsigned long  interval;   //интервал таймера
 	unsigned long  startTime;  //дата начала интервала
 };

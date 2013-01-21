@@ -195,41 +195,46 @@ Timer::Timer()
    start();
 };
 
-
 Timer::Timer(const unsigned long interval)
 {
    setInterval(interval);
    start();
 };
 
-void Timer::init(const unsigned long interval, const bool autorestart)
+void Timer::init(const unsigned long interval, const bool autorestart, const bool autostart )
 {
-   this->autorestart = autorestart;
-   setInterval(interval);
-   start();
+	this->autorestart = autorestart;
+	this->stoped = !autostart; 
+	setInterval(interval);
+	if ( autostart ) {
+		start();
+	}
 #ifdef DEBUG_ETIMER
-   Serial.print("Timer::init interval=");
-   Serial.println(this->interval);
+	Serial.print("Timer::init interval=");
+	Serial.println(this->interval);
 #endif   
 };
 
 void Timer::setInterval(const unsigned long interval)
 {
-   this->interval = interval;
+	this->interval = interval;
 };
 
 //вернем сколько времени прошло с начала старта таймера
 unsigned long Timer::elapsedTime()
 {
-   return millis() - startTime;
+	return millis() - startTime;
 };
 
 
 bool Timer::expired()
 // возвращает true если интервал ненулевой и уже прошел
 {
-   if (( interval !=0 ) && ( millis() - startTime >= interval) ) {
-      //??????????код ниже нужно осмыслить или выкинуть или переделать
+	if ( this->stoped ) {
+		return false;
+	}
+	if (( interval !=0 ) && ( millis() - startTime >= interval) ) {
+	//??????????код ниже нужно осмыслить или выкинуть или переделать
       // As suggested by benjamin.soelberg@gmail.com, the following line
       // this->previous_millis = millis();
       // was changed to
@@ -243,29 +248,30 @@ bool Timer::expired()
       //} else {
       //	this->previous_millis += this->interval_millis;
       //}
-      if ( autorestart ) { //если есть флаг автосброса - сбросим время и продолжим работу
+		if ( autorestart ) { //если есть флаг автосброса - сбросим время и продолжим работу
 //         this->startTime=millis();
-         startTime += interval;
-      }
-      return true;
-   }
-   return false;
+			startTime += interval;
+		}
+		return true;
+	}
+	return false;
 };
 
 void Timer::start()
 {
-   this->startTime = millis();
+	this->startTime = millis();
+	stoped = false;
 };
 
 
 //==================================== class EObject =======================================
 EObject::EObject()
 {
-   ID = __next_EObject_ID__++;
+	ID = __next_EObject_ID__++;
  //  this->ID = nextOId++;
-   this->event.eventType = evNone;           //обнуляем значение готовящегося события.
-   this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
-   this->isEnabled = true;
+	this->event.eventType = evNone;           //обнуляем значение готовящегося события.
+	this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
+	this->isEnabled = true;
 };
 
 oid_t EObject::init()
