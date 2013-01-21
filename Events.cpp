@@ -7,7 +7,6 @@
 	
 	
 */	
-
 #include "Events.h"
 
 
@@ -508,7 +507,7 @@ oid_t EOutputDevice::init(const port_t port, const bool reverse)
    result = EDevice::init(port);
    pinMode( this->port, OUTPUT );
    //set OFF at start according to reverse flag
-   if ( reverseOn = reverse ) {
+   if ( (reverseOn = reverse) ) {
       digitalWrite(this->port,HIGH);
    } else {
       digitalWrite(this->port,LOW);
@@ -645,21 +644,28 @@ void EApplication::idle()
 };
 
 int EApplication::handleEvent()
-//функция обработки события, пускает событие по всем своим объектам, возвращает ненулевое значение
-//в том случае, если какой-то объект при обработке вернул ненулевое значение
+/*
+функция обработки события, пускает событие по всем своим объектам, 
+возвращает ненулевое значение в том случае, если какой-то объект 
+при обработке вернул ненулевое значение
+если один объект обработал событие, то вернется его OID, если несколько - то хрень
+*/
 {
-   int j=0;
-   //цикл идет пока не кончатся объекты или пока один из них не сбросит тип событи
-   //   for ( int i=0; (i < this->objectsAdded) && (currentEvent.eventType != evNone); i++) {
-   //	if ( (currentEvent.eventType != evNone)) {
-   /*   for ( int i=0; (i < this->objectsAdded) ; i++) {
-    j = j || this->objects[i]->handleEvent(currentEvent);
-    	}
+	int j=0;
+	//цикл идет пока не кончатся объекты или пока один из них не сбросит тип событи
+	/*
+	for ( int i=0; (i < this->objectsAdded) && (currentEvent.eventType != evNone); i++) {
+		if ( (currentEvent.eventType != evNone)) {
+			for ( int i=0; (i < this->objectsAdded) ; i++) {
+		j = j || this->objects[i]->handleEvent(currentEvent);
+		}
+	}
     */
-   for ( int i=0; i < this->objectsAdded; i++) {
-      j += objects[i]->handleEvent(currentEvent);
-   }
-   return j;
+
+	for ( int i=0; i < this->objectsAdded; i++) {
+		j += objects[i]->handleEvent(currentEvent);
+	}
+	return j;
 };
 
 

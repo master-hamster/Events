@@ -1,6 +1,5 @@
 #include "ELED.h"
 
-
 //==================================== class ELED =========================
 ELED::ELED() : EOutputDevice()
 {
@@ -25,6 +24,12 @@ void ELED::getName( char* result )
 int ELED::handleEvent( Event& tmpEvent )
 {
 	if ( eventForMe( tmpEvent ) ) {
+#ifdef DEBUG_ELED
+		Serial.print("ELED::handleEvent() ID:");
+		Serial.print(getID());
+		Serial.print(" got eventType=");
+		Serial.println(tmpEvent.eventType);
+#endif
 		if ( this->isEnabled ) {
 			switch ( tmpEvent.eventType) {
 			case evTurnOn :

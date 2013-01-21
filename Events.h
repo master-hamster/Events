@@ -28,7 +28,7 @@
 #endif
 
 //Uncomment next line for turn on debugging
-//#define DEBUG_EVENT 
+#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
 //#define PRINTNAMES
@@ -50,14 +50,14 @@
 #endif
 
 
-//никакого события нет
+//EVent NoEvent
 #define evNone						0
-//команды на включение и выключение устройства
-#define evEnable                    1   //enable event handling
-#define evDisable                   2   //disable event handling
-#define evTurnOn                    3   //Включить объект (если есть такое состояние)
-#define evTurnOff                   4   //Выключить объект (если есть такое состояние)
-#define evTellMe                    5   //Взбодрить объект (пусть ответит, есди обучен)
+//Object manipulation events
+#define evEnable                    1   //enable event handling and generating
+#define evDisable                   2   //disable event handling and generating
+#define evTurnOn                    3   //turn on  EOutputDevice and successors
+#define evTurnOff                   4   //turn off EOutputDevice and successors
+#define evTellMe                    5   //Ask EObject to send answer Event
 
 //ETimer create evTimerExpired when it has expired 
 #define evTimerExpired               6
@@ -276,8 +276,8 @@ public:
 		const oid_t sourceID = 0,           //идентификатор создателя
 		const int16_t eventData = 0);       //дополнительные данные события
 	virtual void parseEvent(){};	//анализ события, необходимые действия
-	int handleEvent();				//передать подчиненным на обработку
-	void idle();						//стандартный цикл
+	int handleEvent();           //передать подчиненным на обработку
+	void idle();                 //Idle Cycle - call .idle() for all objects
 	oid_t addObject( EObject* newObject ); //добавление нового объекта, возвращает OID или 0 при неудаче
 //protected:
 	Event currentEvent;			  //текущее событие
