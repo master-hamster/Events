@@ -76,7 +76,6 @@
 #define evKeyDoublePressed          14
 #define evKeyHold                   15
 
-
 //событие от устройства аналогового ввода
 #define evAIData                    16
 //событие изменения уровня аналогового ввода/кнопки
@@ -97,6 +96,8 @@
 //#define evOutputOff			27
 
 
+#define PORT_REVERSE_MODE true
+#define PORT_NO_REVERSE_MODE false
 
 //перечисление возможных режимов работы устройства ввода
 enum InputMode {

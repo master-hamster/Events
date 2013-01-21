@@ -507,8 +507,8 @@ oid_t EOutputDevice::init(const port_t port, const bool reverse)
    oid_t result;
    result = EDevice::init(port);
    pinMode( this->port, OUTPUT );
-   reverseOn = reverse;
-   if ( reverseOn ) {
+   //set OFF at start according to reverse flag
+   if ( reverseOn = reverse ) {
       digitalWrite(this->port,HIGH);
    } else {
       digitalWrite(this->port,LOW);
@@ -518,11 +518,7 @@ oid_t EOutputDevice::init(const port_t port, const bool reverse)
 
 oid_t EOutputDevice::initReverse(const uint16_t port)
 {
-   oid_t result;
-   result = EDevice::init(port);
-   pinMode(this->port,OUTPUT);
-   this->reverseOn = true;
-   return result;
+   return EOutputDevice::init(port, true);
 };
 
 int EOutputDevice::handleEvent( Event& tmpEvent )
@@ -558,9 +554,11 @@ void EOutputDevice::on()
    isOn = true;
    if ( this->reverseOn ) {
       digitalWrite( this->port, LOW );
+//	  Serial.println("EOD:on() REVERSE, ON");
    } 
    else {
       digitalWrite( this->port, HIGH );
+//	  Serial.println("EOD:on() NO REVERSE, ON");
    }
 };
 
@@ -570,10 +568,12 @@ void EOutputDevice::off()
    isOn = false;
    if ( this->reverseOn ) {
       digitalWrite( this->port, HIGH );
+//	  Serial.println("EOD:off() REVERSE, OFF");
    } 
    else {
       digitalWrite( this->port, LOW );
-   };
+// 	  Serial.println("EOD:off() NO REVERSE, OFF");
+  };
 };
 
 //================================== class EApplication ======================

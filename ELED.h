@@ -10,7 +10,7 @@
 class ELED : public EOutputDevice {
 public:
    ELED();
-   oid_t init( const port_t ledPort );
+   oid_t init( const port_t ledPort, const bool reverse = false);
    virtual void getName( char* result );
    bool getState(){return isOn;};
    void toggle();

@@ -7,13 +7,14 @@ ELED::ELED() : EOutputDevice()
 	this->isOn=false;
 };
 
-oid_t ELED::init(const port_t ledPort)
+oid_t ELED::init(const port_t ledPort, const bool reverse)
 {
-   this->port = ledPort;
+   //this->port = ledPort;
    //инициируем порт в выключенном режиме
-   pinMode( this->port, OUTPUT );
-   digitalWrite( this->port, LOW );
-   return getID();
+   //pinMode( this->port, OUTPUT );
+   //digitalWrite( this->port, LOW );
+   //return getID();
+   return EOutputDevice::init(ledPort, reverse);
 };
 
 void ELED::getName( char* result )

@@ -1,8 +1,9 @@
-#include "EButton.h"
 //2010-02-25 all checked MH
 //2013-01-16 clear code, add 'const'
 //2013-01-20 add programmable events 
 
+#include "Events.h"
+#include "EButton.h"
 
 //================================== class EButton ===========================
 EButton::EButton(): EInputDevice()
@@ -119,4 +120,7 @@ void EButton::setEvents( const event_t eKeyPressed,
 	eventKeyPressed        = eKeyPressed;
 	eventKeyDoublePressed  = eKeyDoublePressed;
 	eventKeyHold           = eKeyHold;
+	Serial.println(eventKeyPressed);
+	Serial.println(eventKeyDoublePressed);
+	Serial.println(eventKeyHold);
 }
