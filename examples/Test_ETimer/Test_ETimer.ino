@@ -1,3 +1,16 @@
+#include <EAButton.h>
+#include <EAEventButton.h>
+#include <EAnalogInput.h>
+#include <EApplication.h>
+#include <EBeeper.h>
+#include <EButton.h>
+#include <ECandle.h>
+#include <ELED.h>
+#include <ERGBLED.h>
+#include <EThermo.h>
+#include <ETimer.h>
+#include <Events.h>
+
 /*
 MH 2010-02-10
 Тестирование таймера
@@ -10,10 +23,7 @@ MH 2010-02-10
 кнопка - на pin 4
 пищалка - на pin 13, встроенный диод подтверждает
 */
-#include <Event.h>
-#include <ETimer.h>
-#include <EBeeper.h>
-#include <EButton.h>
+
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -35,10 +45,10 @@ class MyApplication : public EApplication {
 public:
    void init();
    void parseEvent();
-   int buttonID;   //тестовая кнопка для разного
+   oid_t buttonID;   //тестовая кнопка для разного
       
-   int timerID;
-   int beeperID;
+   oid_t timerID;
+   oid_t beeperID;
 // собственно объекты      
    EButton button;
    MyBeeper beeper;
@@ -93,7 +103,7 @@ void MyApplication::parseEvent()
 
    if ((currentEvent.eventType == evKeyPressed && currentEvent.sourceID == buttonID))
    { //нажатие на кнопку
-      pushEvent(evTimerStart,timerID);
+      pushEvent( evTimerStart,timerID );
    };
 
    if (currentEvent.eventType == evKeyDoublePressed && currentEvent.sourceID == buttonID) {
