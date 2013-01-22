@@ -11,7 +11,8 @@ Objects:
   - Application
   
   
-  Input devices:
+Input devices:
+--------------
   - AnalogInput
   - DigitalInput
   - Button
@@ -21,6 +22,7 @@ Objects:
   - DS18B20 Thermometer
 
 Output Devices:
+---------------
   - DigitalOutput
   - Beeper
   - LED
