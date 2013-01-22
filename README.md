@@ -15,7 +15,7 @@ Objects:
   - Thermometer - abstract thermometer
   - DS18B20 Thermometer
 
-  Output Devices:
+Output Devices:
   - DigitalOutput
   - Beeper
   - LED
