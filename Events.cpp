@@ -3,10 +3,17 @@
 	Arduino Event Library
 	Started 2010-01-07 by MH
 	http://github.com/master-hamster/Events
-	General Objects
+	General Objects:
+	Event
+	EventStack
+	Timer
+	EObject
+	EDevice
+	EInputDevice
+	EOutputDevice
 	
+*/
 	
-*/	
 #include "Events.h"
 
 

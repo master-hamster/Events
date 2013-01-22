@@ -1,6 +1,6 @@
+//class EApplication
 #include "EApplication.h"
 
-//================================== class EApplication ======================
 EApplication::EApplication()
 {
    objectsAdded = 0;
