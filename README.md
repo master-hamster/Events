@@ -4,7 +4,12 @@ Events
 Event-driven framework for Arduino
 
 Objects:
-  Timer
+--------
+  - Timer
+  - EventStack
+  - Object
+  - Application
+  
   
   Input devices:
   - AnalogInput
