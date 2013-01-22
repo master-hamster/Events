@@ -34,7 +34,7 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 #endif
 	}; 
 	getData();
-	this->lastState = this->currentState;
+	this->currentData = this->currentState;
 	return result;
 };
 
@@ -53,8 +53,8 @@ void EButton::idle()
 		if (debounceTimer.expired()) {
 			//we passed debounce delay, lets get current state
 			this->debouncingStarted = false;
-			getData();
-			if ( this->currentState != this->lastState) {
+			getDataFromInput();
+			if ( this->currentState != this->currentData) {
 				//State changed. let's think have we to rise event?
 #ifdef DEBUG_EBUTTON
 				int tmpID = this->getID();
@@ -62,8 +62,8 @@ void EButton::idle()
 				Serial.print( tmpID );
 				Serial.print(" Input changed!! currentState=");
 				Serial.print( this->currentState );
-				Serial.print("	lastState=");
-				Serial.print( this->lastState );
+				Serial.print("	currentData=");
+				Serial.print( this->currentData );
 				Serial.println("");
 #endif
 				if ( this->currentState == 0) {
@@ -93,18 +93,18 @@ void EButton::idle()
 					holdTimer.start();
 				};
 				//save current input state for future use
-				this->lastState = this->currentState;
+				this->currentData = this->currentState;
 			}
 		}
 	}
 	else {
 		//если мы здесь - то обработка дребезга не идет, надо посмотреть состояние
 		//ввода и дейстовать соответственно
-		getData();
-		if ( this->currentState != this->lastState ) {
+		getDataFromInput();
+		if ( this->currentState != this->currentData ) {
 #ifdef DEBUG_EBUTTON
 			Serial.print( "EButton::idle: start debouncing, newstate=" );
-			Serial.println( this->currentState );
+			Serial.println( this->currentData );
 #endif
 			//current data differ from last read
 			//let's start debouncing timer

@@ -242,13 +242,15 @@ public:
 	bool reverseOn=false, bool pullUp=false );
 	virtual void idle();
 	virtual void getName( char* result );
-	virtual int16_t getData();
+	virtual int16_t getData(); // get data direct 
+	virtual int16_t getDataFromInput(); //Read data from input and return it
 protected:
 	InputMode inputMode;	 //в каком режиме работает устройство
 	bool reverseOn;			//работает с инвертированием ввода
 	bool debouncingStarted; //запущена обработка дребезга
 	int16_t currentState;	//текущее состояние
-	int16_t lastState;		//последнее состояние
+//	int16_t lastState;		//последнее состояние
+	int16_t currentData;    //Actual data after last measurement
 	unsigned long lastTime; //время последнего изменения состояни
 	Timer debounceTimer;	 //таймер для обработки дребезга
 };
@@ -277,6 +279,10 @@ protected:
 
 
 /* Button modes:
+
+getData - получить данные, сохраненные в буффере.
+
+
  * Режимы работы кнопок:
  *  - OneShot: OneShot only, returns 2 values (ON/OFF)
  *  - Memory: Returns (Pressed/ON/Released/OFF)

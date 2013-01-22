@@ -7,18 +7,18 @@
 считанное из порта. Дребезг не обрабатывается
 !!!!!!!!!!!   evTellMe добавить
 */
-class EAnalogInput : public EDevice {
+class EAnalogInput : public EInputDevice {
 public:
 	//		инициация с ID объекта и временем передачи в mS
-	oid_t init(const port_t port, const uint16_t refreshTime = 5000);
+	oid_t init( const port_t port, const uint16_t refreshTime = 5000 );
 	virtual void idle();
-	virtual int handleEvent(Event& tmpEvent);
-	virtual void getName(char* result);
-	int getData();  // get current data, does not measuring
-	int getValue(); // do measuring and return value
+//	virtual int handleEvent(Event& tmpEvent);
+	virtual void getName( char* result );
+	virtual int getDataFromInput();  // get current data after measuring
+//	int getValue(); // do measuring and return value
+//	virtual int doMeasure(); //do measuring, if object is enabled
 protected:
-	virtual int doMeasure(); //do measuring, if object is enabled
-	int currentData; //последние считанные данные
+//	int currentData; //последние считанные данные
 	Timer refreshTimer;//таймер для отправления информации
 //	InputMode inputMode; //в каком режиме работает устройство
 //	bool reverseOn; //работает с инвертированием ввода

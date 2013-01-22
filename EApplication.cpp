@@ -112,27 +112,30 @@ int EApplication::handleEvent( const bool directSend )
 функция обработки события, пускает событие по всем своим объектам, 
 возвращает ненулевое значение в том случае, если какой-то объект 
 при обработке вернул ненулевое значение
-если один объект обработал событие, то вернется его OID, если несколько - то хрень
+если один объект обработал событие, то вернется его OID,
+если несколько - то хрень
 */
 {
 	oid_t j=0;
-	if ( directSend ) {
-		if ( currentEvent.destinationID < objectsAdded ) {
-			j = objects[currentEvent.destinationID]->handleEvent( currentEvent );
-		}
-	} else {
+	//if ( directSend ) {
+	//	if ( currentEvent.destinationID < objectsAdded ) {
+	//		j = objects[currentEvent.destinationID]->handleEvent( currentEvent );
+	//	}
+	//} else {
 	//Run cycle for each of registered objects
-		for ( int i = 0; 
-			( ( i < this->objectsAdded ) && ( currentEvent.eventType != evNone ) );
-			i++ ) {
+	for ( int i = 0; 
+		( ( i < this->objectsAdded ) && ( currentEvent.eventType != evNone ) );
+		i++ ) {
 #ifdef DEBUG_EAPPLICATION
-			Serial.print( " App.handleEvent() ObjectID=" );
-			Serial.println( i );
-			currentEvent.print();
+		Serial.print( " App.handleEvent() ObjectID=" );
+		Serial.println( i );
+		currentEvent.print();
 #endif
+		if ( !directSend || ( objects[i]->getID() == currentEvent.destinationID ) ) {
 			j += objects[i]->handleEvent( currentEvent );
 		}
 	}
+//	}
 	return j;
 };
 

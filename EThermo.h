@@ -8,14 +8,14 @@
 #define ETHERMO_THERMOMEASUREDELAY 1000
 #define evTemperature 132
 
-class EThermo : public EObject{
+class EThermo : public EInputDevice {
 public:	
-	oid_t init(const uint16_t timeout = 0);
-	virtual void getName(char* result);	 
-	virtual int handleEvent(Event& tmpEvent);
-	float  getTemperature(); // return current temperature
-	virtual void doMeasure(){}; // get data from sensor and store it in .temperature
+	oid_t init( const uint16_t timeout = 0 );
+	virtual int handleEvent( Event& tmpEvent );
 	virtual void idle();
+	virtual void getName( char* result );	 
+//	virtual int16_t getDataFromInput(){ return 0 }; // get data from sensor and store it in .temperature
+	float  getTemperature(); // return current temperature
 protected:
 	void tellThemperature(); // rise event with temperature
 	float temperature;
@@ -28,7 +28,7 @@ public:
 	oid_t init(DallasTemperature* dt, const uint16_t timeout = 0, const uint8_t precision = 9);
 	DeviceAddress insideThermometer;
 	virtual void getName(char* result);	 
-	virtual void doMeasure();
+	virtual int16_t getDataFromInput();
 protected:
 	DallasTemperature* dallas1820;
 };

@@ -3,7 +3,7 @@
 //================================== class EAnalogInput ======================
 oid_t EAnalogInput::init(port_t port, uint16_t refreshTime) 
 {
-   int result  =  EDevice::init( port );
+   int result  =  EInputDevice::init( port );
    currentData = 0;
    refreshTimer.init( refreshTime, false );
    return result;
@@ -14,7 +14,7 @@ void EAnalogInput::idle()
    if ( this->isEnabled ) {
       if ( refreshTimer.expired() ) {
          refreshTimer.start();
-         getData();
+         getDataFromInput();
 #ifdef DEBUG_EANALOGINPUT
          Serial.print("EAInput::idle: value=");
          Serial.println( this->currentData );
@@ -29,11 +29,12 @@ void EAnalogInput::getName( char* result )
    sprintf(result, "EAnalogInput: ID=%d port=%d ", getID(), this->port);
 };   
 	
-int EAnalogInput::doMeasure()
+int EAnalogInput::getDataFromInput()
 {
 	return ( currentData = analogRead( this->port ) );
 };
 
+/*
 int EAnalogInput::getValue()
 {
 	if ( this->isEnabled ) {
@@ -41,17 +42,18 @@ int EAnalogInput::getValue()
 	}
 	return currentData;	
 };
-
+*/
+/*
 int EAnalogInput::getData()
 {
 	return currentData;
 };
-
-
+*/
+/*
 int EAnalogInput::handleEvent( Event& tmpEvent )
 {
    return EObject::handleEvent( tmpEvent );
 };
-   
+*/   
 
 

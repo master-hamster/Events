@@ -401,8 +401,8 @@ oid_t EInputDevice::init(const port_t port, const InputMode im, const bool rever
       Serial.println(tmp);
 #endif
    }
-   getData();                           // считаем данные с учетом флага реверса
-   this->lastState = this->currentState;
+   getDataFromInput();                           // считаем данные с учетом флага реверса
+   this->currentData = this->currentState;
    return result;
 };
 
@@ -414,98 +414,107 @@ void EInputDevice::idle()
 //в целом событие может генерироваться и не сразу, а на следующем проходе этой процедуры
 //2010-01-16 - отдадка  2010-01-19 - отладка
 {
-   //обработка делается только для случая когда не начата процедура обработки дребезга или
-   //она начата и уже завершена
-   uint16_t eventType = evNone;
+	//обработка делается только для случая когда не начата процедура обработки дребезга или
+	//она начата и уже завершена
+	uint16_t eventType = evNone;
 
-   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!КОПАТЬ ЗДЕСЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   if ( debouncingStarted ) {
-      if (debounceTimer.expired()) {
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!КОПАТЬ ЗДЕСЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	if ( debouncingStarted ) {
+		if (debounceTimer.expired()) {
          //закончилась задержка дребезга - время считать показания устройства
-         this->debouncingStarted=false;
-         getData();
-         if ( this->currentState!=this->lastState) {
-            //данные изменились, теперь следует понять, не послать ли событие?
+			this->debouncingStarted = false;
+			getDataFromInput();
+			if ( this->currentState != this->currentData) {
+				//данные изменились, теперь следует понять, не послать ли событие?
 #ifdef DEBUG_EINPUTDEVICE
-            int tmpID = this->getID();
-            Serial.print("EInputDevice::idle() ID=");
-            Serial.print(tmpID);
-            Serial.print(" Input changed!! currentState=");
-            Serial.print(this->currentState);
-            Serial.print("   lastState=");
-            Serial.print(this->lastState);
-            Serial.println("");
+				int tmpID = this->getID();
+				Serial.print("EInputDevice::idle() ID=");
+				Serial.print(tmpID);
+				Serial.print(" Input changed!! currentState=");
+				Serial.print(this->currentState);
+				Serial.print("   lastState=");
+				Serial.print(this->lastState);
+				Serial.println("");
 #endif
-            if ( this->currentState==0) {
-               //данные имеют низкий уровень -> нужно сформировать событие для некоторых условий
-               switch ( this->inputMode) {
-               case imUpDown:
-               case imDownOnly:
-                  eventType = evInputDown;
-                  break;
-               case imToggle:
-                  eventType = evInputToggle;
-                  break;
+				if ( this->currentState==0) {
+					//данные имеют низкий уровень -> нужно сформировать событие для некоторых условий
+					switch ( this->inputMode) {
+					case imUpDown:
+					case imDownOnly:
+						eventType = evInputDown;
+						break;
+					case imToggle:
+						eventType = evInputToggle;
+						break;
 					default:
 						break;
-               }
-            } 
-            else {
-               //если мы здесь ->уровень вырос
-               switch ( this->inputMode) {
-               case imUpDown:
-               case imUpOnly:
-                  eventType = evInputUp;
-                  break;
-               case imToggle:
-                  eventType = evInputToggle;
-                  break;
+					}
+				} else {
+					//если мы здесь ->уровень вырос
+					switch ( this->inputMode) {
+					case imUpDown:
+					case imUpOnly:
+						eventType = evInputUp;
+						break;
+					case imToggle:
+						eventType = evInputToggle;
+						break;
 					default:
 						break;
-               }
-            } //конец ветки по высокому/низкому считанному уровню
-            //теперь если задан какой-то тип события - надо поднимать событие
-            if ( eventType != evNone) {
+					}
+				} //конец ветки по высокому/низкому считанному уровню
+				//теперь если задан какой-то тип события - надо поднимать событие
+				if ( eventType != evNone) {
 #ifdef DEBUG_EINPUTDEVICE
-               Serial.print("EInputDevice::idle: eventType=");
-               Serial.println(eventType);
+					Serial.print("EInputDevice::idle: eventType=");
+					Serial.println(eventType);
 #endif
-               eventStack.pushEvent(eventType, this->getID(), 0, this->currentState);
-            }
-            //теперь сохраним время и значение последнего состояни
-            this->lastState = this->currentState;
-         }
-      }
-   } 
-   else {
+					if ( this->isEnabled ) {
+						eventStack.pushEvent(eventType, this->getID(), 0, this->currentState);
+					}
+				
+				}
+				//теперь сохраним время и значение последнего состояни
+				this->currentData = this->currentState;
+			}
+		}
+	} else {
       //если мы здесь - то обработка дребезга не идет, надо посмотреть состояние
       //ввода и дейстовать соответственно
-      getData();
-      if ( this->currentState != this->lastState) {
+		getDataFromInput();
+		if ( this->currentState != this->currentData ) {
 #ifdef DEBUG_EINPUTDEVICE
-         Serial.print("EInputDevice::idle: start debouncing, newstate=");
-         Serial.println(this->currentState);
+			Serial.print("EInputDevice::idle: start debouncing, newstate=");
+			Serial.println(this->currentState);
 #endif
-         //считали данные и они не соответствуют тем, что были раньше
-         //надо запустить антидребезг
-         this->debouncingStarted = true;
-         debounceTimer.start();
-      }
-   }
+			//считали данные и они не соответствуют тем, что были раньше
+			//надо запустить антидребезг
+			this->debouncingStarted = true;
+			debounceTimer.start();
+		}
+	}
 };
 
 
 int16_t EInputDevice::getData()
+//считывание данных из currentState
+{
+   return this->currentData;
+};
+
+int16_t EInputDevice::getDataFromInput()
 //считывание данных из порта в currentState с учетом флага реверса и нормализации (для других объектов)
 {
-   return this->currentState = (this->reverseOn ^ digitalRead(this->port));
+   return this->currentData = ( this->reverseOn ^ digitalRead( this->port ) );
 };
+
+
 
 void EInputDevice::getName(char* result)
 {
    long interval = this->debounceTimer.getInterval();
-   sprintf(result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
-            getID(),this->port,this->reverseOn, interval);
+   sprintf( result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
+            getID(), this->port, this->reverseOn, interval );
 };
 
 
