@@ -28,7 +28,7 @@
 #endif
 
 //Uncomment next line for turn on debugging
-#define DEBUG_EVENT 
+//#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
 //#define PRINTNAMES
@@ -52,6 +52,7 @@
 
 
 //EVent NoEvent
+// 0 - 49 - system events, 50-99 - reserved for future, 101+ - application user-defined
 #define evNone						0
 //Object manipulation events
 #define evEnable                    1   //enable event handling and generating
@@ -97,17 +98,49 @@
 //#define evOutputOff			27
 
 
+//============= SYSTEM PARAMETERS ===============
+//максимальное количество событий в стеке событий
+#define EVENTSTACKSIZE        10
+//Maximum objects that can be registered, change it according to free memory
+#define MAXAPPOBJECTS					20
+
+//============= OBJECT SETTINGS =================
+//задержка по времени в мс для устранения дребезка
+#define DEBOUNCEDELAY       50
+#define DOUBLEPRESSDELAY   500
+//задержка по времени для определения события Hold
+#define KEYHOLDDELAY      1000
+//#define HOLDREPEATDELAY 3000
+
+//длительность писка бипера по умолчанию
+#define EBEEPER_DEFAULT_BEEP_TIME   25
+
+//максимальное количество событий в мультиуровневой аналоговой кнопке
+#define ABUTTONMAXLEVELS       5
+
+// Candle parameters
+#define CANDLEMINIMALLIGHTLEVEL		5
+#define CANDLEMAXIMALLIGHTLEVEL		255
+#define CANDLELIGHTDELTA			2 
+
+//=============== only substitutions, no need to change  =======
 #define PORT_REVERSE_MODE true
 #define PORT_NO_REVERSE_MODE false
+#define BROADCAST_ADDRESS 32767
 
-//перечисление возможных режимов работы устройства ввода
+//============== TYPES DEFINITION =============
+typedef uint16_t oid_t;
+typedef uint16_t event_t;
+typedef uint16_t port_t;
+
+//====== EInputDevice modes ==================
 enum InputMode {
 	imUpOnly,	//выдается событие только при повышении уровня до 1 evInputUp
 	imDownOnly,	//выдается событие только при падении уровня до 0 evInputDown
 	imUpDown,	//выдается событие и при падении и при повышении
 	imToggle		//аналогично, но событие evToggle
 };
-
+//====== ECandle modes =================
 enum CandleState {
 	csOff,			//полностью выключено
 	csFadeIn,		//включается
@@ -115,32 +148,6 @@ enum CandleState {
 	csOn,				//полностью включено
 	csFlickering	//мелькает
 };
-
-//задержка по времени в мс для устранения дребезка
-#define DEBOUNCEDELAY       50
-#define DOUBLEPRESSDELAY   500
-//задержка по времени для определения события Hold
-#define KEYHOLDDELAY      1000
-//длительность писка бипера по умолчанию
-#define EBEEPER_DEFAULT_BEEP_TIME   25
-
-//#define HOLDREPEATDELAY 3000
-//максимальное количество событий в стеке событий
-#define EVENTSTACKSIZE        10
-//максимальное количество событий в мультиуровневой аналоговой кнопке
-#define ABUTTONMAXLEVELS       5
-
-
-#define CANDLEMINIMALLIGHTLEVEL		5
-#define CANDLEMAXIMALLIGHTLEVEL		255
-#define CANDLELIGHTDELTA				2 
-
-//Maximum objects that can be registered, change it according to free memory
-#define MAXAPPOBJECTS					20
-
-typedef uint16_t oid_t;
-typedef uint16_t event_t;
-typedef uint16_t port_t;
 
 
 //Main class definition 
@@ -160,7 +167,6 @@ public:
 //ниже идет определение стека событий - места, куда все объекты кидают событи
 //и откуда их берет обработчик событий
 //при передаче все данные дублируются, работы с памятью не производится, размер стека ограничен
-
 class EventStack {
 public:
 	int push( Event& newEvent );
@@ -239,7 +245,7 @@ public:
 	EInputDevice(); //инициация по умолчанию
 	oid_t initReverse( const port_t port, const InputMode im=imUpDown );
 	oid_t init( const port_t port, const InputMode im=imUpDown, 
-	bool reverseOn=false, bool pullUp=false );
+				bool reverseOn=false, bool pullUp=false );
 	virtual void idle();
 	virtual void getName( char* result );
 	virtual int16_t getData(); // get data direct 
@@ -249,7 +255,6 @@ protected:
 	bool reverseOn;			//работает с инвертированием ввода
 	bool debouncingStarted; //запущена обработка дребезга
 	int16_t currentState;	//текущее состояние
-//	int16_t lastState;		//последнее состояние
 	int16_t currentData;    //Actual data after last measurement
 	unsigned long lastTime; //время последнего изменения состояни
 	Timer debounceTimer;	 //таймер для обработки дребезга

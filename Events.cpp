@@ -128,7 +128,6 @@ int EventStack::push(Event& newEvent)
    };
 };
 
-
 int EventStack::pushEvent(event_t evntType,  //тип события
 oid_t sourceID,  //идентификатор создателя
 oid_t destinationID, //идентификатор получателя, если есть
@@ -173,7 +172,6 @@ int EventStack::pop(Event& newEvent)
       return 0;
    } 
    else {
-      //      items[size].copy(newEvent);
       size--;
       newEvent = items[size];
 #ifdef DEBUG_EVENTSTACK
@@ -302,7 +300,7 @@ int EObject::handleEvent(Event& tmpEvent)
 	ID объекта, если событие было обработано
 */
 {
-	if (eventForMe(tmpEvent)) {
+	if ( eventForMe( tmpEvent ) ) {
 		//основные команды, которые обрабоатывает любой объект
 		// - это включение и выключение объекта
 		if ( this->isEnabled ) {
@@ -336,12 +334,12 @@ int EObject::handleEvent(Event& tmpEvent)
 
 const bool EObject::eventForMe(const Event& tmpEvent)
 {
-   return (tmpEvent.destinationID == this->ID );
+   return ( ( tmpEvent.destinationID == this->ID ) || ( tmpEvent.destinationID == BROADCAST_ADDRESS ) );
 };
 
 void EObject::getName(char* result)
 {
-   sprintf(result,"EObject ID=%d", this->ID);
+   sprintf( result,"EObject ID=%d", this->ID );
 };
 
 
@@ -350,15 +348,15 @@ EDevice::EDevice() : EObject()
 {
 };
 
-oid_t EDevice::init(const port_t port)
+oid_t EDevice::init( const port_t port )
 {
    this->port=port;
    return getID();
 };
 
-void EDevice::getName(char* result)
+void EDevice::getName( char* result )
 {
-   sprintf(result,"EDevice: ID=%d port=%d ",getID(),this->port);
+   sprintf( result, "EDevice: ID=%d port=%d ", getID(), this->port );
 };
 
 
@@ -371,34 +369,34 @@ EDevice(){
 oid_t EInputDevice::initReverse(const port_t port, const InputMode im)
 {
    debounceTimer.init(DEBOUNCEDELAY,false);
-   return EInputDevice::init(port,im,true, true);  //????!!! - порты подтягиваем, это не всегда правильно
+   return EInputDevice::init( port, im, true, true );  //????!!! - порты подтягиваем, это не всегда правильно
 };
 
 oid_t EInputDevice::init(const port_t port, const InputMode im, const bool reverseOn, bool pullUp)
 {
-   oid_t result=EDevice::init(port);       
+   oid_t result=EDevice::init( port );       
 #ifdef DEBUG_EINPUTDEVICE
    Serial.println("EInputdevice::init_full()");
 #endif
-   debounceTimer.init(DEBOUNCEDELAY,false);
+   debounceTimer.init( DEBOUNCEDELAY, false );
    this->inputMode = im;               //зададим режим создания событий устройства
    this->reverseOn = reverseOn;        //зададим режим реверса
-   pinMode(this->port,INPUT);       // после этого запрограммируем порт в режим чтения, подтяжку порта не делаем
+   pinMode( this->port, INPUT );       // после этого запрограммируем порт в режим чтения, подтяжку порта не делаем
 #ifdef DEBUG_EINPUTDEVICE
    int tmp = this->port;
 #endif
    if (pullUp) {
-      digitalWrite(this->port, HIGH);
+      digitalWrite( this->port, HIGH );
 #ifdef DEBUG_EINPUTDEVICE
       Serial.print("EInputDevice::init PullUp port:");
-      Serial.println(tmp);
+      Serial.println( tmp );
 #endif
    } 
    else {
-      digitalWrite(this->port, LOW);
+      digitalWrite( this->port, LOW );
 #ifdef DEBUG_EINPUTDEVICE
       Serial.print("EInputDevice::init PullDown port:");
-      Serial.println(tmp);
+      Serial.println( tmp );
 #endif
    }
    getDataFromInput();                           // считаем данные с учетом флага реверса
@@ -420,11 +418,11 @@ void EInputDevice::idle()
 
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!КОПАТЬ ЗДЕСЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if ( debouncingStarted ) {
-		if (debounceTimer.expired()) {
+		if ( debounceTimer.expired() ) {
          //закончилась задержка дребезга - время считать показания устройства
 			this->debouncingStarted = false;
 			getDataFromInput();
-			if ( this->currentState != this->currentData) {
+			if ( this->currentState != this->currentData ) {
 				//данные изменились, теперь следует понять, не послать ли событие?
 #ifdef DEBUG_EINPUTDEVICE
 				int tmpID = this->getID();
@@ -451,7 +449,7 @@ void EInputDevice::idle()
 					}
 				} else {
 					//если мы здесь ->уровень вырос
-					switch ( this->inputMode) {
+					switch ( this->inputMode ) {
 					case imUpDown:
 					case imUpOnly:
 						eventType = evInputUp;
@@ -464,13 +462,13 @@ void EInputDevice::idle()
 					}
 				} //конец ветки по высокому/низкому считанному уровню
 				//теперь если задан какой-то тип события - надо поднимать событие
-				if ( eventType != evNone) {
+				if ( eventType != evNone ) {
 #ifdef DEBUG_EINPUTDEVICE
 					Serial.print("EInputDevice::idle: eventType=");
-					Serial.println(eventType);
+					Serial.println( eventType );
 #endif
 					if ( this->isEnabled ) {
-						eventStack.pushEvent(eventType, this->getID(), 0, this->currentState);
+						eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
 					}
 				
 				}
@@ -485,7 +483,7 @@ void EInputDevice::idle()
 		if ( this->currentState != this->currentData ) {
 #ifdef DEBUG_EINPUTDEVICE
 			Serial.print("EInputDevice::idle: start debouncing, newstate=");
-			Serial.println(this->currentState);
+			Serial.println( this->currentState );
 #endif
 			//считали данные и они не соответствуют тем, что были раньше
 			//надо запустить антидребезг
@@ -510,7 +508,7 @@ int16_t EInputDevice::getDataFromInput()
 
 
 
-void EInputDevice::getName(char* result)
+void EInputDevice::getName( char* result )
 {
    long interval = this->debounceTimer.getInterval();
    sprintf( result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
@@ -523,23 +521,23 @@ EOutputDevice::EOutputDevice() :
 EDevice(){
 };
 
-oid_t EOutputDevice::init(const port_t port, const bool reverse)
+oid_t EOutputDevice::init( const port_t port, const bool reverse )
 {
    oid_t result;
-   result = EDevice::init(port);
+   result = EDevice::init( port );
    pinMode( this->port, OUTPUT );
    //set OFF at start according to reverse flag
    if ( (reverseOn = reverse) ) {
-      digitalWrite(this->port,HIGH);
+      digitalWrite( this->port, HIGH );
    } else {
-      digitalWrite(this->port,LOW);
+      digitalWrite( this->port, LOW );
    }
    return result;
 };
 
-oid_t EOutputDevice::initReverse(const uint16_t port)
+oid_t EOutputDevice::initReverse( const uint16_t port )
 {
-   return EOutputDevice::init(port, true);
+   return EOutputDevice::init( port, true );
 };
 
 int EOutputDevice::handleEvent( Event& tmpEvent )

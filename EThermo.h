@@ -1,6 +1,5 @@
 #ifndef EThermo_h
 #define EThermo_h
-
 #include "Events.h"
 #include "DallasTemperature.h"
 
@@ -14,7 +13,6 @@ public:
 	virtual int handleEvent( Event& tmpEvent );
 	virtual void idle();
 	virtual void getName( char* result );	 
-//	virtual int16_t getDataFromInput(){ return 0 }; // get data from sensor and store it in .temperature
 	float  getTemperature(); // return current temperature
 protected:
 	void tellThemperature(); // rise event with temperature
