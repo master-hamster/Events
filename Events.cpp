@@ -573,11 +573,15 @@ void EOutputDevice::on()
    isOn = true;
    if ( this->reverseOn ) {
       digitalWrite( this->port, LOW );
-//	  Serial.println("EOD:on() REVERSE, ON");
+#ifdef DEBUG_ELED	  
+	  Serial.println("EOD:on() REVERSE, ON");
+#endif
    } 
    else {
       digitalWrite( this->port, HIGH );
-//	  Serial.println("EOD:on() NO REVERSE, ON");
+#ifdef DEBUG_ELED	  
+	  Serial.println("EOD:on() NO REVERSE, ON");
+#endif
    }
 };
 
@@ -587,11 +591,15 @@ void EOutputDevice::off()
    isOn = false;
    if ( this->reverseOn ) {
       digitalWrite( this->port, HIGH );
-//	  Serial.println("EOD:off() REVERSE, OFF");
+#ifdef DEBUG_ELED	  
+	  Serial.println("EOD:off() REVERSE, OFF");
+#endif
    } 
    else {
       digitalWrite( this->port, LOW );
-// 	  Serial.println("EOD:off() NO REVERSE, OFF");
+#ifdef DEBUG_ELED	  
+ 	  Serial.println("EOD:off() NO REVERSE, OFF");
+#endif
   };
 };
 

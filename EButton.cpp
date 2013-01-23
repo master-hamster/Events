@@ -84,7 +84,7 @@ void EButton::idle()
 				//if event type was set, and button is enabled, rise event
 				if ( ( eventType != evNone) && ( this->isEnabled ) ) {
 #ifdef DEBUG_EBUTTON
-					Serial.print("EButton::idle: eventType=");
+					Serial.print("EButton::idle(): rise eventType=");
 					Serial.println( eventType );
 #endif
 					eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
@@ -103,7 +103,7 @@ void EButton::idle()
 		getDataFromInput();
 		if ( this->currentState != this->currentData ) {
 #ifdef DEBUG_EBUTTON
-			Serial.print( "EButton::idle: start debouncing, newstate=" );
+			Serial.print( "EButton::idle(): start debouncing, newstate=" );
 			Serial.println( this->currentData );
 #endif
 			//current data differ from last read
@@ -120,7 +120,9 @@ void EButton::setEvents( const event_t eKeyPressed,
 	eventKeyPressed        = eKeyPressed;
 	eventKeyDoublePressed  = eKeyDoublePressed;
 	eventKeyHold           = eKeyHold;
+#ifdef DEBUG_EBUTTON
 	Serial.println(eventKeyPressed);
 	Serial.println(eventKeyDoublePressed);
 	Serial.println(eventKeyHold);
+#endif
 }

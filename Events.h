@@ -28,7 +28,7 @@
 #endif
 
 //Uncomment next line for turn on debugging
-//#define DEBUG_EVENT 
+#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
 //#define PRINTNAMES
@@ -40,8 +40,8 @@
 //#define DEBUG_EBEEPER
 //#define DEBUG_ETIMER
 //#define DEBUG_EANALOGINPUT
-//#define DEBUG_EBUTTON
-#define DEBUG_ELED
+#define DEBUG_EBUTTON
+//#define DEBUG_ELED
 //#define DEBUG_ERGBLED
 //#define DEBUG_ECANDLE
 //#define DEBUG_ECANDLE1
@@ -127,6 +127,10 @@
 #define PORT_REVERSE_MODE true
 #define PORT_NO_REVERSE_MODE false
 #define BROADCAST_ADDRESS 32767
+#define TIMER_AUTOSTART true
+#define TIMER_NO_AUTOSTART false
+#define TIMER_AUTORESTART true
+#define TIMER_NO_AUTORESTART false
 
 //============== TYPES DEFINITION =============
 typedef uint16_t oid_t;
