@@ -50,7 +50,7 @@ void EApplication::sendTestEvent( const event_t e1Type, const event_t e2Type,
 #endif
 
 	oid_t result = 0;
-	currentEvent.sourceID = EAPPLICATION_SOURCE_ID;
+	currentEvent.sourceID = EAPPLICATION_SOURCE_OID;
 	for ( int i = 0; i < this->objectsAdded; i++ ) {
 		currentEvent.eventType = e1Type;
 		currentEvent.destinationID = objects[i]->getID();

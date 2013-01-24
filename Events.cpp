@@ -272,7 +272,8 @@ void Timer::start()
 //==================================== class EObject =======================================
 EObject::EObject()
 {
-	ID = __next_EObject_ID__++;
+//	ID = __next_EObject_ID__++;
+	ID = ++__next_EObject_ID__;
  //  this->ID = nextOId++;
 	this->event.eventType = evNone;           //обнуляем значение готовящегося события.
 	this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
@@ -281,7 +282,7 @@ EObject::EObject()
 
 oid_t EObject::init()
 {
-	this->ID = __next_EObject_ID__++;   //берем следующий идентификатор объекта
+	this->ID = ++__next_EObject_ID__;   //берем следующий идентификатор объекта
 	this->event.eventType = evNone;     //обнуляем значение готовящегося события.
 	this->event.sourceID = this->ID;    //заранее записываем свой ID в данные
 	return this->ID;                  //возвращаем его для внешних любознательных
@@ -334,7 +335,7 @@ int EObject::handleEvent(Event& tmpEvent)
 
 const bool EObject::eventForMe(const Event& tmpEvent)
 {
-   return ( ( tmpEvent.destinationID == this->ID ) || ( tmpEvent.destinationID == BROADCAST_ADDRESS ) );
+   return ( ( tmpEvent.destinationID == this->ID ) || ( tmpEvent.destinationID == BROADCAST_OID ) );
 };
 
 void EObject::getName(char* result)

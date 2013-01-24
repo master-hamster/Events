@@ -2,8 +2,6 @@
 #define EApplication_h
 #include "Events.h"
 
-#define EAPPLICATION_SOURCE_ID 65535
-
 //================  прообраз главного приложения ====================================
 class EApplication {
 public:

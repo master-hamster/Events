@@ -28,7 +28,7 @@
 #endif
 
 //Uncomment next line for turn on debugging
-#define DEBUG_EVENT 
+//#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
 //#define PRINTNAMES
@@ -126,7 +126,8 @@
 //=============== only substitutions, no need to change  =======
 #define PORT_REVERSE_MODE true
 #define PORT_NO_REVERSE_MODE false
-#define BROADCAST_ADDRESS 32767
+#define BROADCAST_OID 32767
+#define EAPPLICATION_SOURCE_OID 65535
 #define TIMER_AUTOSTART true
 #define TIMER_NO_AUTOSTART false
 #define TIMER_AUTORESTART true

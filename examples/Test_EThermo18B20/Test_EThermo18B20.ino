@@ -21,6 +21,7 @@ https://github.com/master-hamster/Events
 #include <ETimer.h>
 #include <Events.h>
 #include <EThermo.h>
+#include <EApplication.h>
 
 #define evTimeToGetTemperature 211
 // 1wire is plugged into port 7
@@ -93,7 +94,7 @@ void setup()
 	uint8_t deviceCount;
 	DeviceAddress deviceAddress;
 	Serial.begin(9600);
-	Serial.println("Test_EThermo Loading..");
+	Serial.println("Test_EThermo18B20 Loading..");
 
 	Serial.print("Locating devices...");
 	sensor.begin();
@@ -122,7 +123,7 @@ void setup()
 	Serial.println("Current objects:");
 	mainApp.printNames();
 
-	Serial.println("Test_Thermo18b20 Loading done!");
+	Serial.println("Test_Thermo18B20 Loading done!");
 };
 
 

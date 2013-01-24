@@ -85,7 +85,9 @@ void EButton::idle()
 				if ( ( eventType != evNone) && ( this->isEnabled ) ) {
 #ifdef DEBUG_EBUTTON
 					Serial.print("EButton::idle(): rise eventType=");
-					Serial.println( eventType );
+					Serial.print( eventType );
+					Serial.print( " Src:");
+					Serial.println( getID() );
 #endif
 					eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
 				}
