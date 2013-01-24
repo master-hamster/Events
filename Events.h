@@ -28,7 +28,7 @@
 #endif
 
 //Uncomment next line for turn on debugging
-//#define DEBUG_EVENT 
+#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
 //#define PRINTNAMES

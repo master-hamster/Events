@@ -20,9 +20,9 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 #ifdef DEBUG_EBUTTON
 	Serial.println( "EButton::init_full()" );
 #endif
-	debounceTimer.init( DEBOUNCEDELAY, false );
-	doublePressTimer.init( DOUBLEPRESSDELAY, false );
-	holdTimer.init( KEYHOLDDELAY, false );
+	debounceTimer.init( DEBOUNCEDELAY, TIMER_NO_AUTORESTART, TIMER_NO_AUTOSTART );
+	doublePressTimer.init( DOUBLEPRESSDELAY, TIMER_NO_AUTORESTART, TIMER_AUTOSTART );
+	holdTimer.init( KEYHOLDDELAY, TIMER_NO_AUTORESTART, TIMER_NO_AUTOSTART );
 	this->reverseOn = reverseOn;  
 	pinMode( this->port, INPUT );       // set this port to INPUT mode
 	if ( pullUp ) {
@@ -50,7 +50,7 @@ void EButton::idle()
 	uint16_t eventType = evNone;
 
 	if ( debouncingStarted ) {
-		if (debounceTimer.expired()) {
+		if ( debounceTimer.expired() ) {
 			//we passed debounce delay, lets get current state
 			this->debouncingStarted = false;
 			getDataFromInput();
@@ -66,18 +66,34 @@ void EButton::idle()
 				Serial.print( this->currentData );
 				Serial.println("");
 #endif
-				if ( this->currentState == 0) {
+				if ( this->currentState == 0 ) {
 					//данные имеют низкий уровень -> нужно сформировать событие для некоторых условий
+#ifdef DEBUG_EBUTTON
+					Serial.println("EButton::idle point 1");
+#endif
 					if ( doublePressTimer.expired() ) {
+#ifdef DEBUG_EBUTTON
+						Serial.println("EButton::idle point 2");
+#endif
 						//таймер двойного нажатия просрочен, запустим событие нажатия
 						//и заодно перезапустим таймер двойного нажатия
 						if ( holdTimer.expired() ) {
+#ifdef DEBUG_EBUTTON
+							Serial.println("EButton::idle point 3");
+#endif
 							eventType = eventKeyHold;
 						  } else {
+#ifdef DEBUG_EBUTTON
+							Serial.println("EButton::idle point 4");
+#endif
 							eventType = eventKeyPressed;
+							doublePressTimer.start();
+							holdTimer.start();
 						}	
-						doublePressTimer.start();
 					} else {
+#ifdef DEBUG_EBUTTON
+						Serial.println("EButton::idle point 5");
+#endif
 						eventType = eventKeyDoublePressed;
 					}
 				} 
@@ -92,7 +108,7 @@ void EButton::idle()
 					eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
 				}
 				else {
-					holdTimer.start();
+				//	holdTimer.start();
 				};
 				//save current input state for future use
 				this->currentData = this->currentState;
