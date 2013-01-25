@@ -1,6 +1,17 @@
 /*
 Test_EButton
 
+Simple EButton object
+
+
+Button press generate event.
+Every generated event will be printed at Serial.
+
+If you #define TEST_USER_EVENTS, Button will be generate user-defined event
+on single and double press, so you will see state changes according to button action
+ - single press - mode change to next
+  - double press - mode change to 'LightOff'
+
 */
 
 //#include <Arduino.h>
@@ -15,19 +26,20 @@ Test_EButton
 #include <DallasTemperature.h>
 
 
-#define DEBUG_TEST_EBUTTON
+#define TEST_USER_EVENTS
+
 
 //Inputs
 //Digital Inputs
 #define STATE_BUTTON_PIN      2
 
-#define evStateButton         131
+#define evChangeState         131
+#define evLightOff            132
 
 enum BoxState {
         bsLightOff,
         bsLowLight,
-        bsFullLight,
-        bsMotionDetected
+        bsFullLight
 };
  
 
@@ -41,7 +53,6 @@ public:
         void setLightOff();
         void setLowLight();
         void setFullLight();
-        void setMotionDetected();
         void setNextState();
         
         oid_t stateButtonID;
@@ -53,29 +64,25 @@ private:
         
 void MyApplication::init()
 {
-
         stateButtonID   = stateButton.init( STATE_BUTTON_PIN, true);   
-            stateButton.setEvents( evStateButton );
-
+#ifdef TEST_USER_EVENTS        
+            stateButton.setEvents( evChangeState, evLightOff );
+#endif
 	addObject( &stateButton );
-
         currentState = bsLightOff;
-        
-        delay(1000);
-
 };
-
-   
 
 void MyApplication::parseEvent()
 {
         switch ( currentEvent.eventType ){
-	case evStateButton:
+	case evChangeState:
                 setNextState();
+                break;
+        case evLightOff:
+                setLightOff();
                 break;
 	}
 };
-
 
 void MyApplication::setNextState()
 {
@@ -93,43 +100,26 @@ void MyApplication::setNextState()
         case bsFullLight:
                 setLightOff();        
                 break;
-        case bsMotionDetected:
-                setFullLight();
-                break;
         }        
 }
-
-/*
-void MyApplication::switchToState(BoxState newState)
-{
-          
-}
-*/
 
 void MyApplication::setLightOff()
 {
         currentState = bsLightOff;
-        Serial.println(" bsLightOff");
+        Serial.println( " bsLightOff" );
 };
 
 void MyApplication::setLowLight()
 {
         currentState = bsLowLight;
-        Serial.println(" bsLowLight");
+        Serial.println( " bsLowLight" );
 };
 
 void MyApplication::setFullLight()
 {
         currentState = bsFullLight;
-        Serial.println(" bsFullLight");
+        Serial.println( " bsFullLight" );
 };
-
-void MyApplication::setMotionDetected()
-{
-        currentState = bsMotionDetected;
-        Serial.println(" bsMotionDetected");
-};
-
 
 
 //====================================================END OF MyApp definition
@@ -138,27 +128,24 @@ MyApplication mainApp;
 void setup()
 {
 	Serial.begin(9600);
-	Serial.println("Test_EButton Loading..");
+	Serial.println( "Test_EButton Loading.." );
  
 	mainApp.init();
-	Serial.println("Current objects:");
+	Serial.println( "Current objects:" );
 	mainApp.printNames();
-	Serial.println("Loading done!");
+	Serial.println( "Loading done!" );
 
 };
 
 
 void loop()
 { 
-	if (mainApp.getEvent()) {  
-#ifdef DEBUG_TEST_EBUTTON
+	if ( mainApp.getEvent() ) {  
 		mainApp.printEvent();
-#endif
 		mainApp.parseEvent();
 		mainApp.handleEvent();
 	}
 	mainApp.idle();
-//delay ( 500);
 };
 
     

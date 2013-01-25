@@ -54,78 +54,79 @@ void EButton::idle()
 			//we passed debounce delay, lets get current state
 			this->debouncingStarted = false;
 			getDataFromInput();
-			if ( this->currentState != this->currentData) {
+			if ( this->currentState != this->currentData ) {
 				//State changed. let's think have we to rise event?
 #ifdef DEBUG_EBUTTON
 				int tmpID = this->getID();
 				Serial.print( "EButton::idle() ID=" );
 				Serial.print( tmpID );
-				Serial.print(" Input changed!! currentState=");
+				Serial.print( " Input changed!! currentState=" );
 				Serial.print( this->currentState );
-				Serial.print("	currentData=");
-				Serial.print( this->currentData );
-				Serial.println("");
+				Serial.print( "	currentData=" );
+				Serial.println( this->currentData );
 #endif
 				if ( this->currentState == 0 ) {
-					//данные имеют низкий уровень -> нужно сформировать событие для некоторых условий
+					//Last state 0, new state 1 - Let's determine event type
 #ifdef DEBUG_EBUTTON
-					Serial.println("EButton::idle point 1");
+					Serial.println( "EButton::idle point 1" );
 #endif
 					if ( doublePressTimer.expired() ) {
 #ifdef DEBUG_EBUTTON
-						Serial.println("EButton::idle point 2");
+						Serial.println( "EButton::idle point 2" );
 #endif
-						//таймер двойного нажатия просрочен, запустим событие нажатия
-						//и заодно перезапустим таймер двойного нажатия
-						if ( holdTimer.expired() ) {
+						//It is not double click, only first press
+						//let's generate evKeyPressed and start doublepress timer
 #ifdef DEBUG_EBUTTON
-							Serial.println("EButton::idle point 3");
+						Serial.println( "EButton::idle point 4" );
 #endif
-							eventType = eventKeyHold;
-						  } else {
-#ifdef DEBUG_EBUTTON
-							Serial.println("EButton::idle point 4");
-#endif
-							eventType = eventKeyPressed;
-							doublePressTimer.start();
-							holdTimer.start();
-						}	
+						eventType = eventKeyPressed;
+						doublePressTimer.start();
+						holdTimer.start();
 					} else {
 #ifdef DEBUG_EBUTTON
 						Serial.println("EButton::idle point 5");
 #endif
 						eventType = eventKeyDoublePressed;
 					}
-				} 
+				} else {  // State changed from 1 to 0, evKeyRelease?
+					// !!!!!!!!!!To be coded!!!!!!!!!
+				}
 				//if event type was set, and button is enabled, rise event
-				if ( ( eventType != evNone) && ( this->isEnabled ) ) {
+				if ( eventType != evNone) {
 #ifdef DEBUG_EBUTTON
-					Serial.print("EButton::idle(): rise eventType=");
+					Serial.print( "EButton::idle(): rise eventType=" );
 					Serial.print( eventType );
 					Serial.print( " Src:");
 					Serial.println( getID() );
 #endif
-					eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
-				}
-				else {
+					riseEvent( eventType );
+					//eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
+				} 	else {
 				//	holdTimer.start();
 				};
 				//save current input state for future use
-				this->currentData = this->currentState;
+				this->currentState = this->currentData;
+			} else { // state was't changed
+				// check, if state is 1 and hold too long, so it evKeyHold
+				if ( ( holdTimer.expired() ) && ( this->currentState == 1 ) ) {
+#ifdef DEBUG_EBUTTON
+					Serial.println( "EButton::idle point 3" );
+#endif
+					eventType = eventKeyHold;
+					riseEvent( eventType );
+					//eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
+				} // holdTimer.Expired
 			}
 		}
-	}
-	else {
-		//если мы здесь - то обработка дребезга не идет, надо посмотреть состояние
-		//ввода и дейстовать соответственно
+	} else {   // Debouncing procedure wasn't started, so lets start it!
 		getDataFromInput();
 		if ( this->currentState != this->currentData ) {
+			//current data differ from last read, but debouncing wasn't started
+			//let's start debouncing timer
 #ifdef DEBUG_EBUTTON
 			Serial.print( "EButton::idle(): start debouncing, newstate=" );
 			Serial.println( this->currentData );
 #endif
-			//current data differ from last read
-			//let's start debouncing timer
 			this->debouncingStarted = true;
 			debounceTimer.start();
 		}
@@ -139,8 +140,8 @@ void EButton::setEvents( const event_t eKeyPressed,
 	eventKeyDoublePressed  = eKeyDoublePressed;
 	eventKeyHold           = eKeyHold;
 #ifdef DEBUG_EBUTTON
-	Serial.println(eventKeyPressed);
-	Serial.println(eventKeyDoublePressed);
-	Serial.println(eventKeyHold);
+	Serial.println( eventKeyPressed );
+	Serial.println( eventKeyDoublePressed );
+	Serial.println( eventKeyHold );
 #endif
-}
+};

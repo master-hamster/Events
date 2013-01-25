@@ -45,7 +45,7 @@ const char* eventTypeNames[]={
 	"evLevelChanged",
 	"evMotionDetected",
 	"evFlicker",
-	"",
+	"evKeyReleased",
 	"",
 	"",
 	"",	
@@ -507,6 +507,12 @@ int16_t EInputDevice::getDataFromInput()
    return this->currentData = ( this->reverseOn ^ digitalRead( this->port ) );
 };
 
+void EInputDevice::riseEvent(const event_t evType) const
+{
+	if ( this->isEnabled ) {
+		eventStack.pushEvent( evType, this->getID(), 0, this->currentState );
+	}
+};
 
 
 void EInputDevice::getName( char* result )

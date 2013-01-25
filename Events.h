@@ -28,7 +28,7 @@
 #endif
 
 //Uncomment next line for turn on debugging
-#define DEBUG_EVENT 
+//#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
 //#define PRINTNAMES
@@ -92,11 +92,8 @@
 //#define evCandleOn                  23
 //#define evCandleOff                 24
 #define evFlicker                   19
-
-//команды на включение и выключение устройства - заменены на TurnOn TurnOff
-//#define evOutputOn				26
-//#define evOutputOff			27
-
+//Key released - reserve event name for future
+#define evKeyReleased   20
 
 //============= SYSTEM PARAMETERS ===============
 //максимальное количество событий в стеке событий
@@ -105,12 +102,13 @@
 #define MAXAPPOBJECTS					20
 
 //============= OBJECT SETTINGS =================
-//задержка по времени в мс для устранения дребезка
+//Debounce delay in ms, recommended 20..50
 #define DEBOUNCEDELAY       50
-#define DOUBLEPRESSDELAY   500
-//задержка по времени для определения события Hold
+//Duoble press time in ms, recommended 500-1000
+#define DOUBLEPRESSDELAY   800
+//Key hold delay in ms, recommended 800-1500
 #define KEYHOLDDELAY      1000
-//#define HOLDREPEATDELAY 3000
+//#define HOLDREPEATDELAY 3000 // may be in future?
 
 //длительность писка бипера по умолчанию
 #define EBEEPER_DEFAULT_BEEP_TIME   25
@@ -226,7 +224,7 @@ public:
 	virtual void idle(){};
 	const bool eventForMe( const Event& tmpEvent );
 	virtual void getName( char* result );
-	oid_t getID() { return this->ID; };
+	oid_t getID() const { return this->ID; };
 private:
 	oid_t ID;          //This Object ID
 protected:
@@ -256,10 +254,11 @@ public:
 	virtual int16_t getData(); // get data direct 
 	virtual int16_t getDataFromInput(); //Read data from input and return it
 protected:
+	void riseEvent(const event_t evType) const;
 	InputMode inputMode;	 //в каком режиме работает устройство
 	bool reverseOn;			//работает с инвертированием ввода
 	bool debouncingStarted; //запущена обработка дребезга
-	int16_t currentState;	//текущее состояние
+	int16_t currentState;	//Current state (after bounce check etc)
 	int16_t currentData;    //Actual data after last measurement
 	unsigned long lastTime; //время последнего изменения состояни
 	Timer debounceTimer;	 //таймер для обработки дребезга
