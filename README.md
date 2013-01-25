@@ -5,7 +5,7 @@ Event-driven framework for Arduino
 
 Objects:
 --------
-  - Timer
+  - Timer with example
   - Event
   - EventStack
   - Object
@@ -14,13 +14,14 @@ Objects:
   
 Input devices:
 --------------
+  - ETimer (EObject) - timer object with event generation, with example
   - EDevice (EObject) - Abstract device connected to Arduino port
   - EAnalogInput (EDevice)
   - EInputDevice (EDevice) - General digital input device
-  - EButton (EInputDevice) - Button with event generation functionality
+  - EButton (EInputDevice) - Button with event generation functionality, with example
   - Analog button
   - EThermo (EInputDevice) - abstract Thermometer
-  - EThermoDallas1820 (EThermo) Thermometer on Dallas 18B20 chip
+  - EThermoDallas1820 (EThermo) Thermometer on Dallas 18B20 chip, with two examples
 
 Output Devices:
 ---------------
