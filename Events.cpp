@@ -226,7 +226,7 @@ void Timer::setInterval(const unsigned long interval)
 };
 
 //вернем сколько времени прошло с начала старта таймера
-unsigned long Timer::elapsedTime()
+unsigned long Timer::elapsedTime() const
 {
 	return millis() - startTime;
 };
@@ -474,7 +474,7 @@ void EInputDevice::idle()
 				
 				}
 				//теперь сохраним время и значение последнего состояни
-				this->currentData = this->currentState;
+				this->currentState = this->currentData;
 			}
 		}
 	} else {
@@ -610,7 +610,10 @@ void EOutputDevice::off()
   };
 };
 
-
+void EOutputDevice::toggle()
+{
+  isOn?off():on();
+}
 
 
 /*

@@ -1,5 +1,13 @@
 #include "EThermo.h"
 
+#ifdef DEBUG_ETHERMO
+	#define DBG_PRINTLN(a) Serial.println(a)
+	#define DBG_PRINT(a) Serial.print(a)
+#else
+	#define DBG_PRINTLN(a)
+	#define DBG_PRINT(a)
+#endif
+
 oid_t EThermo::init( const uint16_t timeout )
 //Инициализация термометра с заданным интервалом и автозапуском
 {
@@ -7,14 +15,10 @@ oid_t EThermo::init( const uint16_t timeout )
 	if ( timeout == 0 ) {
 		active = 0;
 		timer.init( ETHERMO_THERMOMEASUREDELAY, true );
-#ifdef DEBUG_ETHERMO		
-		Serial.println ( "EThermo.init passive timer init with delay" );
-#endif
+		DBG_PRINTLN ( "EThermo.init passive timer init with delay" );
 	} else {	
 		active = 1;
-#ifdef DEBUG_ETHERMO		
-		Serial.println ( "EThermo.init active timer init with delay" );
-#endif
+		DBG_PRINTLN ( "EThermo.init active timer init with delay" );
 		timer.init(timeout,true);
 	}
 	currentData = getDataFromInput(); // make first measurement
@@ -25,13 +29,9 @@ int EThermo::handleEvent( Event& tmpEvent )
 //handle information request - clear event and create new event with data
 {
 	if ( eventForMe( tmpEvent ) ) { //we got info request - let's cleare event and tell temperature
-#ifdef DEBUG_ETHERMO
-		Serial.println("EThermo::handleEvent(): Its my event!");
-#endif
+		DBG_PRINTLN("EThermo::handleEvent(): Its my event!");
 		if ( tmpEvent.eventType == evTellMe ) {
-#ifdef DEBUG_ETHERMO
-			Serial.println("EThermo::handleEvent(): evTellMe");
-#endif
+			DBG_PRINTLN("EThermo::handleEvent(): evTellMe");
 			tmpEvent.eventType = evNone;
 			tellThemperature();
 			return 1;
@@ -49,10 +49,8 @@ void EThermo::idle()
 	//timeout expired, let's measure temperature
 	if ( timer.expired() ) {
 		currentData = getDataFromInput();	
-#ifdef DEBUG_ETHERMO  
-		Serial.print( "T=" );
-		Serial.println( temperature );	
-#endif 
+		DBG_PRINT( "T=" );
+		DBG_PRINTLN( temperature );	
 		if ( active ) {
 			tellThemperature();
 		}
@@ -72,47 +70,45 @@ float EThermo::getTemperature()
 void EThermo::tellThemperature()
 {
 //	int16_t currentData = round( temperature * 100 ); 
-#ifdef DEBUG_ETHERMO
-	Serial.print( "Conversion:" );
-	Serial.print( temperature );
-	Serial.print( " data:" );
-	Serial.println( currentData );
-#endif	
+	DBG_PRINT( "Conversion:" );
+	DBG_PRINT( temperature );
+	DBG_PRINT( " data:" );
+	DBG_PRINTLN( currentData );
 	eventStack.pushEvent( evTemperature, getID(), 0, currentData ); 
 }	
 
-oid_t EThermoDallas1820::init( DallasTemperature* dt, 
+oid_t EThermoDs1820::init( DallasTemperature* dt, 
 				const uint16_t timeout, 
 				const uint8_t precision )
 {
-	dallas1820 = dt;
-	if ( !( dallas1820->getAddress( insideThermometer, 0 ) ) ) {
+	ds1820 = dt;
+	if ( !( ds1820->getAddress( insideThermometer, 0 ) ) ) {
 		Serial.println( "Unable to find address for Device 0" ); 
 	} else {
 		// Set Precision!
-		dallas1820->setResolution( insideThermometer, precision );
-#ifdef DEBUG_ETHERMO		
-		Serial.println("Dallas inited.");
-#endif		
+		ds1820->setResolution( insideThermometer, precision );
+		DBG_PRINT( "Dallas inited." );
 	};	
 	return EThermo::init(timeout);
  };
 
-int16_t EThermoDallas1820::getDataFromInput()
+int16_t EThermoDs1820::getDataFromInput()
 //Get temperature from sensor to internal variable
 {
-	dallas1820->requestTemperatures();
-	temperature = dallas1820->getTempC( insideThermometer );
+	ds1820->requestTemperatures();
+	temperature = ds1820->getTempC( insideThermometer );
 	currentData = round( temperature * 100 );
-#ifdef DEBUG_ETHERMO
-	Serial.print( "1820.doMeasure temperature=" );
-	Serial.println( temperature );
-#endif
+	DBG_PRINT( "1820.doMeasure temperature=" );
+	DBG_PRINTLN( temperature );
 	return currentData;
 };
 
-void EThermoDallas1820::getName( char* result )
+void EThermoDs1820::getName( char* result )
 {
-	sprintf( result, "EThermo" );
+	sprintf( result, "EThermoDs1820 " );
 };
 
+#ifdef DEBUG_ETHERMO
+	#undef DBG_PRINTLN(a)
+	#undef DBG_PRINT(a)
+#endif

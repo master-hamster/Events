@@ -10,7 +10,7 @@ public:
 	const void printEvent();               //Print current event waiting for handling
 	void sendTestEvent( const event_t e1Type = evTurnOn, 
 				const event_t e2Type = evTurnOff,
-				const int e1Delay = 1000, const int e2Delay = 1000);
+				const int e1Delay = 500, const int e2Delay = 500);
 	int getEvent();                  //просмотреть, нет ли событий, если есть - то получить
 	int pushEvent( const event_t evntType,  //Push event for handling
 		const oid_t destinationID = 0,      //Destination ID

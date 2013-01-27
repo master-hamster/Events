@@ -28,7 +28,7 @@
 #endif
 
 //Uncomment next line for turn on debugging
-//#define DEBUG_EVENT 
+#define DEBUG_EVENT 
 
 #ifdef DEBUG_EVENT
 //#define PRINTNAMES
@@ -36,11 +36,11 @@
 //#define DEBUG_EVENTNAMES
 //#define DEBUG_EVENTSTACK
 //#define DEBUG_EINPUTDEVICE
-#define DEBUG_EAPPLICATION
+//#define DEBUG_EAPPLICATION
 //#define DEBUG_EBEEPER
 //#define DEBUG_ETIMER
 //#define DEBUG_EANALOGINPUT
-#define DEBUG_EBUTTON
+//#define DEBUG_EBUTTON
 //#define DEBUG_ELED
 //#define DEBUG_ERGBLED
 //#define DEBUG_ECANDLE
@@ -102,10 +102,10 @@
 #define MAXAPPOBJECTS					20
 
 //============= OBJECT SETTINGS =================
-//Debounce delay in ms, recommended 20..50
-#define DEBOUNCEDELAY       50
+//Debounce delay in ms, recommended 10..50
+#define DEBOUNCEDELAY       25
 //Duoble press time in ms, recommended 500-1000
-#define DOUBLEPRESSDELAY   800
+#define DOUBLEPRESSDELAY   600
 //Key hold delay in ms, recommended 800-1500
 #define KEYHOLDDELAY      1000
 //#define HOLDREPEATDELAY 3000 // may be in future?
@@ -201,11 +201,11 @@ public:
 				const bool autostart = true );
 	void setInterval( const unsigned long interval );
 	void setStartTime( const unsigned long newTime ){ this->startTime = newTime; };
-	unsigned long int elapsedTime();
+	unsigned long int elapsedTime() const;
 	bool expired();
 	void start();
-	unsigned long getStartTime(){return this->startTime;}; //когда таймер был запущен
-	unsigned long getInterval(){return this->interval;};	//какой интервал
+	unsigned long getStartTime() const {return this->startTime;}; //когда таймер был запущен
+	unsigned long getInterval() const {return this->interval;};	//какой интервал
 private:
 	bool autorestart;          //флажок авторестарта
 	bool stoped;               // if stoped then expired() always return false
@@ -273,6 +273,7 @@ public:
 	virtual void getName( char* result );
 	virtual void on();       //Turn Output ON
 	virtual void off();      //Turn Output OFF
+	void toggle();
 protected:
 	bool reverseOn;  //работает с инвертированием вывода
 	bool isOn;       //включен или нет

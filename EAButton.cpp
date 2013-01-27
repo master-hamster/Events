@@ -1,4 +1,11 @@
 #include "EAButton.h"
+#ifdef DEBUG_EABUTTON
+	#define DBG_PRINTLN(a) Serial.println(a)
+	#define DBG_PRINT(a) Serial.print(a)
+#else
+	#define DBG_PRINTLN(a)
+	#define DBG_PRINT(a)
+#endif
 
 //================================== class EAButton ======================
 oid_t EAButton::init(const port_t port)
@@ -32,12 +39,10 @@ void EAButton::idle()
 		if ( lastLevel != this->currentLevel ) { 
 			//Level changed, let's generate event!
 			eventStack.pushEvent( evLevelChanged, this->getID(), 0, this->currentData );
-#ifdef DEBUG_EABUTTON
-			Serial.print( "EAButton::idle: data=" );
-			Serial.print( this->currentData );
-			Serial.print( " level=" );
-			Serial.println( this->currentLevel );
-#endif	
+			DBG_PRINT( "EAButton::idle: data=" );
+			DBG_PRINT( this->currentData );
+			DBG_PRINT( " level=" );
+			DBG_PRINTLN( this->currentLevel );
 		}
 	}	
 };
@@ -58,3 +63,7 @@ int EAButton::getData()
 	return currentLevel;
 };
 
+#ifdef DEBUG_EABUTTON
+	#undef DBG_PRINTLN(a)
+	#undef DBG_PRINT(a)
+#endif

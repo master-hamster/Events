@@ -21,14 +21,14 @@ protected:
 	Timer timer; 
 } ;
 
-class EThermoDallas1820 : public EThermo{
+class EThermoDs1820 : public EThermo{
 public:
 	oid_t init(DallasTemperature* dt, const uint16_t timeout = 0, const uint8_t precision = 9);
 	DeviceAddress insideThermometer;
 	virtual void getName(char* result);	 
 	virtual int16_t getDataFromInput();
 protected:
-	DallasTemperature* dallas1820;
+	DallasTemperature* ds1820;
 };
 
 #endif

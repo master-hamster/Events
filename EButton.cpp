@@ -4,6 +4,13 @@
 
 #include "Events.h"
 #include "EButton.h"
+#ifdef DEBUG_EBUTTON
+	#define DBG_PRINTLN(a) DBG_PRINTLN(a)
+	#define DBG_PRINT(a) DBG_PRINT(a)
+#else
+	#define DBG_PRINTLN(a)
+	#define DBG_PRINT(a)
+#endif
 
 //================================== class EButton ===========================
 EButton::EButton(): EInputDevice()
@@ -17,9 +24,7 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 	eventKeyDoublePressed  = evKeyDoublePressed;
 	eventKeyHold           = evKeyHold;
 
-#ifdef DEBUG_EBUTTON
-	Serial.println( "EButton::init_full()" );
-#endif
+	DBG_PRINTLN( "EButton::init_full()" );
 	debounceTimer.init( DEBOUNCEDELAY, TIMER_NO_AUTORESTART, TIMER_NO_AUTOSTART );
 	doublePressTimer.init( DOUBLEPRESSDELAY, TIMER_NO_AUTORESTART, TIMER_AUTOSTART );
 	holdTimer.init( KEYHOLDDELAY, TIMER_NO_AUTORESTART, TIMER_NO_AUTOSTART );
@@ -27,11 +32,8 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 	pinMode( this->port, INPUT );       // set this port to INPUT mode
 	if ( pullUp ) {
 		digitalWrite( this->port, HIGH );
-#ifdef DEBUG_EBUTTON
-		int tmp = this->port;
-		Serial.print( "EButton::init PullUp port:" );
-		Serial.println( tmp );
-#endif
+		DBG_PRINT( "EButton::init PullUp port:" );
+		DBG_PRINTLN( this->port );
 	}; 
 	getData();
 	this->currentData = this->currentState;
@@ -58,34 +60,26 @@ void EButton::idle()
 				//State changed. let's think have we to rise event?
 #ifdef DEBUG_EBUTTON
 				int tmpID = this->getID();
-				Serial.print( "EButton::idle() ID=" );
-				Serial.print( tmpID );
-				Serial.print( " Input changed!! currentState=" );
-				Serial.print( this->currentState );
-				Serial.print( "	currentData=" );
-				Serial.println( this->currentData );
+				DBG_PRINT( "EButton::idle() ID=" );
+				DBG_PRINT( tmpID );
+				DBG_PRINT( " Input changed!! currentState=" );
+				DBG_PRINT( this->currentState );
+				DBG_PRINT( "	currentData=" );
+				DBG_PRINTLN( this->currentData );
 #endif
 				if ( this->currentState == 0 ) {
 					//Last state 0, new state 1 - Let's determine event type
-#ifdef DEBUG_EBUTTON
-					Serial.println( "EButton::idle point 1" );
-#endif
+					DBG_PRINTLN( "EButton::idle point 1" );
 					if ( doublePressTimer.expired() ) {
-#ifdef DEBUG_EBUTTON
-						Serial.println( "EButton::idle point 2" );
-#endif
+						DBG_PRINTLN( "EButton::idle point 2" );
 						//It is not double click, only first press
 						//let's generate evKeyPressed and start doublepress timer
-#ifdef DEBUG_EBUTTON
-						Serial.println( "EButton::idle point 4" );
-#endif
+						DBG_PRINTLN( "EButton::idle point 4" );
 						eventType = eventKeyPressed;
 						doublePressTimer.start();
 						holdTimer.start();
 					} else {
-#ifdef DEBUG_EBUTTON
-						Serial.println("EButton::idle point 5");
-#endif
+						DBG_PRINTLN("EButton::idle point 5");
 						eventType = eventKeyDoublePressed;
 					}
 				} else {  // State changed from 1 to 0, evKeyRelease?
@@ -93,12 +87,10 @@ void EButton::idle()
 				}
 				//if event type was set, and button is enabled, rise event
 				if ( eventType != evNone) {
-#ifdef DEBUG_EBUTTON
-					Serial.print( "EButton::idle(): rise eventType=" );
-					Serial.print( eventType );
-					Serial.print( " Src:");
-					Serial.println( getID() );
-#endif
+					DBG_PRINT( "EButton::idle(): rise eventType=" );
+					DBG_PRINT( eventType );
+					DBG_PRINT( " Src:");
+					DBG_PRINTLN( getID() );
 					riseEvent( eventType );
 					//eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
 				} 	else {
@@ -109,9 +101,7 @@ void EButton::idle()
 			} else { // state was't changed
 				// check, if state is 1 and hold too long, so it evKeyHold
 				if ( ( holdTimer.expired() ) && ( this->currentState == 1 ) ) {
-#ifdef DEBUG_EBUTTON
-					Serial.println( "EButton::idle point 3" );
-#endif
+					DBG_PRINTLN( "EButton::idle point 3" );
 					eventType = eventKeyHold;
 					riseEvent( eventType );
 					//eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
@@ -123,10 +113,8 @@ void EButton::idle()
 		if ( this->currentState != this->currentData ) {
 			//current data differ from last read, but debouncing wasn't started
 			//let's start debouncing timer
-#ifdef DEBUG_EBUTTON
-			Serial.print( "EButton::idle(): start debouncing, newstate=" );
-			Serial.println( this->currentData );
-#endif
+			DBG_PRINT( "EButton::idle(): start debouncing, newstate=" );
+			DBG_PRINTLN( this->currentData );
 			this->debouncingStarted = true;
 			debounceTimer.start();
 		}
@@ -139,9 +127,12 @@ void EButton::setEvents( const event_t eKeyPressed,
 	eventKeyPressed        = eKeyPressed;
 	eventKeyDoublePressed  = eKeyDoublePressed;
 	eventKeyHold           = eKeyHold;
-#ifdef DEBUG_EBUTTON
-	Serial.println( eventKeyPressed );
-	Serial.println( eventKeyDoublePressed );
-	Serial.println( eventKeyHold );
-#endif
+	DBG_PRINTLN( eventKeyPressed );
+	DBG_PRINTLN( eventKeyDoublePressed );
+	DBG_PRINTLN( eventKeyHold );
 };
+
+#ifdef DEBUG_EBUTTON
+	#undef DBG_PRINTLN(a)
+	#undef DBG_PRINT(a)
+#endif
