@@ -88,7 +88,7 @@ public:
 #endif
 
 	oid_t thermometerID; 
-	EThermoDallas1820 thermometer;
+	EThermoDs1820 thermometer;
         byte xChart;
 };
         
