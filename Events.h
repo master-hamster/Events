@@ -223,7 +223,7 @@ public:
 	virtual int handleEvent( Event& tmpEvent );
 	virtual void idle(){};
 	const bool eventForMe( const Event& tmpEvent );
-	virtual void getName( char* result );
+	virtual void getName( char* result ) const;
 	oid_t getID() const { return this->ID; };
 private:
 	oid_t ID;          //This Object ID
@@ -238,7 +238,7 @@ class EDevice : public EObject {
 public:
 	EDevice();
 	oid_t init( const port_t port );
-	virtual void getName( char* result );
+	virtual void getName( char* result ) const;
 protected:
 	port_t port;
 };
@@ -248,10 +248,10 @@ public:
 	EInputDevice(); //инициация по умолчанию
 	oid_t initReverse( const port_t port, const InputMode im=imUpDown );
 	oid_t init( const port_t port, const InputMode im=imUpDown, 
-				bool reverseOn=false, bool pullUp=false );
+				bool reverseOn=false, bool pullUp=false ); 
 	virtual void idle();
-	virtual void getName( char* result );
-	virtual int16_t getData(); // get data direct 
+	virtual void getName( char* result ) const;
+	virtual int16_t getData() const; // get data direct 
 	virtual int16_t getDataFromInput(); //Read data from input and return it
 protected:
 	void riseEvent(const event_t evType) const;
@@ -270,7 +270,7 @@ public:
 	oid_t init( const port_t port, const bool reverse=false );
 	oid_t initReverse( const port_t port );
 	virtual int handleEvent( Event& tmpEvent );
-	virtual void getName( char* result );
+	virtual void getName( char* result ) const;
 	virtual void on();       //Turn Output ON
 	virtual void off();      //Turn Output OFF
 	void toggle();

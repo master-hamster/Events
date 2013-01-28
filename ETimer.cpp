@@ -1,6 +1,14 @@
-#include "ETimer.h"
-
 //============================== class ETimer ============================================
+#include "ETimer.h"
+#ifdef DEBUG_ETIMER
+	#define DBG_PRINTLN(a) Serial.println(a)
+	#define DBG_PRINT(a) Serial.print(a)
+#else
+	#define DBG_PRINTLN(a)
+	#define DBG_PRINT(a)
+#endif
+
+
 ETimer::ETimer() : 
 EObject(), timer(ETIMER_DEFAULT_DELAY){
 };
@@ -45,14 +53,14 @@ void ETimer::idle()
          if ( timer.expired() ) {
 #ifdef DEBUG_ETIMER
             int tmpID = this->getID();
-            Serial.print( "ETimer::idle() ID=" );
-            Serial.print( tmpID );
-            Serial.print( " Timer expired!! currentEvent=" );
-            Serial.print( this->event.eventType );
+            DBG_PRINT( "ETimer::idle() ID=" );
+            DBG_PRINT( tmpID );
+            DBG_PRINT( " Timer expired!! currentEvent=" );
+            DBG_PRINT( this->event.eventType );
 			if ( this->isEnabled ) { 
-				Serial.println(" but Event is disabled!");
+				DBG_PRINTLN(" but Event is disabled!");
 			} else {
-				Serial.println("");
+				DBG_PRINTLN("");
 			}
 #endif
             if ( this->isEnabled ) {
@@ -84,3 +92,8 @@ void ETimer::getName(char* result)
 {
    sprintf( result,"ETimer ID=%d Started=%ld ", getID(), timer.getStartTime() );
 };
+
+#ifdef DEBUG_ETIMER
+	#undef DBG_PRINTLN(a)
+	#undef DBG_PRINT(a)
+#endif

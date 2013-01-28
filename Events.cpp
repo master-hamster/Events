@@ -338,7 +338,7 @@ const bool EObject::eventForMe(const Event& tmpEvent)
    return ( ( tmpEvent.destinationID == this->ID ) || ( tmpEvent.destinationID == BROADCAST_OID ) );
 };
 
-void EObject::getName(char* result)
+void EObject::getName(char* result) const
 {
    sprintf( result,"EObject ID=%d", this->ID );
 };
@@ -355,7 +355,7 @@ oid_t EDevice::init( const port_t port )
    return getID();
 };
 
-void EDevice::getName( char* result )
+void EDevice::getName( char* result ) const
 {
    sprintf( result, "EDevice: ID=%d port=%d ", getID(), this->port );
 };
@@ -495,7 +495,7 @@ void EInputDevice::idle()
 };
 
 
-int16_t EInputDevice::getData()
+int16_t EInputDevice::getData() const
 //считывание данных из currentState
 {
    return this->currentData;
@@ -515,7 +515,7 @@ void EInputDevice::riseEvent(const event_t evType) const
 };
 
 
-void EInputDevice::getName( char* result )
+void EInputDevice::getName( char* result ) const
 {
    long interval = this->debounceTimer.getInterval();
    sprintf( result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
@@ -569,7 +569,7 @@ int EOutputDevice::handleEvent( Event& tmpEvent )
 	return 0;
 };
 
-void EOutputDevice::getName( char* result )
+void EOutputDevice::getName( char* result ) const
 {
    sprintf( result, "EOutputDevice: ID=%d port=%d reverseOn=%d", getID(), this->port, this->reverseOn );
 };

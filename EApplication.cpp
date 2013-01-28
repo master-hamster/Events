@@ -1,33 +1,39 @@
 //class EApplication
 #include "EApplication.h"
-
+#ifdef DEBUG_EAPPLICATION
+	#define DBG_PRINTLN(a) Serial.println(a)
+	#define DBG_PRINT(a) Serial.print(a)
+#else
+	#define DBG_PRINTLN(a)
+	#define DBG_PRINT(a)
+#endif
 EApplication::EApplication()
 {
-   objectsAdded = 0;
-   currentEvent.eventType=evNone;
+	objectsAdded = 0;
+	currentEvent.eventType = evNone;
 };
 
-oid_t EApplication::addObject(EObject* newObject)
+oid_t EApplication::addObject( EObject* newObject )
 {
-   if ( objectsAdded < MAXAPPOBJECTS) {
-      objects[objectsAdded] = newObject;
-      objectsAdded++;
-      return newObject->getID();
-   } 
-   else {
-      return 0;
-   }
+	if ( objectsAdded < MAXAPPOBJECTS) {
+		objects[objectsAdded] = newObject;
+		objectsAdded++;
+		return newObject->getID();
+	} 
+	else {
+		return 0;
+	}
 };
 
 const int EApplication::printNames()
 //Print on Serial All Objects' Names, for debug only!
 {
-   char sTmp[64];
+	char sTmp[64];
 	int printCount;
-   for ( printCount = 0; printCount < objectsAdded; printCount++) {
-      objects[printCount]->getName( sTmp );
-      Serial.println( sTmp );
-   }
+	for ( printCount = 0; printCount < objectsAdded; printCount++ ) {
+		objects[printCount]->getName( sTmp );
+		Serial.println( sTmp );
+	}
 	return printCount;
 };
 
@@ -39,15 +45,13 @@ void EApplication::sendTestEvent( const event_t e1Type, const event_t e2Type,
   Second event sended when eventType <> evNone
 */  
 {
-#ifdef DEBUG_EAPPLICATION
-	Serial.println( "App::sendTestEvent() started!" );
-	Serial.print( " This->objectsAdded=" );
-	Serial.println( this->objectsAdded);
-	Serial.println ( e1Type );
-	Serial.println ( e2Type );
-	Serial.println ( e1Delay );
-	Serial.println ( e2Delay );
-#endif
+	DBG_PRINTLN ( "App::sendTestEvent() started!" );
+	DBG_PRINT ( " This->objectsAdded=" );
+	DBG_PRINTLN ( this->objectsAdded);
+	DBG_PRINTLN ( e1Type );
+	DBG_PRINTLN ( e2Type );
+	DBG_PRINTLN ( e1Delay );
+	DBG_PRINTLN ( e2Delay );
 
 	oid_t result = 0;
 	currentEvent.sourceID = EAPPLICATION_SOURCE_OID;
@@ -55,8 +59,8 @@ void EApplication::sendTestEvent( const event_t e1Type, const event_t e2Type,
 		currentEvent.eventType = e1Type;
 		currentEvent.destinationID = objects[i]->getID();
 #ifdef DEBUG_EAPPLICATION
-		Serial.print( " App::sendTestEvent() ObjectID=" );
-		Serial.println( i );
+		DBG_PRINT( " App::sendTestEvent() ObjectID=" );
+		DBG_PRINTLN( i );
 		currentEvent.print();
 #endif
 		result += objects[i]->handleEvent( currentEvent );
@@ -75,19 +79,18 @@ int EApplication::pushEvent( const uint16_t evntType, // Event Type
 		const oid_t sourceID,               //who send this Event
 		const int16_t eventData )           //Optional data
 {
-   return eventStack.pushEvent( evntType, sourceID, destinationID, eventData);   
+   return eventStack.pushEvent( evntType, sourceID, destinationID, eventData );   
 };
 
 
 int EApplication::getEvent()
-//получить событие из стека событий
+// get event from eventstack to current event, 
+// return 1 if any, 0 if no events ready
 {
-   int   i=0;
-   i=eventStack.pop(currentEvent);
-   if ( i) {
-#ifdef DEBUG_APPLICATION
-      Serial.println("EApplication::getEvent GotEvent!");
-#endif
+   int i = 0;
+   i = eventStack.pop( currentEvent );
+   if ( i ) {
+      DBG_PRINTLN("EApplication::getEvent GotEvent!");
       return i;
    } 
    else {
@@ -97,14 +100,14 @@ int EApplication::getEvent()
 
 const void EApplication::printEvent()
 {
-   this->currentEvent.print();
+	this->currentEvent.print();
 };
 
 void EApplication::idle()
 {
-   for ( int i=0; i<this->objectsAdded; i++ ) {
-      objects[i]->idle();
-   }
+	for ( int i=0; i<this->objectsAdded; i++ ) {
+		objects[i]->idle();
+	}
 };
 
 int EApplication::handleEvent( const bool directSend )
@@ -117,25 +120,22 @@ int EApplication::handleEvent( const bool directSend )
 */
 {
 	oid_t j=0;
-	//if ( directSend ) {
-	//	if ( currentEvent.destinationID < objectsAdded ) {
-	//		j = objects[currentEvent.destinationID]->handleEvent( currentEvent );
-	//	}
-	//} else {
-	//Run cycle for each of registered objects
 	for ( int i = 0; 
 		( ( i < this->objectsAdded ) && ( currentEvent.eventType != evNone ) );
 		i++ ) {
 #ifdef DEBUG_EAPPLICATION
-		Serial.print( " App.handleEvent() ObjectID=" );
-		Serial.println( i );
+		DBG_PRINT( " App.handleEvent() ObjectID=" );
+		DBG_PRINTLN( i );
 		currentEvent.print();
 #endif
 		if ( !directSend || ( objects[i]->getID() == currentEvent.destinationID ) ) {
 			j += objects[i]->handleEvent( currentEvent );
 		}
 	}
-//	}
 	return j;
 };
 
+#ifdef DEBUG_EAPPLICATION
+	#undef DBG_PRINTLN(a)
+	#undef DBG_PRINT(a)
+#endif

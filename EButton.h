@@ -13,12 +13,11 @@
 #define EButton_h
 #include "Events.h"
 
-
 class EButton : public EInputDevice {
 public:
 	EButton();
 	oid_t init(const port_t port, const bool reverseOn=false, const bool pullUp=true);
-	virtual void getName(char* result);
+	virtual void getName(char* result) const;
 	virtual void idle();
 	void setEvents( const event_t eKeyPressed, 
 				const event_t eKeyDoublePressed = evKeyDoublePressed,

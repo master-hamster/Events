@@ -1,16 +1,3 @@
-#include <EAButton.h>
-#include <EAEventButton.h>
-#include <EAnalogInput.h>
-#include <EApplication.h>
-#include <EBeeper.h>
-#include <EButton.h>
-#include <ECandle.h>
-#include <ELED.h>
-#include <ERGBLED.h>
-#include <EThermo.h>
-#include <ETimer.h>
-#include <Events.h>
-
 /*
 MH 2010-02-10
 Тестирование таймера
@@ -24,6 +11,18 @@ MH 2010-02-10
 пищалка - на pin 13, встроенный диод подтверждает
 */
 
+#include <EAButton.h>
+#include <EAEventButton.h>
+#include <EAnalogInput.h>
+#include <EApplication.h>
+#include <EBeeper.h>
+#include <EButton.h>
+#include <ECandle.h>
+#include <ELED.h>
+#include <ERGBLED.h>
+#include <EThermo.h>
+#include <ETimer.h>
+#include <Events.h>
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -38,21 +37,21 @@ MH 2010-02-10
 
 
 class MyBeeper : public EBeeper {
-    virtual int handleEvent(Event& tmpEvent);
+    virtual int handleEvent( Event& tmpEvent );
 };  
 
 class MyApplication : public EApplication {
 public:
-   void init();
-   void parseEvent();
-   oid_t buttonID;   //тестовая кнопка для разного
-      
-   oid_t timerID;
-   oid_t beeperID;
+	void init();
+	void parseEvent();
+	oid_t buttonID;   //тестовая кнопка для разного
+  
+	oid_t timerID;
+	oid_t beeperID;
 // собственно объекты      
-   EButton button;
-   MyBeeper beeper;
-   ETimer timer;
+	EButton button;
+	MyBeeper beeper;
+	ETimer timer;
 };               
 
 

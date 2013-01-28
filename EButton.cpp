@@ -5,8 +5,8 @@
 #include "Events.h"
 #include "EButton.h"
 #ifdef DEBUG_EBUTTON
-	#define DBG_PRINTLN(a) DBG_PRINTLN(a)
-	#define DBG_PRINT(a) DBG_PRINT(a)
+	#define DBG_PRINTLN(a) Serial.println(a)
+	#define DBG_PRINT(a) Serial.print(a)
 #else
 	#define DBG_PRINTLN(a)
 	#define DBG_PRINT(a)
@@ -40,7 +40,7 @@ oid_t EButton::init( const port_t port, const bool reverseOn, const bool pullUp 
 	return result;
 };
 
-void EButton::getName( char* result )
+void EButton::getName( char* result ) const
 {
 	sprintf( result, "EButton: ID=%d port=%d ", getID(), this->port );
 };
@@ -64,7 +64,7 @@ void EButton::idle()
 				DBG_PRINT( tmpID );
 				DBG_PRINT( " Input changed!! currentState=" );
 				DBG_PRINT( this->currentState );
-				DBG_PRINT( "	currentData=" );
+				DBG_PRINT( " currentData=" );
 				DBG_PRINTLN( this->currentData );
 #endif
 				if ( this->currentState == 0 ) {
