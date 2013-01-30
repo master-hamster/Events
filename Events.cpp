@@ -68,7 +68,7 @@ const char *eventName(event_t evType)
 //отладка, при вроведении отладки на консоль выдается содержимое события в серийный порт
 const void Event::print()
 {
-   Serial.print("Event::print Typ=");
+   Serial.print( F("Event::print Typ=") );
    Serial.print(this->eventType);
    Serial.print(" Src=");
    Serial.print(this->sourceID);
@@ -333,7 +333,7 @@ int EObject::handleEvent(Event& tmpEvent)
     return 0;
 };   
 
-const bool EObject::eventForMe(const Event& tmpEvent)
+bool EObject::eventForMe(const Event& tmpEvent) const 
 {
    return ( ( tmpEvent.destinationID == this->ID ) || ( tmpEvent.destinationID == BROADCAST_OID ) );
 };
@@ -344,276 +344,6 @@ void EObject::getName(char* result) const
 };
 
 
-//============================== EDevice ==================================================
-EDevice::EDevice() : EObject()
-{
-};
-
-oid_t EDevice::init( const port_t port )
-{
-   this->port=port;
-   return getID();
-};
-
-void EDevice::getName( char* result ) const
-{
-   sprintf( result, "EDevice: ID=%d port=%d ", getID(), this->port );
-};
-
-
-//========================= EInputDevice =================
-EInputDevice::EInputDevice() : 
-EDevice(){
-   debounceTimer.init(DEBOUNCEDELAY,false);
-};
-
-oid_t EInputDevice::initReverse(const port_t port, const InputMode im)
-{
-   debounceTimer.init(DEBOUNCEDELAY,false);
-   return EInputDevice::init( port, im, true, true );  //????!!! - порты подтягиваем, это не всегда правильно
-};
-
-oid_t EInputDevice::init(const port_t port, const InputMode im, const bool reverseOn, bool pullUp)
-{
-   oid_t result=EDevice::init( port );       
-#ifdef DEBUG_EINPUTDEVICE
-   Serial.println("EInputdevice::init_full()");
-#endif
-   debounceTimer.init( DEBOUNCEDELAY, false );
-   this->inputMode = im;               //зададим режим создания событий устройства
-   this->reverseOn = reverseOn;        //зададим режим реверса
-   pinMode( this->port, INPUT );       // после этого запрограммируем порт в режим чтения, подтяжку порта не делаем
-#ifdef DEBUG_EINPUTDEVICE
-   int tmp = this->port;
-#endif
-   if (pullUp) {
-      digitalWrite( this->port, HIGH );
-#ifdef DEBUG_EINPUTDEVICE
-      Serial.print("EInputDevice::init PullUp port:");
-      Serial.println( tmp );
-#endif
-   } 
-   else {
-      digitalWrite( this->port, LOW );
-#ifdef DEBUG_EINPUTDEVICE
-      Serial.print("EInputDevice::init PullDown port:");
-      Serial.println( tmp );
-#endif
-   }
-   getDataFromInput();                           // считаем данные с учетом флага реверса
-   this->currentData = this->currentState;
-   return result;
-};
-
-
-void EInputDevice::idle()
-//основная процедура
-//при каждом проходе проверяется состояние,
-//сравнивается с предыдущим состоянием и на основании этого генерируется событие
-//в целом событие может генерироваться и не сразу, а на следующем проходе этой процедуры
-//2010-01-16 - отдадка  2010-01-19 - отладка
-{
-	//обработка делается только для случая когда не начата процедура обработки дребезга или
-	//она начата и уже завершена
-	uint16_t eventType = evNone;
-
-	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!КОПАТЬ ЗДЕСЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	if ( debouncingStarted ) {
-		if ( debounceTimer.expired() ) {
-         //закончилась задержка дребезга - время считать показания устройства
-			this->debouncingStarted = false;
-			getDataFromInput();
-			if ( this->currentState != this->currentData ) {
-				//данные изменились, теперь следует понять, не послать ли событие?
-#ifdef DEBUG_EINPUTDEVICE
-				int tmpID = this->getID();
-				Serial.print("EInputDevice::idle() ID=");
-				Serial.print(tmpID);
-				Serial.print(" Input changed!! currentState=");
-				Serial.print(this->currentState);
-				Serial.print("   lastState=");
-				Serial.print(this->lastState);
-				Serial.println("");
-#endif
-				if ( this->currentState==0) {
-					//данные имеют низкий уровень -> нужно сформировать событие для некоторых условий
-					switch ( this->inputMode) {
-					case imUpDown:
-					case imDownOnly:
-						eventType = evInputDown;
-						break;
-					case imToggle:
-						eventType = evInputToggle;
-						break;
-					default:
-						break;
-					}
-				} else {
-					//если мы здесь ->уровень вырос
-					switch ( this->inputMode ) {
-					case imUpDown:
-					case imUpOnly:
-						eventType = evInputUp;
-						break;
-					case imToggle:
-						eventType = evInputToggle;
-						break;
-					default:
-						break;
-					}
-				} //конец ветки по высокому/низкому считанному уровню
-				//теперь если задан какой-то тип события - надо поднимать событие
-				if ( eventType != evNone ) {
-#ifdef DEBUG_EINPUTDEVICE
-					Serial.print("EInputDevice::idle: eventType=");
-					Serial.println( eventType );
-#endif
-					if ( this->isEnabled ) {
-						eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
-					}
-				
-				}
-				//теперь сохраним время и значение последнего состояни
-				this->currentState = this->currentData;
-			}
-		}
-	} else {
-      //если мы здесь - то обработка дребезга не идет, надо посмотреть состояние
-      //ввода и дейстовать соответственно
-		getDataFromInput();
-		if ( this->currentState != this->currentData ) {
-#ifdef DEBUG_EINPUTDEVICE
-			Serial.print("EInputDevice::idle: start debouncing, newstate=");
-			Serial.println( this->currentState );
-#endif
-			//считали данные и они не соответствуют тем, что были раньше
-			//надо запустить антидребезг
-			this->debouncingStarted = true;
-			debounceTimer.start();
-		}
-	}
-};
-
-
-int16_t EInputDevice::getData() const
-//считывание данных из currentState
-{
-   return this->currentData;
-};
-
-int16_t EInputDevice::getDataFromInput()
-//считывание данных из порта в currentState с учетом флага реверса и нормализации (для других объектов)
-{
-   return this->currentData = ( this->reverseOn ^ digitalRead( this->port ) );
-};
-
-void EInputDevice::riseEvent(const event_t evType) const
-{
-	if ( this->isEnabled ) {
-		eventStack.pushEvent( evType, this->getID(), 0, this->currentState );
-	}
-};
-
-
-void EInputDevice::getName( char* result ) const
-{
-   long interval = this->debounceTimer.getInterval();
-   sprintf( result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
-            getID(), this->port, this->reverseOn, interval );
-};
-
-
-//========================== EOutputDevice ================
-EOutputDevice::EOutputDevice() : 
-EDevice(){
-};
-
-oid_t EOutputDevice::init( const port_t port, const bool reverse )
-{
-   oid_t result;
-   result = EDevice::init( port );
-   pinMode( this->port, OUTPUT );
-   //set OFF at start according to reverse flag
-   if ( (reverseOn = reverse) ) {
-      digitalWrite( this->port, HIGH );
-   } else {
-      digitalWrite( this->port, LOW );
-   }
-   return result;
-};
-
-oid_t EOutputDevice::initReverse( const uint16_t port )
-{
-   return EOutputDevice::init( port, true );
-};
-
-int EOutputDevice::handleEvent( Event& tmpEvent )
-{
-	if ( eventForMe( tmpEvent ) ) {
-		if ( this->isEnabled ) {
-			switch ( tmpEvent.eventType ) {
-			case evTurnOn:
-				on();
-				return this->getID();
-				break;
-			case evTurnOff:
-				off();
-				return this->getID();
-				break;
-			default:
-				break;
-			}
-		} 
-		return EDevice::handleEvent( tmpEvent );
-	}
-	return 0;
-};
-
-void EOutputDevice::getName( char* result ) const
-{
-   sprintf( result, "EOutputDevice: ID=%d port=%d reverseOn=%d", getID(), this->port, this->reverseOn );
-};
-
-void EOutputDevice::on()
-//включение устройства с сохранением соответствующих полей
-{
-   isOn = true;
-   if ( this->reverseOn ) {
-      digitalWrite( this->port, LOW );
-#ifdef DEBUG_ELED	  
-	  Serial.println("EOD:on() REVERSE, ON");
-#endif
-   } 
-   else {
-      digitalWrite( this->port, HIGH );
-#ifdef DEBUG_ELED	  
-	  Serial.println("EOD:on() NO REVERSE, ON");
-#endif
-   }
-};
-
-void EOutputDevice::off()
-//выключение устройства с сохранением соответствующих полей
-{
-   isOn = false;
-   if ( this->reverseOn ) {
-      digitalWrite( this->port, HIGH );
-#ifdef DEBUG_ELED	  
-	  Serial.println("EOD:off() REVERSE, OFF");
-#endif
-   } 
-   else {
-      digitalWrite( this->port, LOW );
-#ifdef DEBUG_ELED	  
- 	  Serial.println("EOD:off() NO REVERSE, OFF");
-#endif
-  };
-};
-
-void EOutputDevice::toggle()
-{
-  isOn?off():on();
-}
 
 
 /*
@@ -674,6 +404,7 @@ void EOutputDevice::toggle()
   *2012-01-19 6h Куча правок по вычистке текста, исправлена пара мелких ошибок,
 		изменен тип application.addObject()
   *2013-01-19 4h Правка текста, добавление обработки блокировки объектов
+  *2013-01-30 1h строки обработаны F()
  */
 
 

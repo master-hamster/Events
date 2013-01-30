@@ -1,6 +1,7 @@
 #ifndef ELED_h
 #define ELED_h
-#include "Events.h"
+#include "EDevice.h"
+
 /*
 Светодиод, надо запрограммиовать учет реверса и мигание
 сделан на базе стандартного цифрового выхода

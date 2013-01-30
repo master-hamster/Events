@@ -25,7 +25,7 @@ oid_t EApplication::addObject( EObject* newObject )
 	}
 };
 
-const int EApplication::printNames()
+const int EApplication::printNames() const
 //Print on Serial All Objects' Names, for debug only!
 {
 	char sTmp[64];
@@ -45,8 +45,8 @@ void EApplication::sendTestEvent( const event_t e1Type, const event_t e2Type,
   Second event sended when eventType <> evNone
 */  
 {
-	DBG_PRINTLN ( "App::sendTestEvent() started!" );
-	DBG_PRINT ( " This->objectsAdded=" );
+	DBG_PRINTLN ( F("App::sendTestEvent() started!") );
+	DBG_PRINT ( F(" This->objectsAdded=") );
 	DBG_PRINTLN ( this->objectsAdded);
 	DBG_PRINTLN ( e1Type );
 	DBG_PRINTLN ( e2Type );
@@ -59,7 +59,7 @@ void EApplication::sendTestEvent( const event_t e1Type, const event_t e2Type,
 		currentEvent.eventType = e1Type;
 		currentEvent.destinationID = objects[i]->getID();
 #ifdef DEBUG_EAPPLICATION
-		DBG_PRINT( " App::sendTestEvent() ObjectID=" );
+		DBG_PRINT( F(" App::sendTestEvent() ObjectID=") );
 		DBG_PRINTLN( i );
 		currentEvent.print();
 #endif
@@ -90,7 +90,7 @@ int EApplication::getEvent()
    int i = 0;
    i = eventStack.pop( currentEvent );
    if ( i ) {
-      DBG_PRINTLN("EApplication::getEvent GotEvent!");
+      DBG_PRINTLN( F("EApplication::getEvent GotEvent!") );
       return i;
    } 
    else {
@@ -124,7 +124,7 @@ int EApplication::handleEvent( const bool directSend )
 		( ( i < this->objectsAdded ) && ( currentEvent.eventType != evNone ) );
 		i++ ) {
 #ifdef DEBUG_EAPPLICATION
-		DBG_PRINT( " App.handleEvent() ObjectID=" );
+		DBG_PRINT( F(" App.handleEvent() ObjectID=") );
 		DBG_PRINTLN( i );
 		currentEvent.print();
 #endif

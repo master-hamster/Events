@@ -10,7 +10,8 @@
 //#define DEBUG_EBEEPER
 //#define DEBUG_ETIMER
 //#define DEBUG_EANALOGINPUT
-//#define DEBUG_EBUTTON
+#define DEBUG_EBUTTON
+//#define DEBUG_EDEVICE
 //#define DEBUG_ELED
 //#define DEBUG_ERGBLED
 //#define DEBUG_ECANDLE

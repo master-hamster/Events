@@ -1,6 +1,14 @@
+//==================================== class EBeeper ======================
 #include "EBeeper.h"
 
-//==================================== class EBeeper ======================
+#ifdef DEBUG_EBEEPER
+	#define DBG_PRINTLN(a) Serial.println(a)
+	#define DBG_PRINT(a) Serial.print(a)
+#else
+	#define DBG_PRINTLN(a)
+	#define DBG_PRINT(a)
+#endif
+
 EBeeper::EBeeper() : EOutputDevice()
 {
 	beepTimer.init( EBEEPER_DEFAULT_BEEP_TIME, false );
@@ -24,8 +32,8 @@ oid_t EBeeper::initReverse( const port_t port, const uint16_t time )
 int EBeeper::handleEvent( Event& tmpEvent )
 {
 #ifdef DEBUG_EBEEPER
-	Serial.print("MyBeeper::handleEvent eventType=");
-	Serial.println( tmpEvent.eventType );
+	DBG_PRINT( F("MyBeeper::handleEvent eventType=") );
+	DBG_PRINTLN( tmpEvent.eventType );
 #endif
 	return EOutputDevice::handleEvent( tmpEvent );
 };
@@ -39,7 +47,7 @@ void EBeeper::idle()
 		}
 };
 
-void EBeeper::getName(char* result)
+void EBeeper::getName(char* result) const
 {
 	sprintf( result, "EBeeper: ID=%d port=%d beepTime:%ld", getID(),
 				this->port, this->beepTimer.getInterval() );
@@ -52,9 +60,7 @@ void EBeeper::setBeepTime( uint16_t time )
 
 void EBeeper::beep()
 {
-#ifdef DEBUG_EBEEPER
-	Serial.println("MyBeeper::beep BEEP!");
-#endif
+	DBG_PRINTLN( F("MyBeeper::beep BEEP!") );
 	on();
 }
 
@@ -71,4 +77,8 @@ void EBeeper::off()
 	EOutputDevice::off();
 };
 
+#ifdef DEBUG_EBEEPER
+	#undef DBG_PRINTLN(a)
+	#undef DBG_PRINT(a)
+#endif
 

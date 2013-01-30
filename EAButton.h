@@ -1,6 +1,6 @@
 #ifndef EAButton_h
 #define EAButton_h
-#include "Events.h"
+#include "EDevice.h"
 /*
 аналоговая кнопка. имеет несколько пороговых значений
 уровень определяется аналоговым значением, если оно больше порога, соответствующего
@@ -20,7 +20,7 @@ public:
 	uint8_t addLevel( const int newLevel ); //возвращает количество уровней
 	virtual int handleEvent( Event& tmpEvent );
 	virtual void idle();
-	virtual void getName( char* result );
+	virtual void getName( char* result ) const;
 	virtual int getData();
 protected:
 	Timer debounceTimer;

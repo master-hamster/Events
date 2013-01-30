@@ -1,6 +1,6 @@
 #ifndef EThermo_h
 #define EThermo_h
-#include "Events.h"
+#include "EDevice.h"
 #include "DallasTemperature.h"
 
 //default themperature measure delay

@@ -47,7 +47,7 @@ void EAButton::idle()
 	}	
 };
 
-void EAButton::getName( char* result )
+void EAButton::getName( char* result ) const
 {
 	sprintf( result, "EAButton: ID=%d port=%d ", getID(), this->port );
 };

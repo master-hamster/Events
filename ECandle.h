@@ -1,6 +1,8 @@
 //
 #ifndef ECandle_h
-#include "Events.h"
+#define ECandle_h
+#include "EDevice.h"
+
 
 //светодиод с возможностью изменения яркости
 //и эффектом свечи

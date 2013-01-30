@@ -1,6 +1,6 @@
 #ifndef EAnalogInput_h
 #define EAnalogInput_h
-#include "Events.h"
+#include "EDevice.h"
 /*
 Аналоговый ввод. Через заданное при инициализации время генерируется
 событие AIData в поле DATA которого запихнуто текущее значение,

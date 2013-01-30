@@ -12,6 +12,7 @@
 #ifndef EButton_h
 #define EButton_h
 #include "Events.h"
+#include "EDevice.h"
 
 class EButton : public EInputDevice {
 public:

@@ -6,7 +6,7 @@
 class EApplication {
 public:
 	EApplication();
-	const int printNames();                //Print all object names registered in App
+	const int printNames() const;           //Print all object names registered in App
 	const void printEvent();               //Print current event waiting for handling
 	void sendTestEvent( const event_t e1Type = evTurnOn, 
 				const event_t e2Type = evTurnOff,

@@ -1,6 +1,7 @@
 #ifndef ERGBLED_h
 #define ERGBLED_h
-#include "Events.h"
+#include "EDevice.h"
+
 /*
 RGB LED Output
 
