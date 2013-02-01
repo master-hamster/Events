@@ -14,6 +14,7 @@ Objects:
   
 Input devices:
 --------------
+<pre>
   - ETimer (EObject) - timer object with event generation, with example
   - EDevice (EObject) - Abstract device connected to Arduino port
   -   EAnalogInput (EDevice)
@@ -24,6 +25,7 @@ Input devices:
   -   EThermo (EInputDevice) - abstract Thermometer
   -     EThermoDallas1820 (EThermo) Thermometer on Dallas 18B20 chip, with two examples
   - Analog button
+</pre>
 
 Output Devices:
 ---------------
