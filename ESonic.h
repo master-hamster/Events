@@ -19,10 +19,11 @@ private:
 };
 
 // class ESonic ranger - check if something is in range and rise event
+// max range = 150cm
 class ESonicRanger : public ESonic {
 public:
 	oid_t init( const port_t transferPort, const port_t receivePort,
-			const uint16_t maxRange, const event_t event2Rise );
+			const uint16_t maxRange, const event_t event2Rise ); //maxRange=1..150cm
 private:
 	uint16_t range; //max distance for check
 };
