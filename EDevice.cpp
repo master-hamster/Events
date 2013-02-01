@@ -14,52 +14,51 @@ EDevice::EDevice() : EObject()
 
 oid_t EDevice::init( const port_t port )
 {
-   this->port=port;
-   return getID();
+	this->port=port;
+	return getID();
 };
 
 void EDevice::getName( char* result ) const
 {
-   sprintf( result, "EDevice: ID=%d port=%d ", getID(), this->port );
+	sprintf( result, "EDevice: ID=%d port=%d ", getID(), this->port );
 };
 
 
 //========================= EInputDevice =================
 EInputDevice::EInputDevice() : 
 EDevice(){
-   debounceTimer.init(DEBOUNCEDELAY,false);
+	debounceTimer.init(DEBOUNCEDELAY,false);
 };
 
 oid_t EInputDevice::initReverse(const port_t port, const InputMode im)
 {
-   debounceTimer.init(DEBOUNCEDELAY,false);
-   return EInputDevice::init( port, im, true, true );  //????!!! - порты подтягиваем, это не всегда правильно
+	debounceTimer.init(DEBOUNCEDELAY,false);
+	return EInputDevice::init( port, im, true, true );  //????!!! - порты подтягиваем, это не всегда правильно
 };
 
 oid_t EInputDevice::init(const port_t port, const InputMode im, const bool reverseOn, bool pullUp)
 {
-   oid_t result=EDevice::init( port );       
-   DBG_PRINTLN( F("EInputdevice::init_full()") );
-   debounceTimer.init( DEBOUNCEDELAY, false );
-   this->inputMode = im;               //зададим режим создания событий устройства
-   this->reverseOn = reverseOn;        //зададим режим реверса
-   pinMode( this->port, INPUT );       // после этого запрограммируем порт в режим чтения, подтяжку порта не делаем
+	oid_t result=EDevice::init( port );       
+	DBG_PRINTLN( F("EInputdevice::init_full()") );
+	debounceTimer.init( DEBOUNCEDELAY, false );
+	this->inputMode = im;               //зададим режим создания событий устройства
+	this->reverseOn = reverseOn;        //зададим режим реверса
+	pinMode( this->port, INPUT );       // после этого запрограммируем порт в режим чтения, подтяжку порта не делаем
 #ifdef DEBUG_EINPUTDEVICE
-   int tmp = this->port;
+	int tmp = this->port;
 #endif
-   if (pullUp) {
-      digitalWrite( this->port, HIGH );
-      DBG_PRINT( F("EInputDevice::init PullUp port:") );
-      DBG_PRINTLN( tmp );
-   } 
-   else {
-      digitalWrite( this->port, LOW );
-      DBG_PRINT( F("EInputDevice::init PullDown port:") );
-      DBG_PRINTLN( tmp );
-   }
-   getDataFromInput();                           // считаем данные с учетом флага реверса
-   this->currentData = this->currentState;
-   return result;
+	if (pullUp) {
+		digitalWrite( this->port, HIGH );
+		DBG_PRINT( F("EInputDevice::init PullUp port:") );
+		DBG_PRINTLN( tmp );
+	} else {
+		digitalWrite( this->port, LOW );
+		DBG_PRINT( F("EInputDevice::init PullDown port:") );
+		DBG_PRINTLN( tmp );
+	}
+	getDataFromInput();                           // считаем данные с учетом флага реверса
+	this->currentData = this->currentState;
+	return result;
 };
 
 
@@ -150,13 +149,13 @@ void EInputDevice::idle()
 int16_t EInputDevice::getData() const
 //считывание данных из currentState
 {
-   return this->currentData;
+	return this->currentData;
 };
 
 int16_t EInputDevice::getDataFromInput()
 //считывание данных из порта в currentState с учетом флага реверса и нормализации (для других объектов)
 {
-   return this->currentData = ( this->reverseOn ^ digitalRead( this->port ) );
+	return this->currentData = ( this->reverseOn ^ digitalRead( this->port ) );
 };
 
 void EInputDevice::riseEvent(const event_t evType) const
@@ -169,9 +168,9 @@ void EInputDevice::riseEvent(const event_t evType) const
 
 void EInputDevice::getName( char* result ) const
 {
-   long interval = this->debounceTimer.getInterval();
-   sprintf( result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
-            getID(), this->port, this->reverseOn, interval );
+	long interval = this->debounceTimer.getInterval();
+	sprintf( result,"InputDevice: ID=%d port=%d reverseOn=%d debTime,ms=%ld",
+			getID(), this->port, this->reverseOn, interval );
 };
 
 
@@ -182,21 +181,21 @@ EDevice(){
 
 oid_t EOutputDevice::init( const port_t port, const bool reverse )
 {
-   oid_t result;
-   result = EDevice::init( port );
-   pinMode( this->port, OUTPUT );
+	oid_t result;
+	result = EDevice::init( port );
+	pinMode( this->port, OUTPUT );
    //set OFF at start according to reverse flag
-   if ( (reverseOn = reverse) ) {
-      digitalWrite( this->port, HIGH );
-   } else {
-      digitalWrite( this->port, LOW );
-   }
-   return result;
+	if ( (reverseOn = reverse) ) {
+		digitalWrite( this->port, HIGH );
+	} else {
+		digitalWrite( this->port, LOW );
+	}
+	return result;
 };
 
 oid_t EOutputDevice::initReverse( const uint16_t port )
 {
-   return EOutputDevice::init( port, true );
+	return EOutputDevice::init( port, true );
 };
 
 int EOutputDevice::handleEvent( Event& tmpEvent )
@@ -223,38 +222,38 @@ int EOutputDevice::handleEvent( Event& tmpEvent )
 
 void EOutputDevice::getName( char* result ) const
 {
-   sprintf( result, "EOutputDevice: ID=%d port=%d reverseOn=%d", getID(), this->port, this->reverseOn );
+	sprintf( result, "EOutputDevice: ID=%d port=%d reverseOn=%d", getID(), this->port, this->reverseOn );
 };
 
 void EOutputDevice::on()
 //включение устройства с сохранением соответствующих полей
 {
-   isOn = true;
-   if ( this->reverseOn ) {
-      digitalWrite( this->port, LOW );
-	  DBG_PRINTLN( F("EOD:on() REVERSE, ON") );
-   } else {
-      digitalWrite( this->port, HIGH );
-	  DBG_PRINTLN( F("EOD:on() NO REVERSE, ON") );
-   }
+	isOn = true;
+	if ( this->reverseOn ) {
+		digitalWrite( this->port, LOW );
+		DBG_PRINTLN( F("EOD:on() REVERSE, ON") );
+	} else {
+		digitalWrite( this->port, HIGH );
+		DBG_PRINTLN( F("EOD:on() NO REVERSE, ON") );
+	}
 };
 
 void EOutputDevice::off()
 //выключение устройства с сохранением соответствующих полей
 {
-   isOn = false;
-   if ( this->reverseOn ) {
-      digitalWrite( this->port, HIGH );
-	  DBG_PRINTLN( F("EOD:off() REVERSE, OFF") );
-   }  else {
-      digitalWrite( this->port, LOW );
- 	  DBG_PRINTLN( F("EOD:off() NO REVERSE, OFF") );
-  };
+	isOn = false;
+	if ( this->reverseOn ) {
+		digitalWrite( this->port, HIGH );
+		DBG_PRINTLN( F("EOD:off() REVERSE, OFF") );
+	}  else {
+		digitalWrite( this->port, LOW );
+		DBG_PRINTLN( F("EOD:off() NO REVERSE, OFF") );
+	};
 };
 
 void EOutputDevice::toggle()
 {
-  isOn?off():on();
+	isOn?off():on();
 }
 
 #ifdef DEBUG_EDEVICE
