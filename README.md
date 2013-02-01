@@ -19,6 +19,7 @@ Input devices:
   - EAnalogInput (EDevice)
   - EInputDevice (EDevice) - General digital input device
   - EButton (EInputDevice) - Button with event generation functionality, with example
+  - ESonic(EInputDevice) - Ultrasonic distance sensor
   - Analog button
   - EThermo (EInputDevice) - abstract Thermometer
   - EThermoDallas1820 (EThermo) Thermometer on Dallas 18B20 chip, with two examples
