@@ -10,26 +10,28 @@
 
 oid_t ESonic::init( const port_t transferPort, const port_t receivePort )
 {
-   pinMode( transferPort, OUTPUT );
-   pinMode( receivePort, INPUT );
-   Trig_pin = transferPort;
-   Echo_pin = receivePort;
-   return EDevice:init( transferPort );
-}
+	oid_t tmpOid;
+	EDevice::init( transferPort );
+	pinMode( transferPort, OUTPUT );
+	pinMode( receivePort, INPUT );
+	Trig_pin = transferPort;
+	Echo_pin = receivePort;
+	return tmpOid;
+};
 
 void ESonic::idle()
 {
-}
+	EInputDevice::idle();
+};
 
-void EBeeper::getName( char* result ) const
+void ESonic::getName( char* result ) const
 {
 	sprintf( result, "ESonic: ID=%d port=%d ", getID(), this->port );
 };
 
-
 int16_t ESonic::getDataFromInput()
 {
-	uint_t16 duration;
+	int16_t duration;
 	digitalWrite( Trig_pin, LOW );
 	delayMicroseconds( 2 );
 	digitalWrite( Trig_pin, HIGH );
@@ -37,15 +39,25 @@ int16_t ESonic::getDataFromInput()
 	digitalWrite( Trig_pin, LOW );
 	//Wait for sound reflection
 	duration = pulseIn( Echo_pin, HIGH );
-	// mks -> cm
+	// us -> cm, 30us == 1m
 	// !!!!!!!!!!!!!!!!! to check
-	currentData = duration / 33 / 2
+	currentData = duration / 30 / 2
 	DBG_PRINT( F(" ESonic:GetData() duration,ms:") )
 	DBG_PRINT( duration );
 	DBG_PRINT( F(" distance,cm:") );
 	DBG_PRINTLN( currentData );
 	return currentData;
-}
+};
+
+oid_t ESonicRanger::init( const port_t transferPort, const port_t receivePort, 
+				const uint16_t maxRange, const event_t event2Rise )
+{
+	oid_t tmpOid;
+	tmpOid = ESonic::init( transferPort, receivePort );
+	range = maxRange;
+	event.eventType = event2Rise;
+	return tmpOid;
+};
 
 
 #ifdef DEBUG_ESONIC

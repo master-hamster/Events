@@ -22,7 +22,7 @@ protected:
 
 class EInputDevice : public EDevice {
 public:
-	EInputDevice(); //инициация по умолчанию
+	EInputDevice();
 	oid_t initReverse( const port_t port, const InputMode im=imUpDown );
 	oid_t init( const port_t port, const InputMode im=imUpDown, 
 				bool reverseOn=false, bool pullUp=false ); 

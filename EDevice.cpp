@@ -39,9 +39,7 @@ oid_t EInputDevice::initReverse(const port_t port, const InputMode im)
 oid_t EInputDevice::init(const port_t port, const InputMode im, const bool reverseOn, bool pullUp)
 {
    oid_t result=EDevice::init( port );       
-#ifdef DEBUG_EINPUTDEVICE
-   Serial.println("EInputdevice::init_full()");
-#endif
+   DBG_PRINTLN( F("EInputdevice::init_full()") );
    debounceTimer.init( DEBOUNCEDELAY, false );
    this->inputMode = im;               //зададим режим создания событий устройства
    this->reverseOn = reverseOn;        //зададим режим реверса
@@ -51,17 +49,13 @@ oid_t EInputDevice::init(const port_t port, const InputMode im, const bool rever
 #endif
    if (pullUp) {
       digitalWrite( this->port, HIGH );
-#ifdef DEBUG_EINPUTDEVICE
-      Serial.print( F("EInputDevice::init PullUp port:") );
-      Serial.println( tmp );
-#endif
+      DBG_PRINT( F("EInputDevice::init PullUp port:") );
+      DBG_PRINTLN( tmp );
    } 
    else {
       digitalWrite( this->port, LOW );
-#ifdef DEBUG_EINPUTDEVICE
-      Serial.print( F("EInputDevice::init PullDown port:") );
-      Serial.println( tmp );
-#endif
+      DBG_PRINT( F("EInputDevice::init PullDown port:") );
+      DBG_PRINTLN( tmp );
    }
    getDataFromInput();                           // считаем данные с учетом флага реверса
    this->currentData = this->currentState;
@@ -88,7 +82,7 @@ void EInputDevice::idle()
 			getDataFromInput();
 			if ( this->currentState != this->currentData ) {
 				//данные изменились, теперь следует понять, не послать ли событие?
-#ifdef DEBUG_EINPUTDEVICE
+#ifdef DEBUG_EDEVICE
 				int tmpID = this->getID();
 				Serial.print( F("EInputDevice::idle() ID=") );
 				Serial.print(tmpID);
@@ -126,10 +120,8 @@ void EInputDevice::idle()
 				} //конец ветки по высокому/низкому считанному уровню
 				//теперь если задан какой-то тип события - надо поднимать событие
 				if ( eventType != evNone ) {
-#ifdef DEBUG_EINPUTDEVICE
-					Serial.print( F("EInputDevice::idle: eventType=") );
-					Serial.println( eventType );
-#endif
+					DBG_PRINT( F("EInputDevice::idle: eventType=") );
+					DBG_PRINTLN( eventType );
 					if ( this->isEnabled ) {
 						eventStack.pushEvent( eventType, this->getID(), 0, this->currentState );
 					}
@@ -144,10 +136,8 @@ void EInputDevice::idle()
       //ввода и дейстовать соответственно
 		getDataFromInput();
 		if ( this->currentState != this->currentData ) {
-#ifdef DEBUG_EINPUTDEVICE
-			Serial.print( F("EInputDevice::idle: start debouncing, newstate=") );
-			Serial.println( this->currentState );
-#endif
+			DBG_PRINT( F("EInputDevice::idle: start debouncing, newstate=") );
+			DBG_PRINTLN( this->currentState );
 			//считали данные и они не соответствуют тем, что были раньше
 			//надо запустить антидребезг
 			this->debouncingStarted = true;
@@ -242,15 +232,10 @@ void EOutputDevice::on()
    isOn = true;
    if ( this->reverseOn ) {
       digitalWrite( this->port, LOW );
-#ifdef DEBUG_ELED	  
-	  Serial.println( F("EOD:on() REVERSE, ON") );
-#endif
-   } 
-   else {
+	  DBG_PRINTLN( F("EOD:on() REVERSE, ON") );
+   } else {
       digitalWrite( this->port, HIGH );
-#ifdef DEBUG_ELED	  
-	  Serial.println( F("EOD:on() NO REVERSE, ON") );
-#endif
+	  DBG_PRINTLN( F("EOD:on() NO REVERSE, ON") );
    }
 };
 
@@ -260,15 +245,10 @@ void EOutputDevice::off()
    isOn = false;
    if ( this->reverseOn ) {
       digitalWrite( this->port, HIGH );
-#ifdef DEBUG_ELED	  
-	  Serial.println("EOD:off() REVERSE, OFF");
-#endif
-   } 
-   else {
+	  DBG_PRINTLN( F("EOD:off() REVERSE, OFF") );
+   }  else {
       digitalWrite( this->port, LOW );
-#ifdef DEBUG_ELED	  
- 	  Serial.println( F("EOD:off() NO REVERSE, OFF") );
-#endif
+ 	  DBG_PRINTLN( F("EOD:off() NO REVERSE, OFF") );
   };
 };
 
