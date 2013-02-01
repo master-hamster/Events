@@ -47,7 +47,7 @@ void EBeeper::idle()
 		}
 };
 
-void EBeeper::getName(char* result) const
+void EBeeper::getName( char* result ) const
 {
 	sprintf( result, "EBeeper: ID=%d port=%d beepTime:%ld", getID(),
 				this->port, this->beepTimer.getInterval() );

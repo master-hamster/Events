@@ -219,22 +219,3 @@ protected:
 
 #endif
 
-
-
-
-
-
-/* Button modes:
-
-getData - получить данные, сохраненные в буффере.
-
-
- * Режимы работы кнопок:
- *  - OneShot: OneShot only, returns 2 values (ON/OFF)
- *  - Memory: Returns (Pressed/ON/Released/OFF)
- *  - Timer: Hold System (OFF/ON/Hold)
- *  - OneShotTimer: Combi OneShot & Timer (ON/Hold/OFF)
- *  - MemoryTimer: Combi Memory & Timer
- *  (Pressed/ON/Hold/Released/OFF)
-
- */

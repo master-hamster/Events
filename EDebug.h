@@ -17,6 +17,7 @@
 //#define DEBUG_ECANDLE
 //#define DEBUG_ECANDLE1
 //#define DEBUG_ETHERMO
+//#define ESONIC
 //
 #define DEBUG_ERROR 
 #endif
