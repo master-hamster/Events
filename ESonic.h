@@ -6,6 +6,7 @@
 #include "EDevice.h"
 
 // Class ESnic - measure distance, return distance in cm
+// max distance = 1.5m = 150cm, measure delay = 10ms
 class ESonic : public EInputDevice {
 public:
 	oid_t init( const port_t transferPort, const port_t receivePort );

@@ -31,15 +31,15 @@ void ESonic::getName( char* result ) const
 
 int16_t ESonic::getDataFromInput()
 {
-	int16_t duration;
+	long duration;
 	digitalWrite( Trig_pin, LOW );
 	delayMicroseconds( 2 );
 	digitalWrite( Trig_pin, HIGH );
 	delayMicroseconds( 10 );
 	digitalWrite( Trig_pin, LOW );
-	//Wait for sound reflection
-	duration = pulseIn( Echo_pin, HIGH );
-	// us -> cm, 30us == 1m
+	//Wait for sound reflection, timiout 10 ms == max range (1.5m)
+	duration = pulseIn( Echo_pin, HIGH, 10000 );
+	// us -> cm, 30us == 1m 0.3mm = 1mks
 	// !!!!!!!!!!!!!!!!! to check
 	currentData = duration / 30 / 2
 	DBG_PRINT( F(" ESonic:GetData() duration,ms:") )
