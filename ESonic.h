@@ -1,25 +1,21 @@
 /* 
-  Library for HR-SC04 Ultrasonic Ranging Module.
+  EVent/ESonic Library for HR-SC04 Ultrasonic sensor
 */
-
 #ifndef ESonic_h
 #define ESonic_h
-
-//#include "Events.h"
 #include "EDevice.h"
 
-
+// Class ESnic - measure distance, return distance in cm
 class ESonic : public EInputDevice {
 public:
 	oid_t init( const port_t transferPort, const port_t receivePort );
 	virtual void idle();
 	virtual void getName( char* result ) const;
-	virtual int16_t getDataFromInput(); //Read data from input and return it
+	virtual int16_t getDataFromInput(); //send sound impulse, get distance in cm
 private:
 	int Trig_pin;
 	int Echo_pin;
 };
-
 
 // class ESonic ranger - check if something is in range and rise event
 class ESonicRanger : public ESonic {
