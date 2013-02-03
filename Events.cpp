@@ -70,27 +70,15 @@ const void Event::print()
 {
    Serial.print( F("Event::print Typ=") );
    Serial.print(this->eventType);
-   Serial.print(" Src=");
+   Serial.print( F(" Src=") );
    Serial.print(this->sourceID);
-   Serial.print(" Dst=");
+   Serial.print( F(" Dst=") );
    Serial.print(this->destinationID);
-   Serial.print(" Data=");
+   Serial.print( F(" Data=") );
    Serial.print( this->eventData );
-   Serial.print( " Node=" );
+   Serial.print( F(" Node=") );
    Serial.println( this->sourceGroupID );
 };
-
-/*
-const void Event::copy(Event& newEvent)
-//копировать данные в новое событие
-{
-   newEvent.eventType=this->eventType;
-   newEvent.eventData=this->eventData;
-   newEvent.sourceID=this->sourceID;
-   newEvent.destinationID=this->destinationID;
-   newEvent.nodeID = this->nodeID;
-};
-*/
 
 Event& Event::operator =(const Event& from)
 {
@@ -109,8 +97,8 @@ int EventStack::push(Event& newEvent)
 {
    if ( size==EVENTSTACKSIZE) {
       //!!!======== ошибка, стек переполнен
-#ifdef DEBUG_ERROR      
-      Serial.println("ERROR EventStack::push: Stack Overflow!");
+#ifdef DEBUG_EVENTSTACK      
+      Serial.println( F("ERROR EventStack::push: Stack Overflow!") );
 #endif      
       return 0;
    } 
@@ -146,8 +134,8 @@ int16_t eventData)   //дополнительные данные события
 #endif
    if ( size==EVENTSTACKSIZE) {
       //!!!======== ошибка, стек переполнен
-#ifdef DEBUG_ERROR      
-      Serial.println("EventStack::pushEvent: Stack Overflow!");
+#ifdef DEBUG_EVENTSTACK      
+      Serial.println( F("EventStack::pushEvent: Stack Overflow!") );
 #endif
       return 0;
    } 
@@ -175,7 +163,7 @@ int EventStack::pop(Event& newEvent)
       size--;
       newEvent = items[size];
 #ifdef DEBUG_EVENTSTACK
-      Serial.print("EventStack::pop: EventType=");
+      Serial.print( F("EventStack::pop: EventType=") );
       Serial.println(newEvent.eventType);
 #endif
       return 1;
@@ -186,7 +174,7 @@ int EventStack::pop(Event& newEvent)
 void EventStack::print()
 // print all events from stack to Serial
 {
-   Serial.print("EventStack:print size=");
+   Serial.print( F("EventStack:print size=") );
    Serial.println(size);
    for ( int i = 0; i < size; i++ ) {
       items[i].print();
@@ -215,7 +203,7 @@ void Timer::init(const unsigned long interval, const bool autorestart, const boo
 		start();
 	}
 #ifdef DEBUG_ETIMER
-	Serial.print("Timer::init interval=");
+	Serial.print( F("Timer::init interval=") );
 	Serial.println(this->interval);
 #endif   
 };
@@ -231,9 +219,8 @@ unsigned long Timer::elapsedTime() const
 	return millis() - startTime;
 };
 
-
 bool Timer::expired()
-// возвращает true если интервал ненулевой и уже прошел
+// returns true if not stoped and time expired
 {
 	if ( this->stoped ) {
 		return false;
@@ -290,15 +277,15 @@ oid_t EObject::init()
 
 int EObject::handleEvent(Event& tmpEvent)
 /*
-Процедура обработки событий
-Принимает событие
-Проверяет, является ли оно персональным
-В базовом объекте обратабываются только следующие события:
-  evEnable
-  evDIsable
-Возвращает: 
-	0 если событие не было обработано
-	ID объекта, если событие было обработано
+Get event
+1.Check event's destination by eventForMe() call
+2.Process it
+Basic object handle only next events:
+  evEnable  - enable event handling and rising
+  evDIsable - disable event handling and rising
+Returns: 
+	0 if event was not handled
+	Object ID if event was handled
 */
 {
 	if ( eventForMe( tmpEvent ) ) {
@@ -309,7 +296,7 @@ int EObject::handleEvent(Event& tmpEvent)
 			case evEnable:
 				this->isEnabled = true;
 #ifdef DEBUG_EOBJECT            
-				Serial.print("EObject::handleEvent Enabled ID=");
+				Serial.print( F("EObject::handleEvent Enabled ID=") );
 				Serial.println(this->getID());
 #endif
 				return this->ID;          
@@ -317,7 +304,7 @@ int EObject::handleEvent(Event& tmpEvent)
 			case evDisable:
 				this->isEnabled = false;
 #ifdef DEBUG_EOBJECT            
-				Serial.print("EObject::handleEvent Disabled ID=");
+				Serial.print( F("EObject::handleEvent Disabled ID=") );
 				Serial.println(this->getID());
 #endif
 				return this->ID;          

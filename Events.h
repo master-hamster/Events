@@ -17,7 +17,6 @@
 	14. Сделать запрос-ответ состояния различных устройств
  */
 
-
 #ifndef EVENT_H
 #define EVENT_H
 
@@ -28,8 +27,6 @@
 #endif
 
 #include "EDebug.h"
-
-//Uncomment next line for turn on debugging
 
 
 //EVent NoEvent
@@ -66,21 +63,15 @@
 
 //обнаружено движение, в данных - условный ID датчика движения
 #define evMotionDetected            18
-// командна на гашение света, в данных - условынй ID источника света
-//#define evLEDOff                    21
-// команда на включение света, в данных - условный ID источника света
-//#define evLEDOn                     22
-//#define evCandleOn                  23
-//#define evCandleOff                 24
 #define evFlicker                   19
 //Key released - reserve event name for future
 #define evKeyReleased   20
 
 //============= SYSTEM PARAMETERS ===============
 //максимальное количество событий в стеке событий
-#define EVENTSTACKSIZE        10
+#define EVENTSTACKSIZE        8
 //Maximum objects that can be registered, change it according to free memory
-#define MAXAPPOBJECTS					20
+#define MAXAPPOBJECTS        20
 
 //============= OBJECT SETTINGS =================
 //Debounce delay in ms, recommended 10..50
@@ -119,32 +110,31 @@ typedef uint16_t port_t;
 
 //====== EInputDevice modes ==================
 enum InputMode {
-	imUpOnly,	//выдается событие только при повышении уровня до 1 evInputUp
-	imDownOnly,	//выдается событие только при падении уровня до 0 evInputDown
-	imUpDown,	//выдается событие и при падении и при повышении
-	imToggle		//аналогично, но событие evToggle
+	imUpOnly,    //выдается событие только при повышении уровня до 1 evInputUp
+	imDownOnly,	 //выдается событие только при падении уровня до 0 evInputDown
+	imUpDown,    //выдается событие и при падении и при повышении
+	imToggle     //аналогично, но событие evToggle
 };
 //====== ECandle modes =================
 enum CandleState {
-	csOff,			//полностью выключено
-	csFadeIn,		//включается
-	csFadeOut,		//выключается
-	csOn,				//полностью включено
-	csFlickering	//мелькает
+	csOff,        //полностью выключено
+	csFadeIn,     //включается
+	csFadeOut,    //выключается
+	csOn,         //полностью включено
+	csFlickering  //мелькает
 };
 
 
 //Main class definition 
 class Event {
 public:
-	event_t eventType;  //тип события
-	oid_t sourceID;  //идентификатор создателя
-	oid_t destinationID; //идентификатор получателя, если есть
-	int16_t eventData;	//дополнительные данные события
-	int16_t sourceGroupID;     // optional data: source sensor group/node
-	const void print();
-//	const void copy(Event& newEvent); //копировать данные в новое событие
-	Event& operator =( const Event& from );
+	event_t eventType;    // Event Type :-)
+	oid_t sourceID;       // Source Object ID
+	oid_t destinationID;  // Destination Object ID or Broadcast ID
+	int16_t eventData;    // Optional data
+	int16_t sourceGroupID;// optional data: source sensor group/node
+	const void print();   // Print event data to Serial
+	Event& operator =( const Event& from );  // copy one event to another
 };
 
 
@@ -155,13 +145,12 @@ class EventStack {
 public:
 	int push( Event& newEvent );
 	int pushEvent( event_t evntType, //Push event to stack, first - Event Type
-		oid_t sourceID = 0,        //Source Object ID
-		oid_t destinationID = 0,   //Destination ID, 0 if no desination
-		int16_t eventData = 0 );   //16-bit optional data
-	int pop( Event& newEvent );    //вытащить событие из стека, 0 - нет, 1 - вытащено
-	void clear(){size = 0;};       //Clear stack content
-	void print();                  //print all events from stack to Serial
-
+		oid_t sourceID = 0,          //Source Object ID
+		oid_t destinationID = 0,     //Destination ID, 0 if no desination
+		int16_t eventData = 0 );     //16-bit optional data
+	int pop( Event& newEvent );      //вытащить событие из стека, 0 - нет, 1 - вытащено
+	void clear(){size = 0;};         //Clear stack content
+	void print();                    //print all events from stack to Serial
 private:
 	int size; //количество объектов в стеке
 	Event items[EVENTSTACKSIZE];  //буффер с событиями
@@ -210,10 +199,8 @@ private:
 	oid_t ID;          //This Object ID
 protected:
 	Event event;       //Event buffer
-	bool isEnabled;   //Can handle events
+	bool isEnabled;    //Can handle and rise events
 };
-
-
 
 
 
