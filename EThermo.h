@@ -35,7 +35,7 @@ class EThermoLM35 : public EThermo{
 public:
 	oid_t init( const port_t port, const uint16_t timeout = 0 );
 	DeviceAddress insideThermometer;
-	virtual void getName(char* result);	 
+	virtual void getName( char* result) ;	 
 	virtual int16_t getDataFromInput();
 };
 

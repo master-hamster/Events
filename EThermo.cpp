@@ -19,7 +19,7 @@ oid_t EThermo::init( const uint16_t timeout )
 	} else {	
 		active = 1;
 		DBG_PRINTLN ( F("EThermo.init active timer init with delay") );
-		timer.init(timeout,true);
+		timer.init( timeout,true );
 	}
 	currentData = getDataFromInput(); // make first measurement
 	return tmp;
@@ -89,7 +89,7 @@ oid_t EThermoDs1820::init( DallasTemperature* dt,
 		ds1820->setResolution( insideThermometer, precision );
 		DBG_PRINT( "Dallas inited." );
 	};	
-	return EThermo::init(timeout);
+	return EThermo::init( timeout );
  };
 
 int16_t EThermoDs1820::getDataFromInput()
@@ -98,7 +98,7 @@ int16_t EThermoDs1820::getDataFromInput()
 	ds1820->requestTemperatures();
 	temperature = ds1820->getTempC( insideThermometer );
 	currentData = round( temperature * 100 );
-	DBG_PRINT( F("1820.doMeasure temperature=") );
+	DBG_PRINT( F("1820.getDataFromInput() temperature=") );
 	DBG_PRINTLN( temperature );
 	return currentData;
 };
@@ -119,7 +119,7 @@ int16_t EThermoLM35::getDataFromInput()
 {
 	temperature = ( 5 * analogRead( port ) * 100 ) / 1024;
 	currentData = round( temperature * 100 );
-	DBG_PRINT( "LM35.doMeasure temperature=" );
+	DBG_PRINT( "LM35.getDataFromInput() temperature=" );
 	DBG_PRINTLN( temperature );
 	return currentData;
 };
