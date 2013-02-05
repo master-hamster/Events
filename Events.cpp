@@ -188,13 +188,14 @@ Timer::Timer()
    start();
 };
 
-Timer::Timer(const unsigned long interval)
+Timer::Timer( const unsigned long interval )
 {
-   setInterval(interval);
+   setInterval( interval );
    start();
 };
 
-void Timer::init(const unsigned long interval, const bool autorestart, const bool autostart )
+void Timer::init( const unsigned long interval, 
+				const bool autorestart, const bool autostart )
 {
 	this->autorestart = autorestart;
 	this->stoped = !autostart; 
@@ -208,7 +209,7 @@ void Timer::init(const unsigned long interval, const bool autorestart, const boo
 #endif   
 };
 
-void Timer::setInterval(const unsigned long interval)
+void Timer::setInterval( const unsigned long interval )
 {
 	this->interval = interval;
 };
@@ -225,7 +226,7 @@ bool Timer::expired()
 	if ( this->stoped ) {
 		return false;
 	}
-	if (( interval !=0 ) && ( millis() - startTime >= interval) ) {
+	if ( ( interval !=0 ) && ( millis() - startTime >= interval) ) {
 	//??????????код ниже нужно осмыслить или выкинуть или переделать
       // As suggested by benjamin.soelberg@gmail.com, the following line
       // this->previous_millis = millis();
@@ -292,7 +293,7 @@ Returns:
 		//основные команды, которые обрабоатывает любой объект
 		// - это включение и выключение объекта
 		if ( this->isEnabled ) {
-			switch (tmpEvent.eventType) {
+			switch ( tmpEvent.eventType ) {
 			case evEnable:
 				this->isEnabled = true;
 #ifdef DEBUG_EOBJECT            

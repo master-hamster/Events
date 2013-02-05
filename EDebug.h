@@ -21,3 +21,6 @@
 //
 #define DEBUG_ERROR 
 #endif
+#define ERR_PRINTLN(a) Serial.println(a)
+#define ERR_PRINT(a) Serial.print(a)
+
