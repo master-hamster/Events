@@ -96,7 +96,7 @@
 //=============== only substitutions, no need to change  =======
 #define PORT_REVERSE_MODE true
 #define PORT_NO_REVERSE_MODE false
-#define BROADCAST_OID 32767
+#define BROADCAST_OID 0
 #define EAPPLICATION_SOURCE_OID 65535
 #define TIMER_AUTOSTART true
 #define TIMER_NO_AUTOSTART false

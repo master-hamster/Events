@@ -111,7 +111,7 @@ void EThermoDs1820::getName( char* result )
 //======================= EThermoLM35 ==================
 oid_t EThermoLM35::init( const port_t port, const uint16_t timeout )
 {
-	return EThermo::init(timeout);
+	return EThermo::init( timeout );
  };
 
 int16_t EThermoLM35::getDataFromInput()
