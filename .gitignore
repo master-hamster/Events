@@ -167,3 +167,7 @@ pip-log.txt
 .MEW
 
 .MegaCloud
+
+# JeffEdit backup files
+*.*~
+

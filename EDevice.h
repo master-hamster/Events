@@ -7,7 +7,6 @@
 */
 #ifndef EDevice_h
 #define EDevice_h
-
 #include <Events.h>
 
 //Generic Input/output device
