@@ -11,20 +11,33 @@
 
 */
 
+#define MAX_ECHAIN_SIZE 32
+
+#define MAX_LED_LEVEL 50
+
+#define DEFAULT_TRANSITION_TIME 1000
+
 struct CRGB { byte g; byte r; byte b; };
 struct CHSV {byte h; byte s; byte v;};
 
-enum LedChainMode {
+enum EChainMode {
   ecmRun,
   ecmStop
 } ; 
+
+enum EChainTransition {
+	ectBlink,
+	ectSmooth
+};
 
 struct ecsRGB { byte g; byte r; byte b; };
 
 
 class EChain : public ELED {
 public:
-	oid_t init(const port_t ledPort, const int16_t nLeds, void * buff);
+	oid_t init(const port_t ledPort, const int16_t nLeds, CRGB * buff, const long transTime = DEFAULT_TRANSITION_TIME);
+//	oid_t init(const port_t ledPort, const int16_t nLeds, CRGB[] * buff, 
+//				const long transTime = 50000);
 	virtual void idle();
 	virtual void getName(char* result);
 	virtual void on();
@@ -32,11 +45,22 @@ public:
 	virtual void run();
 	virtual void stop();
 protected:
-	LedChainMode  chainMode;
-	int16_t numLeds; //Number of LEDs in chain
-    void * ledBuffer; 
+	uint16_t 		numLeds; //Number of LEDs in chain
+    CRGB * 			ledBuffer;
+    struct CHSV hsvBuffer[MAX_ECHAIN_SIZE]; //HSV Buffer
+    long 			startTime;
+	long 			transitionTime;
+	EChainTransition chainTransition;
+	EChainMode 		chainMode;
+	word tmpLedNumber; //временная переменная
+	
+	
+	void setRGBArray();
+	void blinkChain(); //OK
+	void smoothChain(); //no
+	void caterpillerChain();//
+	
 };
-
 
 
 
