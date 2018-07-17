@@ -19,7 +19,7 @@ EDevice	KEYWORD1
 EInputDevice	KEYWORD1
 EOutputDevice	KEYWORD1
 EApplication	KEYWORD1
-ELED          KEYWORD1
+ELED	KEYWORD1
 
 
 
